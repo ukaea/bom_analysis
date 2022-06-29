@@ -211,7 +211,8 @@ class EngineeringObject(BaseClass):
         Returns
         -------
         MaterialData
-            A class for the materials."""
+            A class for the materials that contains access to the
+            material data."""
         return self._material
 
     @material.setter
