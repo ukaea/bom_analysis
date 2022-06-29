@@ -1,0 +1,35 @@
+{
+    "top":
+        {
+            "ref":"blanket",
+            "type":"blanket"
+        },
+    "parts":
+        {
+            "location":["./tests/parents.json", "./tests/test_defined.json"]
+        },
+    "parameters":
+        {   
+            "class_str":"bom_analysis.parameters.PintFrame",
+            "location":["./tests/test_params.json"]
+        },
+    "storage":
+        {
+        "location":["./tests/test_storage.json"]
+        },
+    "translations":
+        ["./examples/files/translation.json"],
+    "materials":{
+        "order":{
+            "0":"coolprops",
+            "1":"example_properties"
+            },
+        "coolprops":{"class_str":["bom_analysis.materials.CoolPropsWrap"],
+                        "translate_to":"CoolProps"},
+        "example_properties":{"class_str":["bom_analysis.materials.DFLibraryWrap"],
+                    "path":"./examples/files/example_material_properties.json",
+                    "translate_to":"example_materials"}
+    },
+    "plot_dir":"./",
+    "pre_built_geometry":[]        
+}

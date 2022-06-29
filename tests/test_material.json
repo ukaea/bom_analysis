@@ -1,0 +1,10 @@
+{
+    "units":
+    {
+        "made_up_property":"m"
+    },
+    "steel":
+    {
+        "made_up_property":100
+    }  
+}

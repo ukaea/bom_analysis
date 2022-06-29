@@ -1,0 +1,14 @@
+{
+    "units":{
+        "thermal_conductivity":"W/m*K"
+    },
+    "steel":{
+        "thermal_conductivity":28.3
+    },
+    "tungsten":{
+        "thermal_conductivity":170.0
+    },   
+    "CarbonDioxide":{
+        "thermal_conductivity":0.0166
+    }       
+}

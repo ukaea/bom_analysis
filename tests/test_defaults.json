@@ -1,0 +1,26 @@
+{
+"bz":
+    {"params":
+        {"data":
+            {"b2m_ratio":
+                    {"value":0.2, "unit":"N/A"}
+            }
+        }
+    },
+"fw":
+    {"params":
+        {"data":
+            {"volume":
+                    {"value":100, "unit":"m**3"}
+            }
+        }
+    },
+"bz_structure":
+    {"params":
+        {"data":
+            {"volume":
+                    {"value":200, "unit":"m**3"}
+            }
+        }
+    }    
+}

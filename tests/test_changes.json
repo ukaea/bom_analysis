@@ -1,0 +1,31 @@
+{
+"NEW":{
+    "inherits":"",
+    "description":"new defined components"    
+    },     
+"beer_box":{
+    "inherits":["assembly"],
+    "description":"beer box",
+    "params_name":["breeding_zone"],
+    "children":{
+                "bz_structure":{
+                    "type":"grid"
+                },
+                "channel":{
+                    "type":"coolant"                    
+                  }
+                },    
+    "network":{"inherits":["network"]}
+    },
+"grid":{
+    "inherits":["component"],
+    "description":"the grid structure which makes up the beer box",
+    "params_name":["grid"]
+    },
+"coolant":{
+        "inherits":["component"],
+        "description":"coolant",
+        "material":{"inherits":["fluid"]} 
+        }    
+}
+

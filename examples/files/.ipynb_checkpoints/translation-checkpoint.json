@@ -1,0 +1,78 @@
+{"CO2":
+        {
+        "CoolProps":{"name":"CarbonDioxide"},
+        "Neutronics":{"name":"CO2"}
+        },        
+"H2O":
+    {
+        "CoolProps":{"name":"Water"},
+        "Neutronics":{"name":"H2O"},
+        "AnalysisLib":{"name":"Water"}
+    },
+"WC":
+    {
+        "CD-STEP-00824":{"name":"tungsten", "msg":"assuming tungsten properties"},
+        "AnalysisLib":{"name":"94W - 6C"}
+    },
+"LiPb":
+    {
+        "Neutronics":{"name":"lithium-lead"},
+        "CD-STEP-00824":{"name":"modeled_lithium_lead", "msg":"liquid lithium properties assumed instead of lithium-lead"}
+    },   
+"He":
+    {
+        "AnalysisLib":{"name":"Helium"}
+    },   
+"tungsten":
+{
+    "AnalysisLib":{"name":"Tungsten - Stress Relieved"}
+},   
+"eurofer":
+    {
+        "AnalysisLib":{"name":"EUROFER97"}
+    },         
+"density":         
+    {
+        "CD-STEP-00824":{"name":"density", "msg":"minimum temperature range properties assumed"},
+        "CoolProps":{"name":"D"},
+        "AnalysisLib":{"name":"Density"}
+    },
+"specific_heat_capacity":         
+    {
+        "CD-STEP-00824":{"name":"specific_heat_vary_t_min"}, "msg":"minimum temperature range properties assumed",
+        "CoolProps":{"name":"C"},
+        "AnalysisLib":{"name":"Specific Heat Capacity"}
+    },    
+"thermal_conductivity":         
+    {
+        "CD-STEP-00824":{"name":"thermal_conductivity_model", "msg":"minimum temperature range properties assumed"},
+        "CoolProps":{"name":"conductivity"},
+        "AnalysisLib":{"name":"Thermal Conductivity"}
+    },    
+"dynamic_viscosity":         
+    {
+        "CD-STEP-00824":{"name":"dynamic_viscosity_vary_t_min", "msg":"minimum temperature range properties assumed"},
+        "CoolProps":{"name":"viscosity"},
+        "AnalysisLib":{"name":"Dynamic Viscosity"}
+    },
+"yield":
+    {
+        "CD-STEP-00824":{"name":"yield_rt_min", "msg":"room temperature yield assumed"},
+        "AnalysisLib":{"name":"Yield Strength"}
+    },
+"max_operating_temperature":
+    {
+        "CD-STEP-00824":{"name":"suggested_max_operating_temp_min", "msg":"room temperature yield assumed"}
+    },
+"melting_temperature":
+    {
+        "CD-STEP-00824":{"name":"melting_temperature_min", "msg":"minimum range assumed"}
+    },
+"fw":{"paramak":{"name":"firstwall"}},
+"bz":{"paramak":{"name":"blanket"}},
+"mf":{"paramak":{"name":"blanket_rear_wall"}},
+"divertor":{"paramak":{"name":"divertor"}},
+"inboard_shield":{"paramak":{"name":"center_column_shield"}},
+"tf_coils":{"paramak":{"name":"inboard_tf_coils"}},
+"plasma":{"paramak":{"name":"plasma"}}
+}

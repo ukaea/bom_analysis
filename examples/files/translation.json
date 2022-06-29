@@ -1,0 +1,53 @@
+{"CO2":
+        {
+        "CoolProps":{"name":"CarbonDioxide"},
+        "Neutronics":{"name":"CO2"}
+        },        
+"H2O":
+    {
+        "CoolProps":{"name":"Water"},
+        "Neutronics":{"name":"H2O"},
+        "FEA_library":{"name":"Water"}
+    },
+"He":
+    {
+        "FEA_library":{"name":"Helium"}
+    },          
+"density":         
+    {
+        "example_materials":{"name":"density"},
+        "CoolProps":{"name":"D"},
+        "FEA_library":{"name":"Density"}
+    },
+"specific_heat_capacity":         
+    {
+        "example_materials":{"name":"specific_heat"}, 
+        "CoolProps":{"name":"C"},
+        "FEA_library":{"name":"Specific Heat Capacity"}
+    },    
+"thermal_conductivity":         
+    {
+        "example_materials":{"name":"thermal_conductivity"},
+        "CoolProps":{"name":"conductivity"},
+        "FEA_library":{"name":"Thermal Conductivity"}
+    },    
+"dynamic_viscosity":         
+    {
+        "example_materials":{"name":"dynamic_viscosity"},
+        "CoolProps":{"name":"viscosity"},
+        "FEA_library":{"name":"Dynamic Viscosity"}
+    },
+"yield":
+    {
+        "example_materials":{"name":"yield"},
+        "FEA_library":{"name":"Yield Strength"}
+    },
+"max_operating_temperature":
+    {
+        "example_materials":{"name":"suggested_max_operating_temp"}
+    },
+"melting_temperature":
+    {
+        "example_materials":{"name":"melting_temperature"}
+    }
+}

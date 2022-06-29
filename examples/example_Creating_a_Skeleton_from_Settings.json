@@ -1,0 +1,76 @@
+{
+    "blanket": {
+        "children": {
+            "breeding_zone": {
+                "type": "breeding_pins"
+            },
+            "manifold": {
+                "type": "double_wall_mf"
+            }
+        },
+        "type": "blanket",
+        "ref": "blanket",
+        "class_str": [
+            "bom_analysis.bom.Assembly"
+        ],
+        "_params": {
+            "class_str": [
+                "bom_analysis.parameters.PintFrame"
+            ],
+            "data": {
+                "number_of_components": {
+                    "var": "number_of_components",
+                    "unit": null,
+                    "value": null
+                }
+            }
+        },
+        "inherited": [
+            "assembly"
+        ]
+    },
+    "breeding_zone": {
+        "type": "breeding_pins",
+        "ref": "breeding_zone",
+        "class_str": [
+            "bom_analysis.bom.Component"
+        ],
+        "_params": {
+            "class_str": [
+                "bom_analysis.parameters.PintFrame"
+            ],
+            "data": {
+                "mass": {
+                    "var": "mass",
+                    "unit": "kg",
+                    "value": null
+                }
+            }
+        },
+        "inherited": [
+            "component"
+        ]
+    },
+    "manifold": {
+        "type": "double_wall_mf",
+        "ref": "manifold",
+        "class_str": [
+            "bom_analysis.bom.Component"
+        ],
+        "_params": {
+            "class_str": [
+                "bom_analysis.parameters.PintFrame"
+            ],
+            "data": {
+                "mass": {
+                    "var": "mass",
+                    "unit": "kg",
+                    "value": null
+                }
+            }
+        },
+        "inherited": [
+            "component"
+        ]
+    }
+}

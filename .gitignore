@@ -1,0 +1,21 @@
+# exclude everything
+temp/*
+*.pyc
+**/**/*.pyc
+.vscode/*
+bom_analysis_smerrim.egg-info/*
+*.egg-info/*
+*.log
+./*.log
+./examples/*.log
+./testing/*.log
+
+# exception to the rule
+!temp/.gitkeep
+!temp/make_faceteted_neutronics_model.py
+!temp/make_unstructured_mesh.py
+
+./docs/build/
+./docs/build/*
+/docs/build/
+/docs/build/*

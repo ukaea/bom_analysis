@@ -1,0 +1,21 @@
+{ 
+"fw_radial_build":{"args":["fw"], 
+    "class_str":"tests.test_Solver.ToParams",
+    "run":"generate"},
+    
+"mf_radial_build":{"args":["bz"], 
+    "class_str":"tests.test_Solver.ToNetwork",
+    "run":"run",
+    "requirements":{
+                    "blanket":{"network":{"inherits":["network"]}} 
+            }
+        },
+"bz_radial_build":{"args":["bz_breeder", 5], 
+    "class_str":"tests.test_Solver.ToOther",
+    "run":"execute",
+    "kwargs":{"number_of_particles":100},
+    "requirements":{
+        "bz":{"params_name":["mod_requirements"],
+              "foo":"bar"}}
+    }
+}

@@ -1,0 +1,134 @@
+{
+    "blanket": {
+        "children": {
+            "breeding_zone": {
+                "type": "breeding_pins"
+            },
+            "manifold": {
+                "type": "double_wall_mf"
+            }
+        },
+        "type": "blanket",
+        "ref": "blanket",
+        "class_str": [
+            "bom_analysis.bom.Assembly"
+        ],
+        "_params": {
+            "class_str": [
+                "bom_analysis.parameters.PintFrame"
+            ],
+            "data": {
+                "number_of_components": {
+                    "var": "number_of_components",
+                    "unit": null,
+                    "value": null
+                }
+            }
+        },
+        "inherited": [
+            "assembly"
+        ]
+    },
+    "breeding_zone": {
+        "children": {
+            "stiffener": {
+                "type": "beer_box"
+            }
+        },
+        "type": "breeding_pins",
+        "ref": "breeding_zone",
+        "class_str": [
+            "bom_analysis.bom.Component"
+        ],
+        "_params": {
+            "class_str": [
+                "bom_analysis.parameters.PintFrame"
+            ],
+            "data": {
+                "mass": {
+                    "var": "mass",
+                    "unit": "kg",
+                    "value": null
+                }
+            }
+        },
+        "inherited": [
+            "component"
+        ],
+        "nodes": {
+            "class_str": [
+                "pandas.DataFrame"
+            ]
+        }
+    },
+    "stiffener": {
+        "shape": "square",
+        "type": "beer_box",
+        "ref": "stiffener",
+        "class_str": [
+            "bom_analysis.bom.Component"
+        ],
+        "_params": {
+            "class_str": [
+                "bom_analysis.parameters.PintFrame"
+            ],
+            "data": {
+                "NEW": {
+                    "descr": null,
+                    "name": "NEWparam",
+                    "source": "Input",
+                    "unit": "N/A",
+                    "value": null,
+                    "var": "NEW"
+                },
+                "mass": {
+                    "var": "mass",
+                    "unit": "kg",
+                    "value": null
+                }
+            }
+        },
+        "inherited": [
+            "component"
+        ]
+    },
+    "manifold": {
+        "key_coords": {
+            "class_str": [
+                "bom_analysis.base.DFClass"
+            ],
+            "desc": "a database of coordinates",
+            "inherited": [
+                "coordinates"
+            ]
+        },
+        "type": "double_wall_mf",
+        "ref": "manifold",
+        "class_str": [
+            "bom_analysis.bom.Component"
+        ],
+        "_params": {
+            "class_str": [
+                "bom_analysis.parameters.PintFrame"
+            ],
+            "data": {
+                "mass": {
+                    "var": "mass",
+                    "unit": "kg",
+                    "value": 100
+                }
+            }
+        },
+        "inherited": [
+            "component"
+        ],
+        "nodes": {
+            "class_str": [
+                "pandas.DataFrame"
+            ]
+        },
+        "material": {
+            "name": "steel"
+        }
+    }
+}

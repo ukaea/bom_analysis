@@ -1,0 +1,9 @@
+{
+"bz": {"params":{"data":{            
+            "b2m_ratio": {
+                "source": "Example",
+                "unit": null,
+                "value": 0.2
+            }
+            }}}
+}

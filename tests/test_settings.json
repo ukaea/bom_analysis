@@ -1,0 +1,37 @@
+{
+    "parts":
+    {
+        "location":["./tests/test_changes.json"]
+    },  
+    "part_changes":
+        {    
+        "bz":
+            {
+                "children":{"bz_breeder":{"type":"beer_box"}}
+            }
+        },
+    "other_changes":
+        {"fw":
+            {"material":
+                {
+                "name":"tungsten"
+                }
+            },
+        "channel":
+            {"material":
+                {
+                "name":"He"
+                }
+            }            
+        },
+    "defaults":{"location":["./tests/test_defaults.json"]},
+    "modules":
+            {
+            "order":{
+                    "0":"fw_radial_build",
+                    "1":"mf_radial_build",
+                    "2":"bz_radial_build"
+                    },
+            "location":["./tests/test_modules.json"]
+            }
+}

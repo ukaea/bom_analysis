@@ -1,0 +1,496 @@
+{
+    "blanket": {
+        "_assignment": [],
+        "_params": {
+            "class_str": [
+                "bom_analysis.parameters.PintFrame"
+            ],
+            "data": {
+                "envelope_volume": {
+                    "descr": null,
+                    "name": "the volume of a large envelope",
+                    "source": "Input",
+                    "unit": "m^3",
+                    "value": null,
+                    "var": "envelope_volume"
+                },
+                "inlet_pressure": {
+                    "descr": null,
+                    "name": "pipe inlet pressure",
+                    "source": "Input",
+                    "unit": "Pa",
+                    "value": null,
+                    "var": "inlet_pressure"
+                },
+                "mass": {
+                    "descr": null,
+                    "name": "sum of the component masses",
+                    "source": "Input",
+                    "unit": "kg",
+                    "value": null,
+                    "var": "mass"
+                },
+                "outlet_pressure": {
+                    "descr": null,
+                    "name": "pipe inlet pressure",
+                    "source": "Input",
+                    "unit": "Pa",
+                    "value": null,
+                    "var": "outlet_pressure"
+                }
+            }
+        },
+        "_part_count": {
+            "_counter": "True",
+            "bz": 1,
+            "fw": 1
+        },
+        "_ref": "blanket",
+        "children": {
+            "bz": {
+                "type": "breeding_zone"
+            },
+            "fw": {
+                "type": "first_wall"
+            }
+        },
+        "class_str": [
+            "bom_analysis.bom.Assembly"
+        ],
+        "description": "main assembly",
+        "geometry": {
+            "inherited": [
+                "ball_reactor"
+            ],
+            "type": "ball"
+        },
+        "inherited": [
+            "assembly"
+        ],
+        "network": {
+            "class_str": [
+                "bom_analysis.base.DFClass"
+            ],
+            "compiled": null,
+            "data": null,
+            "inherited": [
+                "network"
+            ]
+        },
+        "type": "blanket"
+    },
+    "bz": {
+        "_assignment": [],
+        "_params": {
+            "class_str": [
+                "bom_analysis.parameters.PintFrame"
+            ],
+            "data": {
+                "b2m_ratio": {
+                    "descr": null,
+                    "name": "breeder to multiplier ratio",
+                    "source": "Input",
+                    "unit": "newton / ampere",
+                    "value": 0.2,
+                    "var": "b2m_ratio"
+                },
+                "envelope_volume": {
+                    "descr": null,
+                    "name": "the volume of a large envelope",
+                    "source": "Input",
+                    "unit": "m^3",
+                    "value": null,
+                    "var": "envelope_volume"
+                },
+                "inlet_pressure": {
+                    "descr": null,
+                    "name": "pipe inlet pressure",
+                    "source": "Input",
+                    "unit": "Pa",
+                    "value": null,
+                    "var": "inlet_pressure"
+                },
+                "mass": {
+                    "descr": null,
+                    "name": "sum of the component masses",
+                    "source": "Input",
+                    "unit": "kg",
+                    "value": null,
+                    "var": "mass"
+                },
+                "node_count": {
+                    "descr": null,
+                    "name": "number of nodes",
+                    "source": "Input",
+                    "unit": null,
+                    "value": null,
+                    "var": "node_count"
+                },
+                "outlet_pressure": {
+                    "descr": null,
+                    "name": "pipe inlet pressure",
+                    "source": "Input",
+                    "unit": "Pa",
+                    "value": null,
+                    "var": "outlet_pressure"
+                }
+            }
+        },
+        "_part_count": {
+            "_counter": "True",
+            "bz_breeder": 1
+        },
+        "_ref": "bz",
+        "children": {
+            "bz_breeder": {
+                "type": "beer_box"
+            }
+        },
+        "class_str": [
+            "bom_analysis.bom.Assembly"
+        ],
+        "description": "component within assembly",
+        "foo": "bar",
+        "inherited": [
+            "assembly"
+        ],
+        "network": {
+            "class_str": [
+                "bom_analysis.base.DFClass"
+            ],
+            "compiled": null,
+            "data": {
+                "columns": [
+                    0,
+                    1,
+                    2,
+                    3,
+                    4
+                ],
+                "data": [
+                    [
+                        null,
+                        null,
+                        "foobar",
+                        null,
+                        null
+                    ],
+                    [
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    [
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    [
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                    ]
+                ],
+                "index": [
+                    "i",
+                    "j",
+                    "k",
+                    "l"
+                ]
+            },
+            "inherited": [
+                "network"
+            ]
+        },
+        "type": "breeding_zone"
+    },
+    "bz_breeder": {
+        "CAD": "some cad geometry",
+        "_assignment": [],
+        "_params": {
+            "class_str": [
+                "bom_analysis.parameters.PintFrame"
+            ],
+            "data": {
+                "b2m_ratio": {
+                    "descr": null,
+                    "name": "breeder to multiplier ratio",
+                    "source": "Input",
+                    "unit": null,
+                    "value": null,
+                    "var": "b2m_ratio"
+                },
+                "envelope_volume": {
+                    "descr": null,
+                    "name": "the volume of a large envelope",
+                    "source": "Input",
+                    "unit": "m^3",
+                    "value": null,
+                    "var": "envelope_volume"
+                },
+                "inlet_pressure": {
+                    "descr": null,
+                    "name": "pipe inlet pressure",
+                    "source": "Input",
+                    "unit": "Pa",
+                    "value": null,
+                    "var": "inlet_pressure"
+                },
+                "mass": {
+                    "descr": null,
+                    "name": "sum of the component masses",
+                    "source": "Input",
+                    "unit": "kg",
+                    "value": null,
+                    "var": "mass"
+                },
+                "outlet_pressure": {
+                    "descr": null,
+                    "name": "pipe inlet pressure",
+                    "source": "Input",
+                    "unit": "Pa",
+                    "value": null,
+                    "var": "outlet_pressure"
+                }
+            }
+        },
+        "_part_count": {
+            "_counter": "True",
+            "bz_structure": 1,
+            "channel": 1
+        },
+        "_ref": "bz_breeder",
+        "batches": 5,
+        "children": {
+            "bz_structure": {
+                "type": "grid"
+            },
+            "channel": {
+                "type": "coolant"
+            }
+        },
+        "class_str": [
+            "bom_analysis.bom.Assembly"
+        ],
+        "description": "beer box",
+        "inherited": [
+            "assembly"
+        ],
+        "network": {
+            "class_str": [
+                "bom_analysis.base.DFClass"
+            ],
+            "compiled": null,
+            "data": null,
+            "inherited": [
+                "network"
+            ]
+        },
+        "number_of_particles": 100,
+        "type": "beer_box"
+    },
+    "bz_structure": {
+        "_assignment": [],
+        "_material": {
+            "_irradiation": "0.0 dimensionless",
+            "_mat": null,
+            "_pressure": "100000000.0 gram / meter / second ** 2",
+            "_temperature": "293.0 kelvin",
+            "class_str": [
+                "bom_analysis.materials.MaterialData"
+            ]
+        },
+        "_params": {
+            "class_str": [
+                "bom_analysis.parameters.PintFrame"
+            ],
+            "data": {
+                "mass": {
+                    "descr": null,
+                    "name": "mass of the component",
+                    "source": "Input",
+                    "unit": "kg",
+                    "value": null,
+                    "var": "mass"
+                },
+                "spacing": {
+                    "descr": null,
+                    "name": "spacing between grid",
+                    "source": "Input",
+                    "unit": null,
+                    "value": null,
+                    "var": "spacing"
+                },
+                "thickness": {
+                    "descr": null,
+                    "name": "radial component thickness",
+                    "source": "Input",
+                    "unit": "m",
+                    "value": null,
+                    "var": "thickness"
+                },
+                "volume": {
+                    "descr": null,
+                    "name": "Component Volume",
+                    "source": "Input",
+                    "unit": "meter ** 3",
+                    "value": 200,
+                    "var": "volume"
+                }
+            }
+        },
+        "_ref": "bz_structure",
+        "class_str": [
+            "bom_analysis.bom.Component"
+        ],
+        "description": "the grid structure which makes up the beer box",
+        "inherited": [
+            "component"
+        ],
+        "type": "grid"
+    },
+    "channel": {
+        "_assignment": [],
+        "_material": {
+            "_irradiation": "0.0 dimensionless",
+            "_mat": "He",
+            "_pressure": "100000000.0 gram / meter / second ** 2",
+            "_temperature": "293.0 kelvin",
+            "class_str": [
+                "bom_analysis.materials.CoolPropsWrap",
+                "bom_analysis.materials.Fluid"
+            ],
+            "inherited": [
+                "fluid"
+            ],
+            "name": "He",
+            "translate_to": "CoolProps"
+        },
+        "_params": {
+            "class_str": [
+                "bom_analysis.parameters.PintFrame"
+            ],
+            "data": {
+                "mass": {
+                    "descr": null,
+                    "name": "mass of the component",
+                    "source": "Input",
+                    "unit": "kg",
+                    "value": null,
+                    "var": "mass"
+                },
+                "thickness": {
+                    "descr": null,
+                    "name": "radial component thickness",
+                    "source": "Input",
+                    "unit": "m",
+                    "value": null,
+                    "var": "thickness"
+                },
+                "volume": {
+                    "descr": null,
+                    "name": "Component Volume",
+                    "source": "Input",
+                    "unit": "m^3",
+                    "value": null,
+                    "var": "volume"
+                }
+            }
+        },
+        "_ref": "channel",
+        "class_str": [
+            "bom_analysis.bom.Component"
+        ],
+        "description": "coolant",
+        "inherited": [
+            "component"
+        ],
+        "type": "coolant"
+    },
+    "fw": {
+        "_assignment": [],
+        "_material": {
+            "_irradiation": "0.0 dimensionless",
+            "_mat": "tungsten",
+            "_pressure": "100000000.0 gram / meter / second ** 2",
+            "_temperature": "293.0 kelvin",
+            "class_str": [
+                "bom_analysis.materials.DFLibraryWrap",
+                "bom_analysis.materials.Solid"
+            ],
+            "inherited": [
+                "solid"
+            ],
+            "name": "tungsten",
+            "path": "./examples/files/example_material_properties.json",
+            "to": "",
+            "translate_to": "example_materials"
+        },
+        "_params": {
+            "class_str": [
+                "bom_analysis.parameters.PintFrame"
+            ],
+            "data": {
+                "envelope_volume": {
+                    "descr": null,
+                    "name": "the volume of a large envelope",
+                    "source": "Input",
+                    "unit": "m^3",
+                    "value": null,
+                    "var": "envelope_volume"
+                },
+                "mass": {
+                    "descr": null,
+                    "name": "sum of the component masses",
+                    "source": "Input",
+                    "unit": "gram",
+                    "value": 1.5,
+                    "var": "mass"
+                },
+                "thickness": {
+                    "descr": null,
+                    "name": "radial component thickness",
+                    "source": "Input",
+                    "unit": "m",
+                    "value": null,
+                    "var": "thickness"
+                },
+                "volume": {
+                    "descr": null,
+                    "name": "Component Volume",
+                    "source": "Input",
+                    "unit": "meter ** 3",
+                    "value": 100,
+                    "var": "volume"
+                }
+            }
+        },
+        "_part_count": {
+            "_counter": "True"
+        },
+        "_ref": "fw",
+        "children": {},
+        "class_str": [
+            "bom_analysis.bom.Component",
+            "bom_analysis.bom.Assembly"
+        ],
+        "description": "homogenised assembly within assembly",
+        "geometry": {
+            "inherited": [
+                "rect_channel"
+            ],
+            "section": "rectangular"
+        },
+        "inherited": [
+            "component",
+            "assembly"
+        ],
+        "type": "first_wall"
+    }
+}

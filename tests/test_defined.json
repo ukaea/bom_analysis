@@ -1,0 +1,42 @@
+{
+"NEW":{
+    "inherits":"",
+    "description":"new defined components"    
+    },     
+"blanket":{
+    "inherits":["assembly"],
+    "description":"main assembly",
+    "children":{
+                "bz":{
+                            "type":"breeding_zone"
+                          },
+                "fw":{
+                            "type":"first_wall"
+                          }
+                },
+    "geometry":{"inherits":["ball_reactor"]}
+    },
+"breeding_zone":{
+    "inherits":["assembly"],
+    "description":"component within assembly",
+    "params_name":["breeding_zone"],
+    "children":{
+                "bz_breeder":{
+                    "type":"breeder"
+                  }
+                },    
+    "network":{"inherits":["network"]}
+    },
+"first_wall":{
+    "inherits":["component", "assembly"],
+    "description":"homogenised assembly within assembly",
+    "geometry":{"inherits":["rect_channel"]},
+    "material":{"inherits":["solid"]}    
+    },  
+"breeder":{
+    "inherits":["component"],
+    "description":"a liquid breeder",
+    "geometry":{"inherits":["rect_channel"]},
+    "material":{"inherits":["fluid"]}    
+    }        
+}

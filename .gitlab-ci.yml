@@ -1,0 +1,81 @@
+image: ubuntu:20.04
+
+stages:
+  - test
+  - sonarqube
+  - deploy
+  
+pytest:
+  stage: test
+  script:
+    - apt-get -y update && apt-get -y install python3
+    - apt install -y python3-pip  
+    - pip3 install pytest
+    - pip3 install coverage
+    - pip3 install -e .  
+    - pip3 install black[jupyter]
+    - black .
+    - coverage run --branch --source=bom_analysis -m pytest -v tests || true
+    - coverage xml -o coverage.xml
+    - mkdir test-results
+    - cp coverage.xml test-results/test-coverage.xml
+    - pytest -v -o junit_family=xunit1 --junitxml=test-results/test-results.xml tests
+
+  allow_failure: false
+  artifacts:
+    when: always
+    paths:
+    - .coverage
+    - coverage.xml
+    - test-results/test-results.xml
+    - test-results/test-coverage.xml
+    expire_in: 1 week
+  rules: 
+    - when: always
+    
+
+
+sonarqube-check:
+  stage: sonarqube
+  image:
+    name: sonarsource/sonar-scanner-cli:latest
+    entrypoint: [""]
+  variables:
+    SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"  # Defines the location of the analysis task cache
+    GIT_DEPTH: "0"  # Tells git to fetch all the branches of the project, required by the analysis task
+  cache:
+    key: "${CI_JOB_NAME}"
+    paths:
+      - .sonar/cache
+  script:
+    - >
+      sonar-scanner
+      -Dsonar.sources=bom_analysis
+      -Dsonar.host.url=$SONAR_HOST_URL
+      -Dsonar.login=$SONAR_LOGIN
+      -Dsonar.python.xunit.reportPath=test-results/test-results.xml
+      -Dsonar.python.coverage.reportPaths=test-results/test-coverage.xml
+  allow_failure: true
+  only:
+    - merge_requests
+    - master
+    - development
+    
+pages:
+  stage: deploy
+  script:
+    - apt-get -y update && apt-get -y install python3
+    - apt install -y python3-pip  
+    - pip3 install -e .      
+    - pip3 install sphinx
+    - pip3 install sphinx_rtd_theme
+    - cd docs
+    - sphinx-apidoc -f -o source/ ../bom_analysis/
+    - make html    
+    - mv build/html/ ../public/
+  artifacts:
+    paths:
+      - public
+  only:
+    - master
+

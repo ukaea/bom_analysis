@@ -1,0 +1,24 @@
+{   
+    "channel":{
+        },    
+    "network":{
+        "class_str":["bom_analysis.base.DFClass"],
+        "params_name":["pipe_network"]
+        },      
+    "circ_channel":{
+        "section":"circular"
+        },
+    "rect_channel":{
+        "section":"rectangular"    
+        },
+    "reactor":{
+        "params_name":[]
+        },
+    "ball_reactor":{
+        "type":"ball"
+        },   
+    "solid":{"class_str":["bom_analysis.materials.Solid"]
+            },  
+    "fluid":{"class_str":["bom_analysis.materials.Fluid"]
+            }                      
+}

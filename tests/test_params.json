@@ -1,0 +1,124 @@
+{
+    "NEW":
+    {
+        
+        "NEWparam":
+        {
+            "descr": null,
+            "name": "NEWparam",
+            "source": "Input",
+            "unit": "N/A",
+            "value": null,
+            "var": "NEW"
+        }
+    }
+    ,    
+    "component": 
+        {
+        "volume":
+            {
+                "descr": null,
+                "name": "Component Volume",
+                "source": "Input",
+                "unit": "m^3",
+                "value": null,
+                "var": "volume"
+            },  
+        "thickness":
+            {
+                "descr": null,
+                "name": "radial component thickness",
+                "source": "Input",
+                "unit": "m",
+                "value": null,
+                "var": "thickness"
+            },  
+        "mass":
+            {
+                "descr": null,
+                "name": "mass of the component",
+                "source": "Input",
+                "unit": "kg",
+                "value": null,
+                "var": "mass"
+            }                
+        }, 
+    "assembly": 
+        {
+        "mass":
+            {
+                "descr": null,
+                "name": "sum of the component masses",
+                "source": "Input",
+                "unit": "kg",
+                "value": null,
+                "var": "mass"
+            },
+        "envelope_volume":
+            {
+                "descr": null,
+                "name": "the volume of a large envelope",
+                "source": "Input",
+                "unit": "m^3",
+                "value": null,
+                "var": "envelope_volume"
+            }            
+        },
+    "pipe_network": 
+        {
+        "inlet_pressure":
+            {
+                "descr": null,
+                "name": "pipe inlet pressure",
+                "source": "Input",
+                "unit": "Pa",
+                "value": null,
+                "var": "inlet_pressure"
+            },
+        "outlet_pressure":
+            {
+                "descr": null,
+                "name": "pipe inlet pressure",
+                "source": "Input",
+                "unit": "Pa",
+                "value": null,
+                "var": "outlet_pressure"
+            }            
+        },     
+    "breeding_zone": 
+        {
+        "b2m_ratio":
+            {
+                "descr": null,
+                "name": "breeder to multiplier ratio",
+                "source": "Input",
+                "unit": null,
+                "value": null,
+                "var": "b2m_ratio"
+            }
+        },     
+    "grid": 
+        {
+        "spacing":
+            {
+                "descr": null,
+                "name": "spacing between grid",
+                "source": "Input",
+                "unit": null,
+                "value": null,
+                "var": "spacing"
+            }
+        },
+    "mod_requirements": 
+        {
+        "node_count":
+            {
+                "descr": null,
+                "name": "number of nodes",
+                "source": "Input",
+                "unit": null,
+                "value": null,
+                "var": "node_count"
+            }
+        }                          
+}

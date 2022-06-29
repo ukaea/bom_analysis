@@ -1,0 +1,10 @@
+{
+"assembly":{
+    "class_str":["bom_analysis.bom.Assembly"],
+    "params_name":["assembly"]
+    },
+"component":{
+    "class_str":["bom_analysis.bom.Component"],    
+    "params_name":["component"]
+    }
+}
