@@ -9,6 +9,8 @@ bom_analysis_smerrim.egg-info/*
 ./*.log
 ./examples/*.log
 ./testing/*.log
+./examples/.ipynb_checkpoints/
+./examples/.ipynb_checkpoints/*
 
 # exception to the rule
 !temp/.gitkeep

@@ -3,7 +3,6 @@ from bom_analysis.base import ConfigurationNotFullyPopulated
 from bom_analysis.bom import Assembly
 import bom_analysis.parsers as ps
 from bom_analysis.solver import Solver
-from bom_analysis.utils import change_handler
 
 
 class Framework(BaseFramework):
@@ -52,12 +51,6 @@ class Framework(BaseFramework):
             super()._configuration.define_config(
                 config_path=config_path, config_dict=config_dict
             )
-        path = "./run.log"
-        try:
-            path = f"{super()._configuration.temp_dir}/run.log"
-        except ConfigurationNotFullyPopulated:
-            pass
-        change_handler(path)
 
     def settings(self):
         """Return a dictionary of the settings that have been used

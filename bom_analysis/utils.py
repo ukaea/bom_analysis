@@ -10,7 +10,7 @@ import json
 import numpy as np
 import pandas as pd
 
-from bom_analysis import ureg, run_log, nice_format
+from bom_analysis import ureg, run_log, nice_format, info_handler
 
 
 def __init__(self, inherited_classes):
@@ -135,14 +135,13 @@ def change_handler(new_path):
     ----------
     new_path : str
         The new path for the run log to be stored."""
-    for hdlr in run_log.handlers[:]:
-        run_log.removeHandler(hdlr)
-        hdlr.flush()
-        hdlr.close()
-    run_hand = logging.FileHandler(Path(new_path), "w")
-    run_hand.setLevel(logging.INFO)
-    run_hand.setFormatter(nice_format)
-    run_log.addHandler(run_hand)
+    run_log.removeHandler(info_handler)
+    info_handler.flush()
+    info_handler.close()
+    new_info_handler = logging.FileHandler(Path(new_path), "w")
+    new_info_handler.setLevel(logging.INFO)
+    new_info_handler.setFormatter(nice_format)
+    run_log.addHandler(new_info_handler)
 
 
 def class_factory(name, class_strings, class_data={}):

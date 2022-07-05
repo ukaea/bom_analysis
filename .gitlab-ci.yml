@@ -2,19 +2,29 @@ image: ubuntu:20.04
 
 stages:
   - test
+  - lint
   - sonarqube
   - deploy
-  
+
+lint:
+  stage: lint
+  script:
+    - apt-get -y update && apt-get -y install python3
+    - apt install -y python3-pip
+    - pip3 install -e .
+    - pip3 install black[jupyter]
+    - black . --check
+  rules:
+    - when: always
+
 pytest:
   stage: test
   script:
     - apt-get -y update && apt-get -y install python3
-    - apt install -y python3-pip  
+    - apt install -y python3-pip
     - pip3 install pytest
     - pip3 install coverage
-    - pip3 install -e .  
-    - pip3 install black[jupyter]
-    - black .
+    - pip3 install -e .
     - coverage run --branch --source=bom_analysis -m pytest -v tests || true
     - coverage xml -o coverage.xml
     - mkdir test-results
@@ -30,10 +40,8 @@ pytest:
     - test-results/test-results.xml
     - test-results/test-coverage.xml
     expire_in: 1 week
-  rules: 
+  rules:
     - when: always
-    
-
 
 sonarqube-check:
   stage: sonarqube
@@ -60,22 +68,21 @@ sonarqube-check:
     - merge_requests
     - master
     - development
-    
+
 pages:
   stage: deploy
   script:
     - apt-get -y update && apt-get -y install python3
-    - apt install -y python3-pip  
-    - pip3 install -e .      
+    - apt install -y python3-pip
+    - pip3 install -e .
     - pip3 install sphinx
     - pip3 install sphinx_rtd_theme
     - cd docs
     - sphinx-apidoc -f -o source/ ../bom_analysis/
-    - make html    
+    - make html
     - mv build/html/ ../public/
   artifacts:
     paths:
       - public
   only:
     - master
-
