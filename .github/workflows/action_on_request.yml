@@ -54,5 +54,7 @@ jobs:
     - name: Test documentation build
       run: |
         sphinx-apidoc -f -o docs/source/ bom_analysis/
+        cd docs/
         make html
+        cd ..
 
