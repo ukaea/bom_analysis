@@ -22,7 +22,8 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip3 install black[jupyter]
+        pip install black[jupyter]
+        pip install pytest
         pip install .
         
     - name: Run Black
