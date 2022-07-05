@@ -24,6 +24,7 @@ jobs:
         python -m pip install --upgrade pip
         pip install black[jupyter]
         pip install pytest
+        pip install coverage        
         pip install .
         
     - name: Run Black
@@ -33,3 +34,9 @@ jobs:
     - name: Test with pytest
       run: |
         pytest
+        coverage run --branch --source=bom_analysis -m pytest -v tests || true
+        coverage xml -o coverage.xml
+        mkdir test-results
+        cp coverage.xml test-results/test-coverage.xml
+        pytest -v -o junit_family=xunit1 --junitxml=test-results/test-results.xml tests
+
