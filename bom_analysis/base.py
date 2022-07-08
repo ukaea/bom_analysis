@@ -625,7 +625,7 @@ class DFClass(BaseClass, PrintParamsTable):
             self.data.at[key, col] = val
 
     def __str__(self):
-        """Prints the information.
+        """Returns user readable representation of the data.
 
         To allow for printing i the console, the terminal size
         is checked and the dat wrapped to fit. Additionally,
