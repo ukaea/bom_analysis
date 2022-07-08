@@ -469,13 +469,48 @@ class PrintParamsTable:
         return formated_list_of_params
 
     def get_max_column_width(self, list_of_params: list):
+        """Gets the maximum column size for printing of
+        a tabular dataframe.
+
+        The maximum column size is important as it allows
+        a string to be split over multiple lines and, therefore,
+        displayed nicely.
+
+        Parameters
+        ----------
+        list_of_params : list
+            List of parameters that will be used to determine
+            the maximum size of the columns in the print.
+
+        Returns
+        -------
+        int
+            The maximum column size for a given terminal width.
+        None
+            If an OSError is raised (due to no terminal) or
+            an index error is raised (due to an empty input list).
+        """
         try:
             terminal_size = os.get_terminal_size().columns
             return int(terminal_size / len(list_of_params[0]))
         except (OSError, IndexError,):
             return None
 
-    def shorten_unit(self, quantity):
+    def shorten_unit(self, quantity: Any):
+        """Shortens the format of the units in a pint unit 
+        and returns as string.
+
+        Parameters
+        ----------
+        quantity : Any
+            Any input to be tried to have the units
+            converted to symbolic via the format.
+
+        Returns
+        -------
+        str
+            String for quantity with shortened units.
+        """
         try:
             return format(quantity, "~")
         except (ValueError, TypeError, ):
