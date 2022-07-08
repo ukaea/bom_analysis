@@ -19,7 +19,7 @@ from bom_analysis.utils import (
     decoder,
     MaterialSelector,
     change_handler,
-    PrintParamsTable
+    PrintParamsTable,
 )
 
 
@@ -552,7 +552,7 @@ class DFClass(BaseClass, PrintParamsTable):
             return np.array([])
         else:
             return np.array(self.data.index)
-    
+
     @property
     def header(self):
         """

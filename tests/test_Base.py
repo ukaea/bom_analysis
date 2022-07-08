@@ -448,14 +448,14 @@ class TestBaseDfClass(unittest.TestCase):
 
     def test_print_empty(self):
         df_wrap = bs.DFClass()
-        print(df_wrap)  
-
+        print(df_wrap)
 
     def test_print_correctly_with_pint(self):
         df_wrap = bs.DFClass()
         df_wrap.create_df(4, "foo", "bar")
         df_wrap.data.at["foo", 1] = Q_(1000, "meter*meter*kilogram*litre")
         print(df_wrap)
+
 
 if __name__ == "__main__":
 

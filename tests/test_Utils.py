@@ -106,5 +106,6 @@ class TestPrintParamsTable:
         assert ppt.shorten_unit(None) == None
         assert ppt.shorten_unit(Q_("1000 meter*kilogram")) == "1000 kg * m"
 
+
 if __name__ == "__main__":
     unittest.main()

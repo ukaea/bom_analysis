@@ -432,6 +432,7 @@ class Translator:
             The input translations."""
         return list(cls._data.keys())
 
+
 class PrintParamsTable:
     def format_params(self, list_of_params: list):
         """Formats the dictionary representation of the parameters to allow
@@ -493,11 +494,14 @@ class PrintParamsTable:
         try:
             terminal_size = os.get_terminal_size().columns
             return int(terminal_size / len(list_of_params[0]))
-        except (OSError, IndexError,):
+        except (
+            OSError,
+            IndexError,
+        ):
             return None
 
     def shorten_unit(self, quantity: Any):
-        """Shortens the format of the units in a pint unit 
+        """Shortens the format of the units in a pint unit
         and returns as string.
 
         Parameters
@@ -513,7 +517,10 @@ class PrintParamsTable:
         """
         try:
             return format(quantity, "~")
-        except (ValueError, TypeError, ):
+        except (
+            ValueError,
+            TypeError,
+        ):
             return quantity
 
     def new_line_in_string(self, input: Any, max_character: int = None):
@@ -543,6 +550,7 @@ class PrintParamsTable:
                 return input
         else:
             return input
+
 
 class UpdateDict:
     """Updating a dictionary with more control
