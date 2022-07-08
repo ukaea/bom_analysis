@@ -32,8 +32,9 @@ def exception_handler(func):
 
     Note
     ----
-    Information about creating an exception handler can be found here:
-    https://medium.com/swlh/handling-exceptions-in-python-a-cleaner-way-using-decorators-fae22aa0abec"""
+    Information about creating an exception handler can be found 
+    `here <https://medium.com/swlh/handling-exceptions-in-python-a-cleaner-way-using-decorators-fae22aa0abec>`_.
+    """
 
     @wraps(func)
     def wrapper(*args):

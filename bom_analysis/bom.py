@@ -830,8 +830,9 @@ class Assembly(EngineeringObject):
         Note
         ----
         Previous releases fuction used flat={}
-        but ran into this problem.
-        https://stackoverflow.com/questions/6794285/python-function-remembering-earlier-argument-kwargs"""
+        but ran into `this <https://stackoverflow.com/questions/6794285/python-function-remembering-earlier-argument-kwargs>`_ 
+        problem.
+        """
         flat = super().flatten(flat=flat)
         for comp in self._sub_assembly.values():
             comp.flatten(flat=flat)

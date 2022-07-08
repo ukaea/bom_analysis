@@ -577,8 +577,9 @@ class DFClass(BaseClass):
 
         Note
         ----
-        See below for additional information.
-        https://pandas.pydata.org/pandas-docs/stable/user_guide/merging.html
+        `See <https://pandas.pydata.org/pandas-docs/stable/user_guide/merging.html>`_ 
+        for additional information.
+        
         """
         if isinstance(self.data, pd.DataFrame):
             self.data = pd.concat([self.data, assignee], axis=1, ignore_index=True)
