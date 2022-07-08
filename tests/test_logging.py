@@ -1,10 +1,14 @@
 import unittest
+import tempfile
+import shutil
+
+import pytest
 
 from bom_analysis import run_log
 from bom_analysis.utils import change_handler
 from bom_analysis.base import BaseConfig
 
-
+@pytest.mark.unittest
 class LoggingTest(unittest.TestCase):
     def setUp(self):
         change_handler("./run.log")
@@ -47,22 +51,38 @@ class LoggingTest(unittest.TestCase):
     def test_change_location_config(self):
         run_log.info("Again in ./run.log")
         with open("./run.log", "r") as f:
-            content = f.readline()
+            content = f.readlines()
 
-        assert content == "INFO: Again in ./run.log\n"
+        assert content[-2] == "INFO: Again in ./run.log\n"
 
         BaseConfig.temp_dir = "./temp/"
 
         run_log.info("Again in ./temp/run.log")
         with open("./temp/run.log", "r") as f:
-            content = f.readline()
-        assert content == "INFO: Again in ./temp/run.log\n"
+            content = f.readlines()
+        assert content[-2] == "INFO: Again in ./temp/run.log\n"
+        with tempfile.TemporaryDirectory(prefix="temp_", dir="./temp/") as tmp_dir:
+            BaseConfig.temp_dir = tmp_dir
+
+            run_log.info("final test in a new dir")
+            with open(f"{tmp_dir}/run.log", "r") as f:
+                content = f.readlines()
+            assert content[-2] == "INFO: final test in a new dir\n"
+            BaseConfig.temp_dir = "./"
+        with open("./temp/run.log", "r") as f:
+            content = f.readlines()
+            
+        assert content[-2] == "INFO: Again in ./temp/run.log\n"
+
 
         with open("./base.log", "r") as f:
             base_content = f.readlines()
-        assert base_content[-2][26::] == "INFO in test_logging: Again in ./run.log\n"
+        assert base_content[-3][26::] == "INFO in test_logging: Again in ./run.log\n"
         assert (
-            base_content[-1][26::] == "INFO in test_logging: Again in ./temp/run.log\n"
+            base_content[-2][26::] == "INFO in test_logging: Again in ./temp/run.log\n"
+        )
+        assert (
+            base_content[-1][26::] == "INFO in test_logging: final test in a new dir\n"
         )
 
 
