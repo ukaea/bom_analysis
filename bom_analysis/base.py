@@ -335,7 +335,7 @@ class BaseConfigMethods:
         Location of the directory which contains data used by the
         analysis.
     _restrict_param : boolean
-        True/False on whether parameters can be added to the parameter 
+        True/False on whether parameters can be added to the parameter
         frame on the fly.
     """
 
@@ -577,9 +577,9 @@ class DFClass(BaseClass):
 
         Note
         ----
-        `See <https://pandas.pydata.org/pandas-docs/stable/user_guide/merging.html>`_ 
+        `See <https://pandas.pydata.org/pandas-docs/stable/user_guide/merging.html>`_
         for additional information.
-        
+
         """
         if isinstance(self.data, pd.DataFrame):
             self.data = pd.concat([self.data, assignee], axis=1, ignore_index=True)

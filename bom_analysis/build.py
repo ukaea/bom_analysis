@@ -9,7 +9,7 @@ from bom_analysis.utils import change_handler
 class Framework(BaseFramework):
     """Information about how Framework works can be found in the
     `documentation <https://bom-analysis.readthedocs.io/en/latest/Analysis.html#running-analysis>`_.
-    
+
     Attributes
     ----------
     _solver : Solver

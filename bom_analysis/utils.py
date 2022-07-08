@@ -45,8 +45,8 @@ def encoder(obj):
 
     Note
     ----
-    See 
-    `here <https://stackoverflow.com/questions/26646362/numpy-array-is-not-json-serializable>`_ 
+    See
+    `here <https://stackoverflow.com/questions/26646362/numpy-array-is-not-json-serializable>`_
     for how to turn into a proper encoders."""
 
     if hasattr(obj, "to_dict"):
@@ -368,7 +368,7 @@ class Translator:
     ----------
     _data : dict
         The dictionary data that contains the translation in the format
-        of {"BOM Analysis String":{"Output Type":{"name":"Translation to Output"}}}. 
+        of {"BOM Analysis String":{"Output Type":{"name":"Translation to Output"}}}.
     """
 
     _data = {}

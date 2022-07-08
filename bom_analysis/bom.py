@@ -93,10 +93,10 @@ class EngineeringObject(BaseClass):
     @property
     def ref(self):
         """
-        Referencing is one of the most important concepts 
-        in BOM analyis. Information about how the ref works can be 
+        Referencing is one of the most important concepts
+        in BOM analyis. Information about how the ref works can be
         found in the
-        `documentation <https://bom-analysis.readthedocs.io/en/latest/Structure_of_Hierarchy.html#reference-the-most-important-thing-to-remember>`_.       
+        `documentation <https://bom-analysis.readthedocs.io/en/latest/Structure_of_Hierarchy.html#reference-the-most-important-thing-to-remember>`_.
 
         """
         return self._ref
@@ -830,7 +830,7 @@ class Assembly(EngineeringObject):
         Note
         ----
         Previous releases fuction used flat={}
-        but ran into `this <https://stackoverflow.com/questions/6794285/python-function-remembering-earlier-argument-kwargs>`_ 
+        but ran into `this <https://stackoverflow.com/questions/6794285/python-function-remembering-earlier-argument-kwargs>`_
         problem.
         """
         flat = super().flatten(flat=flat)
