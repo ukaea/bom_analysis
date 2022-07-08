@@ -1,0 +1,15 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: Bill of Materials Analysis
+message: Please cite this software using these metadata.
+type: software
+authors:
+  - given-names: Samuel
+    email: samuel.merriman@hotmail.co.uk
+    orcid: 'https://orcid.org/0000-0001-7539-783X'
+    affiliation: United Kingdom Atomic Energy Authority (UKAEA)
+    family-names: Merriman
+license: BSD-3-Clause
+repository-code: "https://github.com/ukaea/bom_analysis"
