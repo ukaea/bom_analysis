@@ -281,8 +281,9 @@ class MetaConfig(type):
         """
         cls._temp_dir = value
         change_handler(f"{value}/run.log")
-        run_log.info(f"Configuration Details\n\n{pprint.pformat(cls.to_dict(), indent=4)}")
-
+        run_log.info(
+            f"Configuration Details\n\n{pprint.pformat(cls.to_dict(), indent=4)}"
+        )
 
     @property
     def plot_dir(cls):

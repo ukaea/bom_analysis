@@ -10,7 +10,14 @@ import json
 import numpy as np
 import pandas as pd
 
-from bom_analysis import ureg, run_log, nice_format, info_handler, base_handler, console_handler
+from bom_analysis import (
+    ureg,
+    run_log,
+    nice_format,
+    info_handler,
+    base_handler,
+    console_handler,
+)
 
 
 def __init__(self, inherited_classes):

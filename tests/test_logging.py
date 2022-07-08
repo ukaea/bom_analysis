@@ -8,6 +8,7 @@ from bom_analysis import run_log
 from bom_analysis.utils import change_handler
 from bom_analysis.base import BaseConfig
 
+
 @pytest.mark.unittest
 class LoggingTest(unittest.TestCase):
     def setUp(self):
@@ -73,9 +74,8 @@ class LoggingTest(unittest.TestCase):
             BaseConfig.temp_dir = "./"
         with open("./temp/run.log", "r") as f:
             content = f.readlines()
-            
-        assert content[-2] == "INFO: Again in ./temp/run.log\n"
 
+        assert content[-2] == "INFO: Again in ./temp/run.log\n"
 
         with open("./base.log", "r") as f:
             base_content = f.readlines()
@@ -86,7 +86,6 @@ class LoggingTest(unittest.TestCase):
         assert (
             base_content[-8][26::] == "INFO in test_logging: Again in ./temp/run.log\n"
         )
-
 
 
 if __name__ == "__main__":

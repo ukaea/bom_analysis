@@ -185,9 +185,11 @@ class TestConfig(unittest.TestCase):
         """tests whether to_dict works for different cases"""
         config = {"a": 1, "b": "foo", "c": "bar"}
         Config.define_config(config_dict=config)
-        Config._login_details = {"username":"secret", 
-                                 "password":"secret",
-                                 "domain":"secret"}
+        Config._login_details = {
+            "username": "secret",
+            "password": "secret",
+            "domain": "secret",
+        }
         dump = Config.to_dict()
         assert "_login_details" not in dump
 
