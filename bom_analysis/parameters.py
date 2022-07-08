@@ -417,20 +417,15 @@ class PintParam(FlexParam):
 
 
 class ParameterFrame:
-    """The Parameter class aims to be the primary method for storing parameters within the
-    Engineering Objects. A version (either Pint integrated or not) is included with every
-    Engineering Object using the attribute params. The default is with Pint integration
-    is set within the Config.
+    """
+    Information about how the configuration works can be found in the
+    `documentation <https://bom-analysis.readthedocs.io/en/latest/Variables.html#parameters>`_.
 
-    Having a structured method for storing parameters is key to sharing data - it allows
-    additional information to be supplied such as the source or an improved description.
-
-    Individual parameters use namedtuple and the parameter database use DataFrames. In addition
-    to the name and value that needs to be supplied to the individual parameter any futher information
-    can be added as mentioned. If an additional bit of information is included (such as devaiation)
-    all parameters will be updated with a empty placeholder for that information.
-
-    The design for parameter handling was inspired by BLUEPRINT (`publication <10.1016/j.fusengdes.2018.12.036>`__)"""
+    Attributes
+    ----------
+    class_str : list
+        The class string path to the parameter frame.
+    """
 
     class_str = ["bom_analysis.parameters.ParameterFrame"]
 

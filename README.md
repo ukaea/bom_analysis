@@ -51,7 +51,7 @@ The easiest way to install bom_analysis is using pip ``pip``:
 
 - [Documentation](https://bom-analysis.readthedocs.io/en/latest/index.html#)
 
-- [Example on Defining a Bill of Material](https://github.com/ukaea/bom_analysis/blob/main/examples/example_1%20-%20Loading_a_Bill_of_Materials.ipynb)
+- [Example on Defining a Bill of Material](https://github.com/ukaea/bom_analysis/blob/main/examples/example_0%20-%20Defining%20a%20Bill%20of%20Materials.ipynb)
 
 - [Example on Loading a Bill of Material](https://github.com/ukaea/bom_analysis/blob/main/examples/example_1%20-%20Loading_a_Bill_of_Materials.ipynb)
 

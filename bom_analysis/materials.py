@@ -48,27 +48,10 @@ def exception_handler(func):
 
 
 class MaterialData(BaseClass):
-    """A parent material data class MaterialData is provided in BOM Analysis
-    (alongside CoolProp and DataFrame children). The MaterialData class is added
-    by default to Components and Homogenised Assemblies in the BOM.
-
-    The materials have four key properties:
-     * mat - the name of the material
-     * temperature - the temperature of the material
-     * pressure - the pressure of the material
-     * irradiation - the Displacement per Atom of the material
-
-    These four properties can be supplied to a data source to
-    extract material data at the input values using the extract_property
-    method. The material also has a feature to check whether a material
-    exists in the database - to do this successfully it is likely
-    that the translation class is utilised as different databases tend
-    to use different naming formats.
-
-    Additional, the material classes have the data_warpper method which
-    calls the extract_property for the instance with the benefit that
-    if the property (or material) does not exist in the database of that
-    instance it will check the other databases within the MaterialSelector."""
+    """
+    Information about how the configuration works can be found in the
+    `documentation <https://bom-analysis.readthedocs.io/en/latest/Materials.html#materials-object>`_.
+    """
 
     def __init__(
         self,

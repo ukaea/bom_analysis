@@ -7,13 +7,13 @@ from bom_analysis.utils import change_handler
 
 
 class Framework(BaseFramework):
-    """The framework offers an automated way of populating configurations,
-    translators, settings, and parsing skeletons uting dictionaries.
-    Following poplulation of the various different required information
-    it can then getnerate the bill of materials and solve the analysis
-    workflow.
-
-    The solver and the configuration are stored as class variables."""
+    """Information about how Framework works can be found in the
+    `documentation <https://bom-analysis.readthedocs.io/en/latest/Analysis.html#running-analysis>`_.
+    
+    Attributes
+    ----------
+    _solver : Solver
+        Solver class to be used by the Framework."""
 
     _solver = Solver
 

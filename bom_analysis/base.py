@@ -57,15 +57,8 @@ def add_base_class(existing_object, import_method, export_method):
 
 class MetaConfig(type):
     """
-    The Meta class which defines properies and setters
-    that can be used on the configuration without initialising it and our shared
-    like class properties.
-
-    Including properties and setters allows for better error handling and defaulting
-    of values. If a calculation is performed that called a translation but the
-    translator has not been defined within the configuration then a specific error
-    will be raised. If a plot directory is called then but it has not been defined
-    then it willd default to the working directory.
+    Information about how the configuration works can be found in the
+    `documentation <https://bom-analysis.readthedocs.io/en/latest/Analysis.html#configuring-analysis>`_.
     """
 
     @property
@@ -311,18 +304,39 @@ class MetaConfig(type):
 
 
 class BaseConfigMethods:
-    """Configuring different analyse is critical to a workflow functioning correctly.
-    Bill of Materials analysis has a the base Configuration which is inherits a number of
-    methods for the Config and a Meta class for properties and setters. An analysis workflow
-    can use the BaseConfig directly or inherit the BaseConfigMethods and the MetaConfig to
-    customise the configuration parameters.
+    """Information about how the configuration works can be found in the
+    `documentation <https://bom-analysis.readthedocs.io/en/latest/Analysis.html#configuring-analysis>`_.
 
-    The base config includes a number of variables which can be used by BOM Analysis and
-    are covered in the other sections such as the MaterialsSelector, the defaults for the
-    Material and the Parameters, and a number of different working directories.
-
-    A configuration can also be loaded and dumped to a dictionary using the same method
-    names as the Engineering Components.
+    Attributes
+    ----------
+    _login_details : dict
+        Login details that could be supplied by the config.
+    _materials : MaterialSelector
+        The class for selecting a material library from a string.
+    _translations : list
+        The list of translation file locations.
+    _default_param_type : str
+        The class string for the default parameterframe type
+        that will be used by the bill of materials.
+    _default_material : str
+        The class string for the default material class that
+        will be used by the bill of materials.
+    _parameters : list
+        List of file locations that contain the parameters
+        that can be used to build a skeleton.
+    _parts : list
+        List of file locations that contain the parts that
+        can be used to build as skeleton.
+    _temp_dir : str
+        Location of the temporary directory.
+    _plot_dir : str
+        Location of the directory which plots will be output to.
+    _data_dir : str
+        Location of the directory which contains data used by the
+        analysis.
+    _restrict_param : boolean
+        True/False on whether parameters can be added to the parameter 
+        frame on the fly.
     """
 
     _login_details = {"username": None, "password": None, "domain": None}
@@ -432,14 +446,8 @@ class BaseConfigMethods:
 
 class BaseConfig(BaseConfigMethods, metaclass=MetaConfig):
     """
-    Having a configuration that can be shared across all analysis
-    ran on the bill of materials is key to running complex workflows.
-    The configuration could include features of the Bill of Materials
-    such as being able to dynamically add new parameters or information
-    for analysis tools such as working directory or login details.
-
-    Bill of Materials Analysis features such a class that can be imported
-    without initialisation and with data shared using it.
+    Information about how the configuration works can be found in the
+    `documentation <https://bom-analysis.readthedocs.io/en/latest/Defining_a_Bill_of_Materials.html#a-global-configuration>`_.
     """
 
     pass
@@ -464,20 +472,8 @@ class BaseFramework:
 
 class BaseClass:
     """
-    A key feature of the Bill of Materials analysis is that objects
-    can be written and read from a serialisable dictionary. The dictionary
-    of the bill of materials is known as the Skeleton and a read and write to
-    skeleton feature is included in the parent BaseClass of all bill of
-    material objects.
-
-    The skeleton is key for transfering information. It can either be built
-    by parsing together a set of dictionaries and then read to create a bill
-    of materials or written as an output of a pre-assembled Bill of Materials.
-
-    The skeleton offers a number of benefits, it is generally the primary output
-    of analysis ran on the bill of materials, therefore, recording the state of
-    the inputs for that analysis (this can be particularly important for transfering
-    data in between Model Based System Engieering workflows).
+    Information about how the BaseClass and Skeletons work can be found in the
+    `documentation <https://bom-analysis.readthedocs.io/en/latest/Defining_a_Bill_of_Materials.html#the-skeleton>`_.
     """
 
     def to_dict(self, exclusions=[]):
@@ -515,12 +511,10 @@ class BaseClass:
 
 
 class DFClass(BaseClass):
-    """The DFClass is included in BOM analysis to allow for
-    data to be stored in a dataframe but with some additional
-    functionality.
-
-    This functionality includes printing with tabulate, reading and
-    writing to a serialisable dictionary, and loading pint quantities."""
+    """
+    Information about how the DataFrame Class works can be found in the
+    `documentation <https://bom-analysis.readthedocs.io/en/latest/Variables.html#wrapped-dataframe>`_.
+    """
 
     def __init__(self):
         """initialisations of dataframe storage class."""

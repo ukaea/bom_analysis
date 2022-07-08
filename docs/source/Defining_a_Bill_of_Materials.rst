@@ -10,7 +10,20 @@ or by loading in a previous BOM from a skeleton.
 The Skeleton
 -------------------
 
-.. automodule:: bom_analysis.base.BaseClass
+A key feature of the Bill of Materials analysis is that objects
+can be written and read from a serialisable dictionary. The dictionary
+of the bill of materials is known as the Skeleton and a read and write to
+skeleton feature is included in the parent BaseClass of all bill of
+material objects.
+
+The skeleton is key for transfering information. It can either be built
+by parsing together a set of dictionaries and then read to create a bill
+of materials or written as an output of a pre-assembled Bill of Materials.
+
+The skeleton offers a number of benefits, it is generally the primary output
+of analysis ran on the bill of materials, therefore, recording the state of
+the inputs for that analysis (this can be particularly important for transfering
+data in between Model Based System Engieering workflows).
 
 -----------------------------------------
 Importing and Exporting Bill of Materials
@@ -32,17 +45,26 @@ reference is at the top of the hierarchy.
 
 See the :obj:`bom_analysis.bom.Assembly.to_dict` for docstrings.
 
-`A worked example of using the Importing and Exporting can be found here <https://git.ccfe.ac.uk/step/invesselcomponents/outboardblanket/bom_analysis/-/blob/development/examples/example_1%20-%20Loading_a_Bill_of_Materials.ipynb>`__
+`A worked example of using the Importing and Exporting can be found here <https://github.com/ukaea/bom_analysis/blob/main/examples/example_1%20-%20Loading_a_Bill_of_Materials.ipynb>`__
 
 
 --------------------
 Parsing Skeleton
 --------------------
-.. automodule:: bom_analysis.parsers.SkeletonParser
+Parsing a skeleton is a way of building a skeleton without
+building the bill of materials. It can help speed up the
+creation of new BOM but, as it parsers a number of files,
+operates mostly with .json and is therefore not object orientated.
+
+The skeleton can be parsed from a a config and setting dictionary
+which contains all the information needed. The config dictionary
+can also be read into the Configuration class.
+
+The parsers can be found in the parser.py section of BOM analysis.
 
 See the :obj:`bom_analysis.parsers.SkeletonParser` for docstrings.
 
-`A worked example of using the Parsing can be found here <https://git.ccfe.ac.uk/step/invesselcomponents/outboardblanket/bom_analysis/-/blob/development/examples/example_2%20-%20Creating%20a%20Skeleton%20from%20Scratch.ipynb>`__
+`A worked example of using the Parsing can be found here <https://github.com/ukaea/bom_analysis/blob/main/examples/extra_example_0%20-%20Creating_a_Skeleton_from_Dictionaries.ipynb>`__
 
 -------------------
 Plotting Hierarchy
@@ -91,6 +113,13 @@ A Global Configuration
 A global configuration file is in Bill of Materials analysis which contains
 defaults for the definition of the BOM.
 
-.. automodule:: bom_analysis.base.BaseConfig
+Having a configuration that can be shared across all analysis
+ran on the bill of materials is key to running complex workflows.
+The configuration could include features of the Bill of Materials
+such as being able to dynamically add new parameters or information
+for analysis tools such as working directory or login details.
+
+Bill of Materials Analysis features such a class that can be imported
+without initialisation and with data shared using it.
 
 The information about using a configuration can be found :ref:`here <configure analysis>`.

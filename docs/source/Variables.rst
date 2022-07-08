@@ -5,13 +5,26 @@ Variables
 The bill of materials can contain a lot of information that is required 
 by for analyses and there are a number of ways to access that information.
 
-`Examples notebook showing of using deifferent variables is here  <https://git.ccfe.ac.uk/step/invesselcomponents/outboardblanket/bom_analysis/-/blob/development/examples/example_0%20-%20Defining%20a%20Bill%20of%20Materials.ipynb>`__
+`Examples notebook showing of using deifferent variables is here  <https://github.com/ukaea/bom_analysis/blob/main/examples/example_0%20-%20Defining%20a%20Bill%20of%20Materials.ipynb>`__
 
 
 --------------------
 Parameters
 --------------------
-.. automodule:: bom_analysis.parameters.ParameterFrame
+The Parameter class aims to be the primary method for storing parameters within the
+Engineering Objects. A version (either Pint integrated or not) is included with every
+Engineering Object using the attribute params. The default is with Pint integration
+is set within the Config.
+
+Having a structured method for storing parameters is key to sharing data - it allows
+additional information to be supplied such as the source or an improved description.
+
+Individual parameters use namedtuple and the parameter database use DataFrames. In addition
+to the name and value that needs to be supplied to the individual parameter any futher information
+can be added as mentioned. If an additional bit of information is included (such as devaiation)
+all parameters will be updated with a empty placeholder for that information.
+
+The design for parameter handling was inspired by BLUEPRINT (`publication <10.1016/j.fusengdes.2018.12.036>`__)
 
 .. code-block:: python
 
@@ -25,7 +38,16 @@ See the :obj:`bom_analysis.parameters.ParameterFrame` for docstrings.
 --------------------
 Assignment
 --------------------
-.. automodule:: bom_analysis.bom.EngineeringObject.assignment
+An engineering object can be assigned values
+such as 'Blanket' or 'Layer_2' or 'Yellow' in order to provide
+additional information to analysis.
+
+The aim of the assignment is to provide a list of strings
+that can be used in the calculation. For example, an engineering
+object may always want to be assigned the color "Yellow".
+
+Assignments are stored as numpy array but can be given a string
+as which the setter will add to the assignment.
 
 .. code-block:: python
 
@@ -85,6 +107,11 @@ See the :obj:`bom_analysis.utils.access_nested` for docstrings.
 --------------------
 Wrapped Dataframe
 --------------------
-.. automodule:: bom_analysis.base.DFClass
+The DFClass is included in BOM analysis to allow for
+data to be stored in a dataframe but with some additional
+functionality.
+
+This functionality includes printing with tabulate, reading and
+writing to a serialisable dictionary, and loading pint quantities.
 
 See the :obj:`bom_analysis.base.DFClass` for docstrings.
