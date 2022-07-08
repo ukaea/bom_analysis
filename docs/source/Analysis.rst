@@ -70,7 +70,7 @@ could check the analysis type and return the appropriate default element type.
 
 See the :obj:`bom_analysis.base.BaseConfigMethods` for docstrings.
 
-`An example of configuring the analyis is in <https://github.com/ukaea/bom_analysis/blob/main/examples/example_3%20-%20Other%20Useful%20Classes.ipynb>`__
+`An example of configuring the analyis. <https://github.com/ukaea/bom_analysis/blob/main/examples/example_3%20-%20Other%20Useful%20Classes.ipynb>`__
 
 --------------------
 Running Analysis
@@ -106,4 +106,4 @@ The solver and the configuration are stored as class variables.
 
 See the :obj:`~bom_analysis.solver.Solver`, :obj:`~bom_analysis.solver.Step`, :obj:`~bom_analysis.build.Framework` for docstrings.
 
-`An example of configuring the analyis is in <https://github.com/ukaea/bom_analysis/blob/main/examples/example_3%20-%20Other%20Useful%20Classes.ipynb>`__
+`An example of running the analyis. <https://github.com/ukaea/bom_analysis/blob/main/examples/example_3%20-%20Other%20Useful%20Classes.ipynb>`__
