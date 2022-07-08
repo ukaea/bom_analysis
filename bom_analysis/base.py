@@ -5,6 +5,7 @@ import os
 import textwrap
 from getpass import getpass
 from typing import Union
+import pprint
 
 import json
 import numpy as np
@@ -280,6 +281,8 @@ class MetaConfig(type):
         """
         cls._temp_dir = value
         change_handler(f"{value}/run.log")
+        run_log.info(f"Configuration Details\n\n{pprint.pformat(cls.to_dict(), indent=4)}")
+
 
     @property
     def plot_dir(cls):
@@ -407,6 +410,7 @@ class BaseConfigMethods:
                 isinstance(val, property),
                 isinstance(val, classmethod),
                 key in vars(BaseClass).keys(),
+                key == "_login_details",
             ]
             if not any(check):
                 variables[key] = val

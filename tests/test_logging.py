@@ -1,6 +1,6 @@
 import unittest
+from unittest.mock import patch
 import tempfile
-import shutil
 
 import pytest
 
@@ -48,7 +48,9 @@ class LoggingTest(unittest.TestCase):
             content = f.readline()
         assert content == "INFO: In ./temp/run.log\n"
 
-    def test_change_location_config(self):
+    @patch("bom_analysis.BaseConfig.to_dict")
+    def test_change_location_config(self, td):
+        td.return_value = {}
         run_log.info("Again in ./run.log")
         with open("./run.log", "r") as f:
             content = f.readlines()
@@ -77,13 +79,14 @@ class LoggingTest(unittest.TestCase):
 
         with open("./base.log", "r") as f:
             base_content = f.readlines()
-        assert base_content[-3][26::] == "INFO in test_logging: Again in ./run.log\n"
         assert (
-            base_content[-2][26::] == "INFO in test_logging: Again in ./temp/run.log\n"
+            base_content[-4][26::] == "INFO in test_logging: final test in a new dir\n"
         )
+        assert base_content[-12][26::] == "INFO in test_logging: Again in ./run.log\n"
         assert (
-            base_content[-1][26::] == "INFO in test_logging: final test in a new dir\n"
+            base_content[-8][26::] == "INFO in test_logging: Again in ./temp/run.log\n"
         )
+
 
 
 if __name__ == "__main__":
