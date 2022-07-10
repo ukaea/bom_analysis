@@ -51,5 +51,18 @@ from .parameters import MissingParamError
 
 
 def update_config(new_config: BaseConfig):
+    """Updates the configuration within the Framework
+    class. 
+
+    Using the framework in this way allows a new configuration
+    to be supplied to the bom_analysis classes as they take the 
+    Configuration from the Framework instead of the BaseConfig. 
+
+
+    Parameters
+    ----------
+    new_config : BaseConfig
+        A configuration class that will be used by bom_analysis.
+    """
     new_config.define_config(config_dict=BaseFramework._configuration.to_dict())
     BaseFramework._configuration = new_config

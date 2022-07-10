@@ -4,7 +4,7 @@ from pathlib import Path
 import os
 import textwrap
 from getpass import getpass
-from typing import Union
+from typing import Union, Any
 
 import json
 import numpy as np
@@ -12,6 +12,7 @@ import pandas as pd
 from tabulate import tabulate
 
 from bom_analysis import run_log, Q_
+from bom_analysis.bom import EngineeringObject
 from bom_analysis.utils import (
     Translator,
     UpdateDict,
@@ -31,7 +32,7 @@ class ConfigurationNotFullyPopulated(Exception):
     pass
 
 
-def add_base_class(existing_object, import_method, export_method):
+def add_base_class(existing_object:Any, import_method:function, export_method:function):
     """Adds an import and export function to a class under the
     name export_data and import_data.
 
@@ -42,7 +43,7 @@ def add_base_class(existing_object, import_method, export_method):
 
     Parameters
     ----------
-    existing_object : instance
+    existing_object : Any
         data for which the methods will be added to.
     import_method : function
         the import method.
@@ -87,13 +88,19 @@ class MetaConfig(type):
         return cls._materials
 
     @materials.setter
-    def materials(cls, value):
+    def materials(cls, value:Union[dict, MaterialSelector]):
         """Setter for the materials.
 
         Parameters
         ----------
         value : dict
             Material data to be assigned.
+
+        Raises
+        ------
+        TypeError
+            If the value is not a dictionary or
+            a material selector.
         """
         if isinstance(value, dict):
             cls._materials.from_dict(value)
@@ -129,7 +136,7 @@ class MetaConfig(type):
         cls._restrict_param = value
 
     @property
-    def parameters(cls):
+    def parameters(cls) -> list:
         """A property for the location of any parameter files that
         can be used to build the skeleton of the bill of materials.
 
@@ -159,7 +166,7 @@ class MetaConfig(type):
         cls._parameters = value
 
     @property
-    def translations(cls):
+    def translations(cls) -> list:
         """A property for the locations of the .json that will
         be loaded into the transaltor.
 
@@ -189,7 +196,7 @@ class MetaConfig(type):
         Translator.define_translations(cls.translations)
 
     @property
-    def parts(cls):
+    def parts(cls) -> list:
         """The parts section of the configuration are
         used by the parsers to contain information about
         parts to be parsed to form the skeleton (dictionary form) of a
@@ -220,7 +227,7 @@ class MetaConfig(type):
         cls._parts = value
 
     @property
-    def working_dir(cls):
+    def working_dir(cls) -> str:
         """The working directory for the Configuration.
 
         Returns
@@ -235,7 +242,7 @@ class MetaConfig(type):
         cls._working_dir = value
 
     @property
-    def default_param_type(cls):
+    def default_param_type(cls) -> str:
         """The default parameter type that
         will be assigned to all components and
         assemblies attribute params.
@@ -252,7 +259,7 @@ class MetaConfig(type):
         cls._default_param_type = value
 
     @property
-    def temp_dir(cls):
+    def temp_dir(cls) -> str:
         """The temporary directory for outputs.
 
         Returns
@@ -282,7 +289,7 @@ class MetaConfig(type):
         change_handler(f"{value}/run.log")
 
     @property
-    def plot_dir(cls):
+    def plot_dir(cls) -> str:
         """The plot directory for outputs.
 
         Returns
@@ -298,11 +305,11 @@ class MetaConfig(type):
             return cls._plot_dir
 
     @plot_dir.setter
-    def plot_dir(cls, value):
+    def plot_dir(cls, value:str):
         cls._plot_dir = value
 
     @property
-    def data_dir(cls):
+    def data_dir(cls) -> str:
         """The data directory for outputs.
 
         Returns
@@ -351,7 +358,7 @@ class BaseConfigMethods:
     _restrict_param = False
 
     @classmethod
-    def define_config(cls, config_dict={}, config_path=None):
+    def define_config(cls, config_dict:dict = {}, config_path:str=None):
         """defines the config file.
 
         The config can be loaded from a supplied dictioanry
@@ -389,7 +396,7 @@ class BaseConfigMethods:
             setattr(cls, key, val)
 
     @classmethod
-    def to_dict(cls):
+    def to_dict(cls) -> dict:
         """Converts the configuration into a dictionary format.
 
         A check is used so that properties, instances and variables
@@ -413,7 +420,7 @@ class BaseConfigMethods:
         return variables
 
     @classmethod
-    def input_login_details(cls, domain=""):
+    def input_login_details(cls, domain:str = ""):
         """
         Inputs login details.
 
@@ -429,7 +436,7 @@ class BaseConfigMethods:
         cls._login_details["domain"] = domain
 
     @classmethod
-    def login_details(cls):
+    def login_details(cls)->dict:
         """Runs the login details update if any of the
         values are None.
 
@@ -492,15 +499,21 @@ class BaseClass:
     data in between Model Based System Engieering workflows).
     """
 
-    def to_dict(self, exclusions=[]):
+    def to_dict(self, exclusions:list=[]) -> dict:
         """
-        Exports the data for storage in a json file.
+        Exports the data of the base class as a dictionary
+        for use in a skeleton of the BOM.
 
         Parameters
         ----------
         exclusions : list, optional
             A list of attribute strings to be excluded from
             the dump to dictionary.
+
+        Returns
+        -------
+        dict
+            A dictionary containing the base class data.
         """
         dump = {}
         for (name, value) in self.__dict__.items():
@@ -510,7 +523,7 @@ class BaseClass:
             dump["class_str"] = [f"{self.__module__}.{self.__class__.__name__}"]
         return dump
 
-    def from_dict(self, data):
+    def from_dict(self, data: dict):
         """
         Reads and populates from json.
 
@@ -535,12 +548,19 @@ class DFClass(BaseClass):
     writing to a serialisable dictionary, and loading pint quantities."""
 
     def __init__(self):
-        """initialisations of dataframe storage class."""
+        """initialisations of dataframe storage class.
+        
+        Attributes
+        ----------
+        data : pd.DataFrame
+            Underlying DataFrame.
+        compiled : bool
+            Whether the dataframe is compiled from other sources."""
         self.data = None
         self.compiled = None
 
     @property
-    def vars(self):
+    def vars(self) -> np.ndarray:
         """The variables in the data.
 
         Returns
@@ -553,7 +573,7 @@ class DFClass(BaseClass):
             return np.array(self.data.index)
 
     @property
-    def col_count(self):
+    def col_count(self) -> Union[None, int]:
         """The column count in the wrapped dataframe.
 
         Returns
@@ -566,7 +586,7 @@ class DFClass(BaseClass):
         else:
             return self.data.shape[1]
 
-    def create_df(self, number_of_cols, *args):
+    def create_df(self, number_of_cols:int, *args):
         """Defines the dataframe.
 
         Parameters
@@ -584,7 +604,7 @@ class DFClass(BaseClass):
         matrix = (len(index), number_of_cols)
         self.data = pd.DataFrame(np.full(matrix, None), index=index)
 
-    def assign(self, assignee):
+    def assign(self, assignee:np.ndarray):
         """
         A method for assigning columns to a dataframe.
 
@@ -603,7 +623,7 @@ class DFClass(BaseClass):
         else:
             self.data = pd.DataFrame(data=assignee)
 
-    def add_to_col(self, col, data_dict):
+    def add_to_col(self, col:int, data_dict:dict):
         """Adds data to preexisting rows.
 
         Parameters
@@ -616,7 +636,7 @@ class DFClass(BaseClass):
         for key, val in data_dict.items():
             self.data.at[key, col] = val
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """Prints the information.
 
         To allow for printing i the console, the terminal size
@@ -659,7 +679,7 @@ class DFClass(BaseClass):
             string += f"\n\nno data populated\n\n"
         return string
 
-    def to_dict(self):
+    def to_dict(self) -> dict:
         """Exports the data for storage in a json file.
 
         The encoding to a json serialisable form has to be defined,
@@ -692,7 +712,7 @@ class DFClass(BaseClass):
             dump["class_str"] = [f"{self.__module__}.{self.__class__.__name__}"]
         return dump
 
-    def from_dict(self, data):
+    def from_dict(self, data:dict):
         """Reads and populates from json.
 
         Loads in the parent class and then populates the dataframe if
@@ -716,7 +736,7 @@ class DFClass(BaseClass):
                 index=self.data["index"],
             )
 
-    def compile_all_df(self, assembly, child_str):
+    def compile_all_df(self, assembly:EngineeringObject, child_str:str):
         """Compiles all dataframes for a given storage_str
         into a mutable top level dataframe.
 
@@ -724,7 +744,7 @@ class DFClass(BaseClass):
         ----------
         child_str : str
             a string attribute name for the information to be extracted from.
-        assembly : BoM instance
+        assembly : EngineeringObject
             the assembly which contains the storage information."""
         self.compiled = child_str
         storages = np.array(
