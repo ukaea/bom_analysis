@@ -64,7 +64,6 @@ def exception_handler(func: type):
         try:
             result = func(*args)
         except BaseException as e:
-            run_log.error("material data not in library")
             raise NoMaterialDataException from e
         return result
 

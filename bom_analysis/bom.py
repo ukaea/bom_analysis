@@ -553,7 +553,7 @@ class Component(EngineeringObject):
     def hierarchy(
         self,
         tree: Union[treelib.Tree, None] = None,
-        parent_node: Union[treelib.node, None] = None,
+        parent_node: Union[treelib.Node, None] = None,
     ) -> treelib.Tree:
         """Used to create a hierarch of a BOM.
 
@@ -564,12 +564,14 @@ class Component(EngineeringObject):
 
         Parameters
         ----------
-        tree : treelib instance, optional
+        tree : Union[treelib.Tree, None], optional
             A hierachy treelib instance.
+        parent_node : Union[treelib.Node, None], optional
+            The parent node within the tree.
 
         Returns
         -------
-        tree : treelib instance
+        treelib.Tree
             A hierachy treelib instance."""
         tree.create_node(tag=self.ref, parent=parent_node.identifier)
         return tree
@@ -1049,7 +1051,7 @@ class Assembly(EngineeringObject):
     def hierarchy(
         self,
         tree: Union[treelib.Tree, None] = None,
-        parent_node: Union[treelib.node, None] = None,
+        parent_node: Union[treelib.Node, None] = None,
     ) -> treelib.Tree:
         """Creates a nice graph showing the hierachy.
 
@@ -1057,7 +1059,7 @@ class Assembly(EngineeringObject):
         ----------
         tree : treelib.Tree, optional
             A treelib instance which may contain nodes, defaults to None.
-        parent_node : treelib.node, optional
+        parent_node : treelib.Node, optional
             A node within a tree that has is the parent of a component, defaults to None.
 
         Returns

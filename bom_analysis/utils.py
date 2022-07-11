@@ -12,7 +12,6 @@ import numpy as np
 import pandas as pd
 
 from bom_analysis import ureg, run_log, nice_format, info_handler
-from bom_analysis.materials import MaterialData
 
 
 def __init__(self, inherited_classes: abc.Iterable):
@@ -35,13 +34,13 @@ def encoder(obj: Any) -> Any:
 
     Parameters
     ----------
-    obj : type
+    obj : Any
         An instance of an object which will be
         converted to a serialisable if exist in list.
 
     Returns
     -------
-    type
+    Any
         The serialisable version of the input instance, if
         the type is specified in the list.
 
@@ -112,12 +111,7 @@ def decoder(obj: Any) -> Any:
     if isinstance(obj, int):
         return np.int64(obj)
     if isinstance(obj, list):
-        result = [decoder(item) for item in obj]
-        check = [hasattr(item, "magnitude") for item in result]
-        if True in check:
-            return np.array(result, dtype=object)
-        else:
-            return np.array(result)
+        return np.array([decoder(item) for item in obj], dtype=object)
     if isinstance(obj, dict) and "_counter" not in obj:
         return {decoder(key): decoder(val) for key, val in obj.items()}
     if isinstance(obj, dict) and "_counter" in obj:
@@ -265,7 +259,7 @@ class MaterialSelector:
         run_log.error(msg)
         raise ValueError(msg)
 
-    def intialised_database(self, material_str: str, database: dict) -> MaterialData:
+    def intialised_database(self, material_str: str, database: dict) -> Any:
         """Initialises a datbase class and sets teh attributes from
         the extra data suplied.
 
@@ -279,8 +273,8 @@ class MaterialSelector:
 
         Returns
         -------
-        MaterialData
-            An initialised class of material data.
+        Any
+            An initialised class, meant to be material data.
         """
         material = database["material"](mat=material_str)
         for key, val in database["data"].items():

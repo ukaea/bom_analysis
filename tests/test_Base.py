@@ -15,7 +15,9 @@ class TestBaseClass(unittest.TestCase):
     def setUp(self):
         self.base = bs.BaseClass()
 
-        self.base.data = {"a": np.array([np.float64(4.0), {"hello": "world"}])}
+        self.base.data = {
+            "a": np.array([np.float64(4.0), {"hello": "world"}], dtype=object)
+        }
 
         base2 = bs.BaseClass()
 

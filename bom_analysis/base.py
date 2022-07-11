@@ -4,7 +4,7 @@ from pathlib import Path
 import os
 import textwrap
 from getpass import getpass
-from typing import Union, Any
+from typing import Union, Any, Callable
 
 import json
 import numpy as np
@@ -12,7 +12,6 @@ import pandas as pd
 from tabulate import tabulate
 
 from bom_analysis import run_log, Q_
-from bom_analysis.bom import EngineeringObject
 from bom_analysis.utils import (
     Translator,
     UpdateDict,
@@ -33,7 +32,9 @@ class ConfigurationNotFullyPopulated(Exception):
 
 
 def add_base_class(
-    existing_object: Any, import_method: function, export_method: function
+    existing_object: Any,
+    import_method: Callable[[Any], Any],
+    export_method: Callable[[Any], Any],
 ):
     """Adds an import and export function to a class under the
     name export_data and import_data.
@@ -738,7 +739,7 @@ class DFClass(BaseClass):
                 index=self.data["index"],
             )
 
-    def compile_all_df(self, assembly: EngineeringObject, child_str: str):
+    def compile_all_df(self, assembly: Any, child_str: str):
         """Compiles all dataframes for a given storage_str
         into a mutable top level dataframe.
 
@@ -746,7 +747,7 @@ class DFClass(BaseClass):
         ----------
         child_str : str
             a string attribute name for the information to be extracted from.
-        assembly : EngineeringObject
+        assembly : Any
             the assembly which contains the storage information."""
         self.compiled = child_str
         storages = np.array(
