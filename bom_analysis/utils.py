@@ -6,7 +6,7 @@ import itertools
 import logging
 from pathlib import Path
 import os
-from typing import Any
+from typing import Any, Union
 
 import json
 import numpy as np
@@ -434,7 +434,7 @@ class Translator:
 
 
 class PrintParamsTable:
-    def format_params(self, list_of_params: list):
+    def format_params(self, list_of_params: list) -> list:
         """Formats the dictionary representation of the parameters to allow
         for nice string represntation.
 
@@ -469,7 +469,7 @@ class PrintParamsTable:
             formated_list_of_params.append(new_param)
         return formated_list_of_params
 
-    def get_max_column_width(self, list_of_params: list):
+    def get_max_column_width(self, list_of_params: list) -> Union[int, None]:
         """Gets the maximum column size for printing of
         a tabular dataframe.
 
@@ -500,7 +500,7 @@ class PrintParamsTable:
         ):
             return None
 
-    def shorten_unit(self, quantity: Any):
+    def shorten_unit(self, quantity: Any) -> Any:
         """Shortens the format of the units in a pint unit
         and returns as string.
 
@@ -523,7 +523,7 @@ class PrintParamsTable:
         ):
             return quantity
 
-    def new_line_in_string(self, input: Any, max_character: int = None):
+    def new_line_in_string(self, input: Any, max_character: int = None) -> Any:
         """Splits the input into multiple lines based on a supplied
         max character interger.
 
