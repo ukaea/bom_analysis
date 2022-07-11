@@ -4,6 +4,7 @@ from pathlib import Path
 import os
 import textwrap
 from getpass import getpass
+from typing import Union
 
 import json
 import numpy as np
@@ -17,6 +18,7 @@ from bom_analysis.utils import (
     encoder,
     decoder,
     MaterialSelector,
+    change_handler,
 )
 
 
@@ -266,8 +268,18 @@ class MetaConfig(type):
             return cls._temp_dir
 
     @temp_dir.setter
-    def temp_dir(cls, value):
+    def temp_dir(cls, value: Union[str, Path]):
+        """Sets the temporary directory and
+        also changes the log handler to write
+        in this directory.
+
+        Parameters
+        ----------
+        value : Union[str, Path]
+            Path to new temporary directory.
+        """
         cls._temp_dir = value
+        change_handler(f"{value}/run.log")
 
     @property
     def plot_dir(cls):

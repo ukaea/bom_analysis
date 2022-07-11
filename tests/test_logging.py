@@ -1,71 +1,70 @@
-import logging
-import os
-from pathlib import Path
 import unittest
 
-from bom_analysis import nice_format, run_log
-
-run_hand = logging.FileHandler(Path(f"{os.getcwd()}/run.log"), "w")
-run_hand.setLevel(logging.INFO)
-run_hand.setFormatter(nice_format)
-run_log.addHandler(run_hand)
+from bom_analysis import run_log
+from bom_analysis.utils import change_handler
+from bom_analysis.base import BaseConfig
 
 
 class LoggingTest(unittest.TestCase):
-    def test_log(self):
-        """tests console write"""
-        logging.debug("Don't Appear on Console, debug")
-        logging.info("Don't Appear on Console, info")
-        logging.warning("Don't Appear on Console, warning")
-        logging.error("Appear on Console, error")
+    def setUp(self):
+        change_handler("./run.log")
 
-    def test_import_log(self):
+    def tearDown(self):
+        change_handler("./run.log")
+
+    def test_debug(self):
         """tests the importing of run_log"""
-        from bom_analysis import run_log
-
-        run_log.error("Appear on Console, run_log, base_log, error")
-        run_log.info("Appear on run_log, base_log, info")
-        run_log.debug("Appear on base_log, debug")
+        run_log.error("Appears Everywhere")
+        run_log.info("Does not Appear on Console")
+        run_log.debug("Only Appears in base.log")
+        with open("./base.log", "r") as f:
+            base_content = f.readlines()
+        assert (
+            base_content[-1][26::]
+            == "DEBUG in test_logging: Only Appears in base.log\n"
+        )
 
     def test_no_write_to_run(self):
         """tests after using a logging message will not appear in run log"""
-        from bom_analysis import run_log
 
-        run_log.warning("Appear on base_log, run_log, warning")
-        logging.info("Appear on base, Please Don't Appear in Run, info")
+        run_log.warning("Does not appear in console")
+        run_log.info("Does not appear in console")
 
     def test_change_location(self):
-        from bom_analysis import run_log
 
-        run_log.warning("should only appear in run_log in cwd")
+        run_log.info("In ./run.log")
+        with open("./run.log", "r") as f:
+            content = f.readline()
+        assert content == "INFO: In ./run.log\n"
 
-        from bom_analysis import nice_format
+        change_handler("./temp/run.log")
 
-        for hdlr in run_log.handlers[:]:
-            run_log.removeHandler(hdlr)
-        run_hand = logging.FileHandler(Path(f"{os.getcwd()}/tests/run.log"), "w")
-        run_hand.setLevel(logging.INFO)
-        run_hand.setFormatter(nice_format)
-        run_log.addHandler(run_hand)
+        run_log.info("In ./temp/run.log")
+        with open("./temp/run.log", "r") as f:
+            content = f.readline()
+        assert content == "INFO: In ./temp/run.log\n"
 
-        run_log.warning("should only appear in tests/run_log")
-        run_log.warning("but everything should appear in base log")
+    def test_change_location_config(self):
+        run_log.info("Again in ./run.log")
+        with open("./run.log", "r") as f:
+            content = f.readline()
 
-    @unittest.expectedFailure
-    def test_assert_in_log(self):
-        """tests failed asserts go to log"""
-        a = 1
-        assert a == 2, "would like assert to go to log"
+        assert content == "INFO: Again in ./run.log\n"
 
-    @unittest.expectedFailure
-    def test_value_error(self):
-        """tests failed asserts go to log"""
-        raise ValueError("ValueError to log?")
+        BaseConfig.temp_dir = "./temp/"
+
+        run_log.info("Again in ./temp/run.log")
+        with open("./temp/run.log", "r") as f:
+            content = f.readline()
+        assert content == "INFO: Again in ./temp/run.log\n"
+
+        with open("./base.log", "r") as f:
+            base_content = f.readlines()
+        assert base_content[-2][26::] == "INFO in test_logging: Again in ./run.log\n"
+        assert (
+            base_content[-1][26::] == "INFO in test_logging: Again in ./temp/run.log\n"
+        )
 
 
 if __name__ == "__main__":
-
-    def timed():
-        Framework(CONFIG)
-
     unittest.main()
