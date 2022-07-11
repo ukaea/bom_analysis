@@ -39,6 +39,7 @@ jobs:
       run: |
         coverage run --branch --source=bom_analysis -m pytest -v tests || true
         coverage xml -o coverage.xml
+        mkdir .coverage-reports/
         cp coverage.xml .coverage-reports/test-coverage-pytest.xml
         pytest -v -o junit_family=xunit1 --junitxml=.coverage-reports/test-results.xml tests
     - name: Upload pytest test results
