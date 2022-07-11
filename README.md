@@ -1,9 +1,9 @@
-![GitHub](https://git.ccfe.ac.uk/step/invesselcomponents/outboardblanket/bom_analysis)
-[![Bugs](https://sonarqube.apps.l/api/project_badges/measure?project=step_invesselcomponents_outboardblanket_bom_analysis_AXkhiCaHuvKL_5-NB71c&metric=bugs)](https://sonarqube.apps.l/dashboard?id=step_invesselcomponents_outboardblanket_bom_analysis_AXkhiCaHuvKL_5-NB71c)
-[![Code Smells](https://sonarqube.apps.l/api/project_badges/measure?project=step_invesselcomponents_outboardblanket_bom_analysis_AXkhiCaHuvKL_5-NB71c&metric=code_smells)](https://sonarqube.apps.l/dashboard?id=step_invesselcomponents_outboardblanket_bom_analysis_AXkhiCaHuvKL_5-NB71c)
-[![Coverage](https://sonarqube.apps.l/api/project_badges/measure?project=step_invesselcomponents_outboardblanket_bom_analysis_AXkhiCaHuvKL_5-NB71c&metric=coverage)](https://sonarqube.apps.l/dashboard?id=step_invesselcomponents_outboardblanket_bom_analysis_AXkhiCaHuvKL_5-NB71c)
-[![Duplicated Lines (%)](https://sonarqube.apps.l/api/project_badges/measure?project=step_invesselcomponents_outboardblanket_bom_analysis_AXkhiCaHuvKL_5-NB71c&metric=duplicated_lines_density)](https://sonarqube.apps.l/dashboard?id=step_invesselcomponents_outboardblanket_bom_analysis_AXkhiCaHuvKL_5-NB71c)
-[![Quality Gate Status](https://sonarqube.apps.l/api/project_badges/measure?project=step_invesselcomponents_outboardblanket_bom_analysis_AXkhiCaHuvKL_5-NB71c&metric=alert_status)](https://sonarqube.apps.l/dashboard?id=step_invesselcomponents_outboardblanket_bom_analysis_AXkhiCaHuvKL_5-NB71c)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=ukaea_bom_analysis&metric=coverage)](https://sonarcloud.io/summary/new_code?id=ukaea_bom_analysis)
+[![Quality gate](https://sonarcloud.io/api/project_badges/quality_gate?project=ukaea_bom_analysis)](https://sonarcloud.io/summary/new_code?id=ukaea_bom_analysis)
+
+
+[![SonarCloud](https://sonarcloud.io/images/project_badges/sonarcloud-black.svg)](https://sonarcloud.io/summary/new_code?id=ukaea_bom_analysis)
+
 
 # Bill of Materials Analysis
 
