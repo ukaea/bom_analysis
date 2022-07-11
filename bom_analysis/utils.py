@@ -1,19 +1,21 @@
 import builtins
-from collections import Counter
+from collections import Counter, abc
 import importlib
 import inspect
 import itertools
 import logging
 from pathlib import Path
+from typing import Any, Iterable, Union
 
 import json
 import numpy as np
 import pandas as pd
 
 from bom_analysis import ureg, run_log, nice_format, info_handler
+from bom_analysis.materials import MaterialData
 
 
-def __init__(self, inherited_classes):
+def __init__(self, inherited_classes: abc.Iterable):
     """Used to add to class factory created classes
     to perform initialisation when there is inhertiance.
 
@@ -25,7 +27,7 @@ def __init__(self, inherited_classes):
         inherit.__init__(self)
 
 
-def encoder(obj):
+def encoder(obj: Any) -> Any:
     """An encoder to ensure all outputs are serialisable.
 
     Could be turned into a json encoder but
@@ -74,7 +76,7 @@ def encoder(obj):
     return obj
 
 
-def decoder(obj):
+def decoder(obj: Any) -> Any:
     """Creates a consistance data type for strings, floats, ints and list.
 
     The aim is to use numpy types throughout the bom_analysis -
@@ -123,7 +125,7 @@ def decoder(obj):
     return obj
 
 
-def change_handler(new_path):
+def change_handler(new_path: str):
     """Changes the logging handler.
 
     When running a parameter sweep, it is beneficial to
@@ -144,7 +146,7 @@ def change_handler(new_path):
     run_log.addHandler(new_info_handler)
 
 
-def class_factory(name, class_strings, class_data={}):
+def class_factory(name, class_strings: list, class_data: dict = {}) -> Any:
     """Method for dynamically creating classes.
 
     The classes are specified as a list of strings
@@ -160,7 +162,7 @@ def class_factory(name, class_strings, class_data={}):
 
     Returns
     -------
-    type
+    Any
         A new, initialised class created from the input
         class list and data."""
     inherited_classes = tuple(
@@ -176,7 +178,7 @@ def class_factory(name, class_strings, class_data={}):
     return new_class
 
 
-def class_from_string(string):
+def class_from_string(string: str) -> Any:
     """Creates a class from a string in order to assign custom
     classes to a sub assembly.
 
@@ -184,6 +186,11 @@ def class_from_string(string):
     ----------
     string : str
         A string representing a class location.
+
+    Returns
+    -------
+    Any
+        The uninitialised class corresoponding to the input string.
 
     Note
     ----
@@ -258,7 +265,7 @@ class MaterialSelector:
         run_log.error(msg)
         raise ValueError(msg)
 
-    def intialised_database(self, material_str: str, database: dict):
+    def intialised_database(self, material_str: str, database: dict) -> MaterialData:
         """Initialises a datbase class and sets teh attributes from
         the extra data suplied.
 
@@ -295,7 +302,7 @@ class MaterialSelector:
         database = dict(material=database_class, data=additional_data)
         self.priority_order = np.append(self.priority_order, database)
 
-    def to_dict(self):
+    def to_dict(self) -> dict:
         """Converts the MaterialSelector to a dictionary.
 
         Adds a set of class_str so the the priority order can be
@@ -382,7 +389,7 @@ class Translator:
 
     _data = {}
 
-    def __new__(cls, name, output_format):
+    def __new__(cls, name: str, output_format: str) -> str:
         """Translates a name into a chosen output.
 
         Parameters
@@ -410,7 +417,7 @@ class Translator:
         return output_name
 
     @classmethod
-    def define_translations(cls, locations):
+    def define_translations(cls, locations: list):
         """Defines the translations for the class.
 
         Parameters
@@ -420,7 +427,7 @@ class Translator:
         cls._data = load_and_merge(locations)
 
     @classmethod
-    def available_inputs(cls):
+    def available_inputs(cls) -> list:
         """Produces a list of all the input translations
         for the loaded translator.
 
@@ -438,7 +445,7 @@ class UpdateDict:
 
     This function allows for that control."""
 
-    def __init__(self, main, *args, **kwargs):
+    def __init__(self, main: dict, *args, **kwargs):
         """Initialises the update dictionary.
 
         Mutability is used to get this class to
@@ -450,7 +457,7 @@ class UpdateDict:
 
         Parameters
         ----------
-        main : dictionary
+        main : dict
             The main dictionary which will be updated.
         args : tuple
             The input dictionaries which main will be
@@ -473,7 +480,7 @@ class UpdateDict:
         attribute."""
         self.update_main(self.main, self.input)
 
-    def unique_keys(self, input_dict):
+    def unique_keys(self, input_dict: dict) -> Iterable:
         """Defines the unique keys in all the input dict.
 
         Parameters
@@ -491,7 +498,7 @@ class UpdateDict:
             temp.update(val)
         return temp.keys()
 
-    def update_main(self, main, input_dict):
+    def update_main(self, main: dict, input_dict: dict):
         """Updates the main dictionary with the input
         dictionary.
 
@@ -509,7 +516,7 @@ class UpdateDict:
             elif key in data:
                 main[key] = data[key]
 
-    def update_key(self, main, key, data):
+    def update_key(self, main: dict, key: Union[str, int], data: Any):
         """Updates the data in the main dictionary
         with a key.
 
@@ -517,7 +524,7 @@ class UpdateDict:
         ----------
         main : dictionary
             The main dictionary which will be updated.
-        key : str or int
+        key : Union[str, int]
             The key in the main dictioanry which will
             have the value updated with data.
         data : type
@@ -552,7 +559,7 @@ class UpdateDict:
             main[key] = data[key]
 
 
-def load_and_merge(location_list):
+def load_and_merge(location_list: list) -> dict:
     """Merges multiple json dicts into a single dictionary.
 
     This is used for when parsing jsons to build the
@@ -579,16 +586,16 @@ def load_and_merge(location_list):
     return merged
 
 
-def access_nested(obj, location, pos=0):
+def access_nested(obj: Any, location: Iterable, pos: int = 0):
     """Accesses data within a nested object
     by searching for attribute or item down
     a list/tuple/array.
 
     Parameters
     ----------
-    obj : instance
+    obj : Any
         The object to be accessed.
-    location : iterable
+    location : Iterable
         The iterable location of the data.
     pos : int, optional
         The position of the nested dictionary to be

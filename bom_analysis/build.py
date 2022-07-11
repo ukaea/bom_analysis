@@ -1,6 +1,8 @@
+from pathlib import Path
+from typing import Union
+
 from bom_analysis import run_log, BaseFramework
-from bom_analysis.base import ConfigurationNotFullyPopulated
-from bom_analysis.bom import Assembly
+from bom_analysis.bom import Assembly, EngineeringObject
 import bom_analysis.parsers as ps
 from bom_analysis.solver import Solver
 
@@ -16,7 +18,9 @@ class Framework(BaseFramework):
 
     _solver = Solver
 
-    def __init__(self, config_path=None, config_dict={}):
+    def __init__(
+        self, config_path: Union[str, Path, None] = None, config_dict: dict = {}
+    ):
         """initialisation for the framework.
 
         Parameters
@@ -31,14 +35,19 @@ class Framework(BaseFramework):
         ps.ConfigParser(self.skeleton)
 
     @classmethod
-    def initialise_cross_class(cls, login=False, config_path=None, config_dict={}):
+    def initialise_cross_class(
+        cls,
+        login: bool = False,
+        config_path: Union[str, Path, None] = None,
+        config_dict: dict = {},
+    ):
         """Initialises the classes that supply
         information and funcitonality across the
         bom_analysis.
 
         Parameters
         ----------
-        loggin : boolean, optional
+        loggin : bool, optional
             Login details required.
         config_dict : dict, optional
             A dictionary containing the config file.
@@ -52,7 +61,7 @@ class Framework(BaseFramework):
                 config_path=config_path, config_dict=config_dict
             )
 
-    def settings(self):
+    def settings(self) -> dict:
         """Return a dictionary of the settings that have been used
         in the solver.
 
@@ -64,7 +73,14 @@ class Framework(BaseFramework):
         return dict(modules=self._solver.to_dict())
 
     @classmethod
-    def reader(cls, skeleton, top=None, settings={}, config_path=None, config_dict={}):
+    def reader(
+        cls,
+        skeleton: dict,
+        top: Union[str, None] = None,
+        settings: str = {},
+        config_path: Union[str, Path, None] = None,
+        config_dict: dict = {},
+    ) -> EngineeringObject:
         """Returns a class representing the populated bill of materials
         by parsing information from loaded from the config and settings.
 
@@ -120,7 +136,7 @@ class Framework(BaseFramework):
         return assembly
 
     @classmethod
-    def load(cls, top, skeleton):
+    def load(cls, top: str, skeleton: dict) -> EngineeringObject:
         """Simple load of a skeleton to BoM structure.
 
         This loads the skeleton but does not load the
@@ -146,7 +162,9 @@ class Framework(BaseFramework):
         return assembly
 
     @classmethod
-    def solver(cls, settings={}, assembly=None):
+    def solver(
+        cls, settings: dict = {}, assembly: Union[EngineeringObject, None] = None
+    ) -> Solver:
         """Creates a solver based on the settings.
 
         Creates a solver object from the settings (which

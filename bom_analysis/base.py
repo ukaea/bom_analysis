@@ -32,7 +32,9 @@ class ConfigurationNotFullyPopulated(Exception):
     pass
 
 
-def add_base_class(existing_object:Any, import_method:function, export_method:function):
+def add_base_class(
+    existing_object: Any, import_method: function, export_method: function
+):
     """Adds an import and export function to a class under the
     name export_data and import_data.
 
@@ -88,7 +90,7 @@ class MetaConfig(type):
         return cls._materials
 
     @materials.setter
-    def materials(cls, value:Union[dict, MaterialSelector]):
+    def materials(cls, value: Union[dict, MaterialSelector]):
         """Setter for the materials.
 
         Parameters
@@ -305,7 +307,7 @@ class MetaConfig(type):
             return cls._plot_dir
 
     @plot_dir.setter
-    def plot_dir(cls, value:str):
+    def plot_dir(cls, value: str):
         cls._plot_dir = value
 
     @property
@@ -358,7 +360,7 @@ class BaseConfigMethods:
     _restrict_param = False
 
     @classmethod
-    def define_config(cls, config_dict:dict = {}, config_path:str=None):
+    def define_config(cls, config_dict: dict = {}, config_path: str = None):
         """defines the config file.
 
         The config can be loaded from a supplied dictioanry
@@ -420,7 +422,7 @@ class BaseConfigMethods:
         return variables
 
     @classmethod
-    def input_login_details(cls, domain:str = ""):
+    def input_login_details(cls, domain: str = ""):
         """
         Inputs login details.
 
@@ -436,7 +438,7 @@ class BaseConfigMethods:
         cls._login_details["domain"] = domain
 
     @classmethod
-    def login_details(cls)->dict:
+    def login_details(cls) -> dict:
         """Runs the login details update if any of the
         values are None.
 
@@ -499,7 +501,7 @@ class BaseClass:
     data in between Model Based System Engieering workflows).
     """
 
-    def to_dict(self, exclusions:list=[]) -> dict:
+    def to_dict(self, exclusions: list = []) -> dict:
         """
         Exports the data of the base class as a dictionary
         for use in a skeleton of the BOM.
@@ -549,7 +551,7 @@ class DFClass(BaseClass):
 
     def __init__(self):
         """initialisations of dataframe storage class.
-        
+
         Attributes
         ----------
         data : pd.DataFrame
@@ -586,7 +588,7 @@ class DFClass(BaseClass):
         else:
             return self.data.shape[1]
 
-    def create_df(self, number_of_cols:int, *args):
+    def create_df(self, number_of_cols: int, *args):
         """Defines the dataframe.
 
         Parameters
@@ -604,7 +606,7 @@ class DFClass(BaseClass):
         matrix = (len(index), number_of_cols)
         self.data = pd.DataFrame(np.full(matrix, None), index=index)
 
-    def assign(self, assignee:np.ndarray):
+    def assign(self, assignee: np.ndarray):
         """
         A method for assigning columns to a dataframe.
 
@@ -623,7 +625,7 @@ class DFClass(BaseClass):
         else:
             self.data = pd.DataFrame(data=assignee)
 
-    def add_to_col(self, col:int, data_dict:dict):
+    def add_to_col(self, col: int, data_dict: dict):
         """Adds data to preexisting rows.
 
         Parameters
@@ -712,7 +714,7 @@ class DFClass(BaseClass):
             dump["class_str"] = [f"{self.__module__}.{self.__class__.__name__}"]
         return dump
 
-    def from_dict(self, data:dict):
+    def from_dict(self, data: dict):
         """Reads and populates from json.
 
         Loads in the parent class and then populates the dataframe if
@@ -736,7 +738,7 @@ class DFClass(BaseClass):
                 index=self.data["index"],
             )
 
-    def compile_all_df(self, assembly:EngineeringObject, child_str:str):
+    def compile_all_df(self, assembly: EngineeringObject, child_str: str):
         """Compiles all dataframes for a given storage_str
         into a mutable top level dataframe.
 

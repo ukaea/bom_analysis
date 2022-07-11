@@ -1,4 +1,4 @@
-from collections import Counter
+from collections import Counter, abc
 import copy
 import weakref
 from typing import Union, Any
@@ -280,7 +280,7 @@ class EngineeringObject(BaseClass):
             new_database.pressure = self.material.pressure
             self.material = new_database
 
-    def add_class(self, class_name:str, class_data:dict):
+    def add_class(self, class_name: str, class_data: dict):
         """Adds a class from data to the class instance.
 
         This function utilises the class factory in the framework.utils
@@ -299,7 +299,7 @@ class EngineeringObject(BaseClass):
             new_sub_class.from_dict(class_data)
         setattr(self, class_name, new_sub_class)
 
-    def from_dict(self, skeleton:dict, ref:str=None):
+    def from_dict(self, skeleton: dict, ref: str = None):
         """Builds the part from the json.
 
         Parameters
@@ -322,7 +322,7 @@ class EngineeringObject(BaseClass):
             if type(val) == dict and "class_str" in val:
                 self.add_class(name, val)
 
-    def check_duplicate(self, component_1:BaseClass, component_2:BaseClass):
+    def check_duplicate(self, component_1: BaseClass, component_2: BaseClass):
         """Check whether a two components adhere to the
         bill of materials rules on the names of _ref.
 
@@ -349,7 +349,7 @@ class EngineeringObject(BaseClass):
             run_log.error(msg)
             raise NonUniqueComponentReference(msg)
 
-    def flatten(self, flat:Union[dict, None]=None)->dict:
+    def flatten(self, flat: Union[dict, None] = None) -> dict:
         """Returns a flat dict of components.
 
         Parameters
@@ -443,7 +443,9 @@ class EngineeringObject(BaseClass):
         new_class = self.create_class_from_data(self.ref, new_dict, self_copied=True)
         return new_class
 
-    def create_class_from_data(self, ref:str, skeleton:dict, self_copied:bool=False)->type:
+    def create_class_from_data(
+        self, ref: str, skeleton: dict, self_copied: bool = False
+    ) -> type:
         """To correctly create a class from data more some additional
         changes must me made in addition to loading in the class
         and then using from_dict. This is to allow the master registers
@@ -548,9 +550,11 @@ class Component(EngineeringObject):
         else:
             return {self.ref: component_dump}
 
-    def hierarchy(self, 
-                  tree:Union[treelib.Tree, None]=None, 
-                  parent_node:Union[treelib.node, None]=None) -> treelib.Tree:
+    def hierarchy(
+        self,
+        tree: Union[treelib.Tree, None] = None,
+        parent_node: Union[treelib.node, None] = None,
+    ) -> treelib.Tree:
         """Used to create a hierarch of a BOM.
 
         This is a basic return due so that the
@@ -624,7 +628,7 @@ class Assembly(EngineeringObject):
         self._part_count = Counter()
         self.master_register = {ref: weakref.ref(self)}
 
-    def __getitem__(self, item_name:str) -> Any:
+    def __getitem__(self, item_name: str) -> Any:
         """Gets improves the ease of pulling an item from
         the sub_assembly. Allows assembly[item_string] to
         return item within sub_assembly.
@@ -648,7 +652,7 @@ class Assembly(EngineeringObject):
         else:
             raise AttributeError("Attribute does not exist")
 
-    def __getattr__(self, item_name:str) -> Any:
+    def __getattr__(self, item_name: str) -> Any:
         """Gets improves the ease of pulling an item from
         the sub_assembly. Allows assembly[item_string] to
         return item within sub_assembly.
@@ -675,7 +679,7 @@ class Assembly(EngineeringObject):
             Length of the _sub_assembly."""
         return len(self._sub_assembly)
 
-    def __iter__(self) -> iter:
+    def __iter__(self) -> abc.Iterable:
         """Allows the assembly object to be iterated on to return the
         sub_assembly items.
 
@@ -700,7 +704,7 @@ class Assembly(EngineeringObject):
         tree class does not have a __repr__ and instead calls print."""
         return f"{super().__repr__()}\nhierarchy = {self.plot_hierarchy()}"
 
-    def to_dict(self, exclusions: list = ["master_register", "_sub_assembly"])->dict:
+    def to_dict(self, exclusions: list = ["master_register", "_sub_assembly"]) -> dict:
         """Converts the component to a dictionary.
 
         This method uses super to call the to_dict from
@@ -763,7 +767,7 @@ class Assembly(EngineeringObject):
         else:
             return {ref: {"type": ref}}
 
-    def from_dict(self, skeleton:dict, ref: Union[str, None]=None):
+    def from_dict(self, skeleton: dict, ref: Union[str, None] = None):
         """Checks the assembly for children.
 
         This function uses super to call the
@@ -784,7 +788,7 @@ class Assembly(EngineeringObject):
         if hasattr(self, "children"):
             self.add_children(skeleton)
 
-    def add_children(self, skeleton:dict):
+    def add_children(self, skeleton: dict):
         """Creates and adds to _sub_assembly.
 
         Uses the class factory and recursion to
@@ -807,7 +811,7 @@ class Assembly(EngineeringObject):
                 child_class = self.create_class_from_data(child, skeleton)
             self.add_component(child_class)
 
-    def component_from_string(self, string:str) -> EngineeringObject:
+    def component_from_string(self, string: str) -> EngineeringObject:
         """Returns a component within the nested sub assembly
         based on a . delimited string.
 
@@ -832,7 +836,7 @@ class Assembly(EngineeringObject):
             component = getattr(component, ref)
         return component
 
-    def flatten(self, flat:Union[dict, None]=None):
+    def flatten(self, flat: Union[dict, None] = None):
         """Returns a flat dict of components.
 
         Flattening the components is very useful as it
@@ -913,7 +917,7 @@ class Assembly(EngineeringObject):
             params.update(part.lookup_params(*args))
         return params
 
-    def add_component(self, component:EngineeringObject, ref:Union[str, None]=None):
+    def add_component(self, component: EngineeringObject, ref: Union[str, None] = None):
         """Add components to the _sub_assembly, meant to allow
         for non-skeleton assembly creation.
 
@@ -969,7 +973,7 @@ class Assembly(EngineeringObject):
     def part_count(self) -> Counter:
         return self._part_count
 
-    def count_ref(self, reference:str) -> int:
+    def count_ref(self, reference: str) -> int:
         """Counts the number of times a reference
         has been added to the sub-assembly.
 
@@ -1042,9 +1046,11 @@ class Assembly(EngineeringObject):
                 self.master_register.update(comp.master_register)
                 comp.master_register = self.master_register
 
-    def hierarchy(self, 
-                  tree:Union[treelib.Tree, None]=None, 
-                  parent_node:Union[treelib.node, None]=None) -> treelib.Tree:
+    def hierarchy(
+        self,
+        tree: Union[treelib.Tree, None] = None,
+        parent_node: Union[treelib.node, None] = None,
+    ) -> treelib.Tree:
         """Creates a nice graph showing the hierachy.
 
         Parameters
@@ -1053,7 +1059,7 @@ class Assembly(EngineeringObject):
             A treelib instance which may contain nodes, defaults to None.
         parent_node : treelib.node, optional
             A node within a tree that has is the parent of a component, defaults to None.
-            
+
         Returns
         -------
         treelib.Tree

@@ -3,7 +3,6 @@ from logging.handlers import RotatingFileHandler
 import os
 from pathlib import Path
 
-import numpy as np
 import pint
 
 # Pint
@@ -52,11 +51,11 @@ from .parameters import MissingParamError
 
 def update_config(new_config: BaseConfig):
     """Updates the configuration within the Framework
-    class. 
+    class.
 
     Using the framework in this way allows a new configuration
-    to be supplied to the bom_analysis classes as they take the 
-    Configuration from the Framework instead of the BaseConfig. 
+    to be supplied to the bom_analysis classes as they take the
+    Configuration from the Framework instead of the BaseConfig.
 
 
     Parameters
