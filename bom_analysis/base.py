@@ -49,7 +49,7 @@ def add_base_class(existing_object, import_method, export_method):
 
     Note
     ----
-    For more information on add a method to an instance see 
+    For more information on add a method to an instance see
     `link <https://stackoverflow.com/questions/972/adding-a-method-to-an-existing-object-instance>`_.
     """
     existing_object.export_data = types.MethodType(export_method, existing_object)
@@ -326,7 +326,7 @@ class MetaConfig(type):
 
 class BaseConfigMethods:
     """
-    BaseConfigMethods contains methods that will be used by a 
+    BaseConfigMethods contains methods that will be used by a
     configuration class.
 
     Attributes
