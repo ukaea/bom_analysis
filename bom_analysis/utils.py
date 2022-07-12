@@ -203,8 +203,22 @@ def class_from_string(string):
 
 class MaterialSelector:
     """
-    Information about how the Material Selector works can be found in the
-    `documentation <https://bom-analysis.readthedocs.io/en/latest/Materials.html#selecting-materials>`_.
+    The MaterialSelector can select a material database based on a priority order
+    and the availability of the material within the database. To perform this function
+    the material selector should be supplied with the databases (generally children of the
+    MaterialData class).
+
+    To add the databases to the material selector the add_database method can be used with
+    the add order assumed to be the priority.
+
+    If the selector was provided a ASME materials database followed by a CoolProp database
+    followed by a in-house database during setup, then the material for a component can
+    be returned by the select_database method. Say the material is Beryllium, the MaterialSelector
+    will check the ASME database, then the CoolProps, then the in-house until it finds (or not)
+    Beryllium.
+
+    One of the benefits of using MaterialSelector (and storing it in the Configuration) is that
+    when a material is not within one database the next can be checked as discussed in the MaterialData.
     """
 
     def __init__(self):
@@ -361,14 +375,13 @@ class MaterialSelector:
 
 class Translator:
     """
-    Information about how the Translator works can be found in the
-    `documentation <https://bom-analysis.readthedocs.io/en/latest/Materials.html#translating>`_.
+    Translating strings can be very important to a bill of materials
+    and a workflow due to mismatches in the naming is common across
+    material libraries (both the name and the parameters).
 
-    Attributes
-    ----------
-    _data : dict
-        The dictionary data that contains the translation in the format
-        of {"BOM Analysis String":{"Output Type":{"name":"Translation to Output"}}}.
+    The translator can be defined from a dictionary and utilises classmethods
+    so can be used without initialisation. After the underlying data has been
+    populated, the input for translation can be supplied alongside the output format.
     """
 
     _data = {}
@@ -382,6 +395,12 @@ class Translator:
             Name to be translated.
         output : str
             Output format for name to be translated to.
+
+        Attributes
+        ----------
+        _data : dict
+            The dictionary data that contains the translation in the format
+            of {"BOM Analysis String":{"Output Type":{"name":"Translation to Output"}}}.
 
         Returns
         -------

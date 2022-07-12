@@ -93,11 +93,21 @@ class EngineeringObject(BaseClass):
     @property
     def ref(self):
         """
-        Referencing is one of the most important concepts
-        in BOM analyis. Information about how the ref works can be
-        found in the
-        `documentation <https://bom-analysis.readthedocs.io/en/latest/Structure_of_Hierarchy.html#reference-the-most-important-thing-to-remember>`_.
+        A reference which represents a unique variable for an engineering component
+        such as a part number. The reference can be any string, the key is that it is
+        unique to the part. Multiple assemblies within a system can have the same reference
+        within them but the Engineering Object with this reference in *all* assemblies
+        must be the same.
 
+        For example, a bolt made of Carbon Steel and a bolt made up of Stainless Steel
+        may have exactly the same dimensions and in the same system on different assemblies
+        must not have the same reference because the object is not the same.
+
+        Practically, a hierarchy has a master register of references with weakref to the
+        object. When assemblies are added to one another, or a component is added to an
+        assembly at any level in the hierarchy, the master register is consulted and
+        checked to ensure that the reference has not been used on another part. The
+        reference is a property of all Engineering Objects.
         """
         return self._ref
 
@@ -132,8 +142,16 @@ class EngineeringObject(BaseClass):
     @property
     def assignment(self):
         """
-        Information about how the assignment works can be found in the
-        `documentation <https://bom-analysis.readthedocs.io/en/latest/Variables.html#assignment>`_.
+        An engineering object can be assigned values
+        such as 'Blanket' or 'Layer_2' or 'Yellow' in order to provide
+        additional information to analysis.
+
+        The aim of the assignment is to provide a list of strings
+        that can be used in the calculation. For example, an engineering
+        object may always want to be assigned the color "Yellow".
+
+        Assignments are stored as numpy array but can be given a string
+        as which the setter will add to the assignment.
         """
         return self._assignment
 
@@ -486,8 +504,11 @@ class EngineeringObject(BaseClass):
 
 class Component(EngineeringObject):
     """
-    Information about how the Component works can be found in the
-    `documentation <https://bom-analysis.readthedocs.io/en/latest/Structure_of_Hierarchy.html#component-the-lowest-level>`_.
+    The component is the lowest level Engineering Object in the Bill of
+    Materials and, critically has a material assigned to it.
+
+    A Component can generally be considered a physical object made up of a
+    single material, for example a bolt made of high strength steel.
     """
 
     def __init__(self, ref: str = None, material: str = None, assignment: str = None):
@@ -562,8 +583,14 @@ class SubAssembly(dict):
 
 class Assembly(EngineeringObject):
     """
-    Information about how the Assembly works can be found in the
-    `documentation <https://bom-analysis.readthedocs.io/en/latest/Structure_of_Hierarchy.html#assembly-made-of-of-components-and-assemblies>`_.
+    An assembly can be made up of multiple sub components which
+    assemble together to form the assembly. The assembly does not have
+    a material assigned to it as it will contain the multiple materials
+    of the components.
+
+    An assembly can generally be considered to be made up of multiple
+    other assemblies/components, for example a nut and bolt assembly
+    or an assembly of nut and bolt assemblies with a flange component.
     """
 
     def __init__(self, ref: str = None, assignment: str = None):
@@ -1067,8 +1094,15 @@ class Assembly(EngineeringObject):
 
 class HomogenisedAssembly(Assembly):
     """
-    Information about how the HomogenisedAssembly works can be found in the
-    `documentation <https://bom-analysis.readthedocs.io/en/latest/Structure_of_Hierarchy.html#homogenised-assembly-an-assembly-with-a-material>`_.
+    A homogenised assembly is a special type of assembly
+    which does not exist in the physical world but instead
+    is analytical (particularly for neutronics analysis). A
+    Homogenised assembly can have both sub components and
+    materials assigned to it.
+
+    An example of the analytical use of a Homogenised assembly
+    would be a bolt and nut assembly represented as a single
+    body in structural FEA to simplifly the analysis.
     """
 
     def __init__(self, ref: str = None, assignment: str = None):

@@ -7,8 +7,16 @@ from bom_analysis.utils import UpdateDict, load_and_merge
 
 class SkeletonParser(BaseFramework):
     """
-    Information about how the configuration works can be found in the
-    `documentation <https://bom-analysis.readthedocs.io/en/latest/Defining_a_Bill_of_Materials.html#parsing-skeleton>`_.
+    Parsing a skeleton is a way of building a skeleton without
+    building the bill of materials. It can help speed up the
+    creation of new BOM but, as it parsers a number of files,
+    operates mostly with .json and is therefore not object orientated.
+
+    The skeleton can be parsed from a a config and setting dictionary
+    which contains all the information needed. The config dictionary
+    can also be read into the Configuration class.
+
+    The parsers can be found in the parser.py section of BOM analysis.
     """
 
     def __init__(self):

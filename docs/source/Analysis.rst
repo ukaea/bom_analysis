@@ -25,28 +25,8 @@ Configuring Analysis
 --------------------
 .. _configure analysis:
 
-Configuring different analyse is critical to a workflow functioning correctly.
-Bill of Materials analysis has a the base Configuration which is inherits a number of
-methods for the Config and a Meta class for properties and setters. An analysis workflow
-can use the BaseConfig directly or inherit the BaseConfigMethods and the MetaConfig to
-customise the configuration parameters.
-
-The base config includes a number of variables which can be used by BOM Analysis and
-are covered in the other sections such as the MaterialsSelector, the defaults for the
-Material and the Parameters, and a number of different working directories.
-
-A configuration can also be loaded and dumped to a dictionary using the same method
-names as the Engineering Components.
-
-The Meta class which defines properies and setters
-that can be used on the configuration without initialising it and our shared
-like class properties.
-
-Including properties and setters allows for better error handling and defaulting
-of values. If a calculation is performed that called a translation but the
-translator has not been defined within the configuration then a specific error
-will be raised. If a plot directory is called then but it has not been defined
-then it willd default to the working directory.
+.. automodule:: bom_analysis.base.MetaConfig
+                :noindex:
 
 An example of setting up a custom Configuration is given:
 
@@ -82,25 +62,14 @@ a series of classes are included.
  * Step - defines the analysis steps
  * Framework - populates the required classes from dictionary
 
-The solver contains an ordered dictionary which should be
-made up of the steps that the analysis will go through. It can be
-populated manually or build from a settings file.
+.. automodule:: bom_analysis.solver.Solver
+                :noindex:
 
-As with the engineering objects the solver can be written
-to a dictionary using the same method names.
+.. automodule:: bom_analysis.solver.Step
+                :noindex:
 
-The solver implemented in BOM Analysis is made up
-of a series of steps ran in linear order. Each step
-requires the class (not initialised) to be initialised,
-the method within the class that will be run plus and
-arguments or key word arguments. The solve function
-can then be run to execute the step.
-
-The framework offers an automated way of populating configurations,
-translators, settings, and parsing skeletons uting dictionaries.
-Following poplulation of the various different required information
-it can then getnerate the bill of materials and solve the analysis
-workflow.
+.. automodule:: bom_analysis.build.Framework
+                :noindex:
 
 The solver and the configuration are stored as class variables.
 
