@@ -56,12 +56,6 @@ jobs:
         path: .coverage-reports/test-coverage-pytest.xml
       # Use always() to always run this step to publish test results when there are test failures
       if: ${{ always() }}  
-    - name: Test documentation build
-      run: |
-        sphinx-apidoc -f -o docs/source/ bom_analysis/
-        cd docs/
-        make html
-        cd ..
     - name: SonarCloud
       uses: actions/checkout@v2
       with:
@@ -71,3 +65,9 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    - name: Test documentation build
+      run: |
+        sphinx-apidoc -f -o docs/source/ bom_analysis/
+        cd docs/
+        make html
+        cd ..
