@@ -5,7 +5,7 @@ Variables
 The bill of materials can contain a lot of information that is required 
 by for analyses and there are a number of ways to access that information.
 
-`Examples notebook showing of using deifferent variables is here  <https://github.com/ukaea/bom_analysis/blob/main/examples/example_0%20-%20Defining%20a%20Bill%20of%20Materials.ipynb>`__
+`Examples notebook showing of using deifferent variables is here  <https://github.com/ukaea/bom_analysis/blob/main/examples/example_0%20-%20Defining%20a%20Bill%20of%20Materials.ipynb>`__.
 
 
 --------------------

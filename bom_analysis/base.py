@@ -623,7 +623,7 @@ class DFClass(BaseClass):
         Note
         ----
         `See <https://pandas.pydata.org/pandas-docs/stable/user_guide/merging.html>`_
-        for additional information.
+        for additional information on pandas method used to merge the dataframe.
 
         """
         if isinstance(self.data, pd.DataFrame):

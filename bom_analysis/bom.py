@@ -415,8 +415,8 @@ class EngineeringObject(BaseClass):
             A dictionary of the component and any lookup
             parameters.
 
-        Notes
-        -----
+        Note
+        ----
         This allows for part consistancy to be checked
         i.e. that part references are unique to a component
         (there can still be multiple components using the
@@ -874,8 +874,8 @@ class Assembly(EngineeringObject):
         args : str
             Parameter strings that will be extracted.
 
-        Notes
-        -----
+        Note
+        ----
         This allows for part consistancy to be checked
         i.e. that part references are unique to a component
         (there can still be multiple components using the
