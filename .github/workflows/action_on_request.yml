@@ -48,6 +48,11 @@ jobs:
         name: pytest-results
         path: .coverage-reports/test-results.xml
       # Use always() to always run this step to publish test results when there are test failures
+    - name: SonarCloud Scan
+      uses: SonarSource/sonarcloud-github-action@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       if: ${{ always() }}
     - name: Upload coverage
       uses: actions/upload-artifact@v3
@@ -56,15 +61,6 @@ jobs:
         path: .coverage-reports/test-coverage-pytest.xml
       # Use always() to always run this step to publish test results when there are test failures
       if: ${{ always() }}  
-    - name: SonarCloud
-      uses: actions/checkout@v2
-      with:
-        fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
-    - name: SonarCloud Scan
-      uses: SonarSource/sonarcloud-github-action@master
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
     - name: Test documentation build
       run: |
         sphinx-apidoc -f -o docs/source/ bom_analysis/
