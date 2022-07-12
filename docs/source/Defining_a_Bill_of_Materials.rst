@@ -11,6 +11,7 @@ The Skeleton
 -------------------
 
 .. automodule:: bom_analysis.base.BaseClass
+                :noindex:
 
 -----------------------------------------
 Importing and Exporting Bill of Materials
@@ -39,6 +40,7 @@ See the :obj:`bom_analysis.bom.Assembly.to_dict` for docstrings.
 Parsing Skeleton
 --------------------
 .. automodule:: bom_analysis.parsers.SkeletonParser
+                :noindex:
 
 See the :obj:`bom_analysis.parsers.SkeletonParser` for docstrings.
 
@@ -92,5 +94,6 @@ A global configuration file is in Bill of Materials analysis which contains
 defaults for the definition of the BOM.
 
 .. automodule:: bom_analysis.base.BaseConfig
+                :noindex:
 
 The information about using a configuration can be found :ref:`here <configure analysis>`.
