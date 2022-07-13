@@ -46,7 +46,7 @@ def encoder(obj):
     Note
     ----
     See
-    `here <https://stackoverflow.com/questions/26646362/numpy-array-is-not-json-serializable>`_
+    `here <https://stackoverflow.com/questions/26646362/numpy-array-is-not-json-serializable>`__
     for how to turn into a proper encoders."""
 
     if hasattr(obj, "to_dict"):
