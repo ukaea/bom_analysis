@@ -5,12 +5,14 @@ Materials
 Given that it is a bill of materials structure, all Components (and HomogenisedAssembly)
 have a materials object which can allow for data extraction.
 
-`A worked example of using the Hierarchy can be found here <https://git.ccfe.ac.uk/step/invesselcomponents/outboardblanket/bom_analysis/-/blob/development/examples/example_4%20-%20Handling%20Materials.ipynb>`__
+`A worked example of using the Hierarchy can be found here <https://github.com/ukaea/bom_analysis/blob/main/examples/example_4%20-%20Handling%20Materials.ipynb>`__
 
 --------------------
 Materials Object
 --------------------
+
 .. automodule:: bom_analysis.materials.MaterialData
+                :noindex:
 
 See the :obj:`bom_analysis.materials.MaterialData` for docstrings.
 
@@ -18,6 +20,7 @@ See the :obj:`bom_analysis.materials.MaterialData` for docstrings.
 Selecting Materials
 --------------------
 .. automodule:: bom_analysis.utils.MaterialSelector
+                :noindex:
 
 See the :obj:`bom_analysis.utils.MaterialSelector` for docstrings.
 
@@ -25,6 +28,7 @@ See the :obj:`bom_analysis.utils.MaterialSelector` for docstrings.
 Translating
 --------------------
 .. automodule:: bom_analysis.utils.Translator
+                :noindex:
 
 .. code-block:: python
 

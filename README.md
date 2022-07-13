@@ -1,9 +1,5 @@
-![GitHub](https://git.ccfe.ac.uk/step/invesselcomponents/outboardblanket/bom_analysis)
-[![Bugs](https://sonarqube.apps.l/api/project_badges/measure?project=step_invesselcomponents_outboardblanket_bom_analysis_AXkhiCaHuvKL_5-NB71c&metric=bugs)](https://sonarqube.apps.l/dashboard?id=step_invesselcomponents_outboardblanket_bom_analysis_AXkhiCaHuvKL_5-NB71c)
-[![Code Smells](https://sonarqube.apps.l/api/project_badges/measure?project=step_invesselcomponents_outboardblanket_bom_analysis_AXkhiCaHuvKL_5-NB71c&metric=code_smells)](https://sonarqube.apps.l/dashboard?id=step_invesselcomponents_outboardblanket_bom_analysis_AXkhiCaHuvKL_5-NB71c)
-[![Coverage](https://sonarqube.apps.l/api/project_badges/measure?project=step_invesselcomponents_outboardblanket_bom_analysis_AXkhiCaHuvKL_5-NB71c&metric=coverage)](https://sonarqube.apps.l/dashboard?id=step_invesselcomponents_outboardblanket_bom_analysis_AXkhiCaHuvKL_5-NB71c)
-[![Duplicated Lines (%)](https://sonarqube.apps.l/api/project_badges/measure?project=step_invesselcomponents_outboardblanket_bom_analysis_AXkhiCaHuvKL_5-NB71c&metric=duplicated_lines_density)](https://sonarqube.apps.l/dashboard?id=step_invesselcomponents_outboardblanket_bom_analysis_AXkhiCaHuvKL_5-NB71c)
-[![Quality Gate Status](https://sonarqube.apps.l/api/project_badges/measure?project=step_invesselcomponents_outboardblanket_bom_analysis_AXkhiCaHuvKL_5-NB71c&metric=alert_status)](https://sonarqube.apps.l/dashboard?id=step_invesselcomponents_outboardblanket_bom_analysis_AXkhiCaHuvKL_5-NB71c)
+[![Documentation Status](https://readthedocs.org/projects/bom-analysis/badge/?version=latest)](https://bom-analysis.readthedocs.io/en/latest/?badge=latest)
+      
 
 # Bill of Materials Analysis
 
@@ -22,7 +18,7 @@ all of which can contain data that is important for the analysis. For example,
 a user may want to assess the mass of an assembly by summing the mass of all
 the components in that make it up.
 
-The Bill of Materials can be plotted to help understand the system (taken from [example](https://git.ccfe.ac.uk/step/invesselcomponents/outboardblanket/bom_analysis/-/blob/development/examples/example_0%20-%20Defining%20a%20Bill%20of%20Materials.ipynb)):
+The Bill of Materials can be plotted to help understand the system (taken from [example](https://github.com/ukaea/bom_analysis/blob/main/examples/example_1%20-%20Loading_a_Bill_of_Materials.ipynb)):
 
     tokamak
     ├── coil_set
@@ -53,17 +49,17 @@ The easiest way to install bom_analysis is using pip ``pip``:
 
 ## Help and Support
 
-- [Documentation](http://step.gitpages.ccfe.ac.uk/invesselcomponents/outboardblanket/bom_analysis/#)
+- [Documentation](https://bom-analysis.readthedocs.io/en/latest/index.html#)
 
-- [Example on Defining a Bill of Material](https://git.ccfe.ac.uk/step/invesselcomponents/outboardblanket/bom_analysis/-/blob/development/examples/example_0%20-%20Defining%20a%20Bill%20of%20Materials.ipynb)
+- [Example on Defining a Bill of Material](https://github.com/ukaea/bom_analysis/blob/main/examples/example_0%20-%20Defining%20a%20Bill%20of%20Materials.ipynb)
 
-- [Example on Loading a Bill of Material](https://git.ccfe.ac.uk/step/invesselcomponents/outboardblanket/bom_analysis/-/blob/development/examples/example_1%20-%20Loading_a_Bill_of_Materials.ipynb)
+- [Example on Loading a Bill of Material](https://github.com/ukaea/bom_analysis/blob/main/examples/example_1%20-%20Loading_a_Bill_of_Materials.ipynb)
 
-- [Example on Creating a Skeleton](https://git.ccfe.ac.uk/step/invesselcomponents/outboardblanket/bom_analysis/-/blob/development/examples/example_2%20-%20Creating%20a%20Skeleton%20from%20Scratch.ipynb)
+- [Example on Creating a Skeleton](https://github.com/ukaea/bom_analysis/blob/main/examples/example_2%20-%20Creating%20a%20Skeleton%20from%20Scratch.ipynb)
 
-- [Example on Useful Features](https://git.ccfe.ac.uk/step/invesselcomponents/outboardblanket/bom_analysis/-/blob/development/examples/example_3%20-%20Other%20Useful%20Classes.ipynb)
+- [Example on Useful Features](https://github.com/ukaea/bom_analysis/blob/main/examples/example_3%20-%20Other%20Useful%20Classes.ipynb)
 
-- [Example on Handling Materials](https://git.ccfe.ac.uk/step/invesselcomponents/outboardblanket/bom_analysis/-/blob/development/examples/example_4%20-%20Handling%20Materials.ipynb)
+- [Example on Handling Materials](https://github.com/ukaea/bom_analysis/blob/main/examples/example_4%20-%20Handling%20Materials.ipynb)
 
 
 ## Testing

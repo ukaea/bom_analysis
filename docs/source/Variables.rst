@@ -5,13 +5,15 @@ Variables
 The bill of materials can contain a lot of information that is required 
 by for analyses and there are a number of ways to access that information.
 
-`Examples notebook showing of using deifferent variables is here  <https://git.ccfe.ac.uk/step/invesselcomponents/outboardblanket/bom_analysis/-/blob/development/examples/example_0%20-%20Defining%20a%20Bill%20of%20Materials.ipynb>`__
+`Examples notebook showing of using deifferent variables is here  <https://github.com/ukaea/bom_analysis/blob/main/examples/example_0%20-%20Defining%20a%20Bill%20of%20Materials.ipynb>`__.
 
 
 --------------------
 Parameters
 --------------------
+
 .. automodule:: bom_analysis.parameters.ParameterFrame
+                :noindex:
 
 .. code-block:: python
 
@@ -25,7 +27,9 @@ See the :obj:`bom_analysis.parameters.ParameterFrame` for docstrings.
 --------------------
 Assignment
 --------------------
+
 .. automodule:: bom_analysis.bom.EngineeringObject.assignment
+                :noindex:
 
 .. code-block:: python
 
@@ -85,6 +89,8 @@ See the :obj:`bom_analysis.utils.access_nested` for docstrings.
 --------------------
 Wrapped Dataframe
 --------------------
+
 .. automodule:: bom_analysis.base.DFClass
+                :noindex:
 
 See the :obj:`bom_analysis.base.DFClass` for docstrings.

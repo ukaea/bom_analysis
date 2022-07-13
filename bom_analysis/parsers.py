@@ -17,9 +17,6 @@ class SkeletonParser(BaseFramework):
     can also be read into the Configuration class.
 
     The parsers can be found in the parser.py section of BOM analysis.
-
-    An example of creating a skeleton by parsing it is in the examples
-    (`Example <https://git.ccfe.ac.uk/step/invesselcomponents/outboardblanket/bom_analysis/-/blob/development/examples/extra_example_0%20-%20Creating_a_Skeleton_from_Dictionaries.ipynb>`__)
     """
 
     def __init__(self):
