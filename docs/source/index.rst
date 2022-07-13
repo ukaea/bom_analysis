@@ -35,7 +35,7 @@ the components in that make it up.
    Variables.rst
    Materials.rst
    Analysis.rst
-   modules
+   bom_analysis.rst
    
 
 Indices and tables
