@@ -5,12 +5,14 @@ import inspect
 import itertools
 import logging
 from pathlib import Path
+import os
+from typing import Any, Union
 
 import json
 import numpy as np
 import pandas as pd
 
-from bom_analysis import ureg, run_log, nice_format, info_handler
+from bom_analysis import ureg, run_log, nice_format, info_handler, Q_
 
 
 def __init__(self, inherited_classes):
@@ -223,6 +225,12 @@ class MaterialSelector:
         """The material selector is a class that can be provided with
         a list of MaterialData classes in a priotised order from which
         a material can be selected based on a material str.
+        """
+        self.clear_database()
+
+    def clear_database(self):
+        """Clears the material databases within the materials
+        selector.
 
         Attributes
         ----------
@@ -429,6 +437,125 @@ class Translator:
         list
             The input translations."""
         return list(cls._data.keys())
+
+
+class PrintParamsTable:
+    def format_params(self, list_of_params: list) -> list:
+        """Formats the dictionary representation of the parameters to allow
+        for nice string represntation.
+
+        If being used in a terminal, the size will be checked to split
+        the strings of the information in the parameter so that the
+        output does not extend over multiple lines (and can be read).
+        The in-built pint formater is used to convert the strings representing
+        a unit (if supplied) to symbolic i.e. meter to m.
+
+        Parameters
+        ----------
+        list_of_params : list
+            A list of dictionaries with the _data parameters.
+
+        Returns
+        -------
+        list
+            A formated list of dictionaries with the _data parameters.
+        """
+        formated_list_of_params = []
+        max_character = self.get_max_column_width(list_of_params)
+        for param in list_of_params:
+            new_param = {}
+            if "unit" in param and param["unit"] is not None:
+                param["unit"] = format(Q_(param["unit"]).units, "~")
+            elif "unit" in param:
+                param["unit"] = "dimensionless"
+            for key in self.header:
+                shortened_pint = self.shorten_unit(param[key])
+                split_string = self.new_line_in_string(shortened_pint, max_character)
+                new_param[key] = split_string
+            formated_list_of_params.append(new_param)
+        return formated_list_of_params
+
+    def get_max_column_width(self, list_of_params: list) -> Union[int, None]:
+        """Gets the maximum column size for printing of
+        a tabular dataframe.
+
+        The maximum column size is important as it allows
+        a string to be split over multiple lines and, therefore,
+        displayed nicely.
+
+        Parameters
+        ----------
+        list_of_params : list
+            List of parameters that will be used to determine
+            the maximum size of the columns in the print.
+
+        Returns
+        -------
+        int
+            The maximum column size for a given terminal width.
+        None
+            If an OSError is raised (due to no terminal) or
+            an index error is raised (due to an empty input list).
+        """
+        try:
+            terminal_size = os.get_terminal_size().columns
+            return int(terminal_size / len(list_of_params[0]))
+        except (
+            OSError,
+            IndexError,
+        ):
+            return None
+
+    def shorten_unit(self, quantity: Any) -> Any:
+        """Shortens the format of the units in a pint unit
+        and returns as string.
+
+        Parameters
+        ----------
+        quantity : Any
+            Any input to be tried to have the units
+            converted to symbolic via the format.
+
+        Returns
+        -------
+        str
+            String for quantity with shortened units.
+        """
+        try:
+            return format(quantity, "~")
+        except (
+            ValueError,
+            TypeError,
+        ):
+            return quantity
+
+    def new_line_in_string(self, input: Any, max_character: int = None) -> Any:
+        """Splits the input into multiple lines based on a supplied
+        max character interger.
+
+        Parameters
+        ----------
+        input : Any
+            The parameter item to be split.
+        max_character : int, optional
+            The maximum number of characters before adding the new
+            line, by default None.
+
+        Returns
+        -------
+        Any
+            The parameter item with the split accross new lines added.
+        """
+        if max_character is not None:
+            try:
+                lines = []
+                for i in range(0, len(input), max_character):
+                    lines.append(input[i : i + max_character])
+                return "\n".join(lines)
+            except TypeError:
+                return input
+        else:
+            return input
 
 
 class UpdateDict:

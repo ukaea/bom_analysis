@@ -5,6 +5,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
+from bom_analysis import Q_
 import bom_analysis.base as bs
 from bom_analysis.base import BaseConfig as Config
 from bom_analysis.bom import Assembly, Component
@@ -437,6 +438,23 @@ class TestOldFormatLoad(unittest.TestCase):
         phone.from_dict(self.data_dictionary_new, ref="phone")
         phone.plot_hierarchy()
         print(phone.params)
+
+
+class TestBaseDfClass(unittest.TestCase):
+    def test_print_correctly(self):
+        df_wrap = bs.DFClass()
+        df_wrap.create_df(4, "foo", "bar")
+        print(df_wrap)
+
+    def test_print_empty(self):
+        df_wrap = bs.DFClass()
+        print(df_wrap)
+
+    def test_print_correctly_with_pint(self):
+        df_wrap = bs.DFClass()
+        df_wrap.create_df(4, "foo", "bar")
+        df_wrap.data.at["foo", 1] = Q_(1000, "meter*meter*kilogram*litre")
+        print(df_wrap)
 
 
 if __name__ == "__main__":

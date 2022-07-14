@@ -454,6 +454,10 @@ class TestParameters(unittest.TestCase):
         pf.add_parameter(var="length", value=1, hello="world")
         pf.length = 1.0
 
+    def test_empty_print(self):
+        pf = par.ParameterFrame()
+        print(pf)
+
 
 @pytest.mark.integrationtest
 class TestPintameters(unittest.TestCase):
