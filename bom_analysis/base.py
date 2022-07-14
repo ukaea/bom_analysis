@@ -649,7 +649,7 @@ class DFClass(BaseClass, PrintParamsTable):
             return f"\n{tabulate(formated_list_of_params, headers='keys', tablefmt='fancy_grid')}"
         else:
             return "Empty DataFrame"
-    
+
     def to_dict(self):
         """Exports the data for storage in a json file.
 

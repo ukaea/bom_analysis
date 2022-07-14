@@ -227,16 +227,16 @@ class MaterialSelector:
         a material can be selected based on a material str.
         """
         self.clear_database()
-        
+
     def clear_database(self):
-        """Clears the material databases within the materials 
+        """Clears the material databases within the materials
         selector.
-        
+
         Attributes
         ----------
         priority_order : np.ndarray
             An array contianing information about each of the material
-            data class.        
+            data class.
         """
         self.priority_order = np.array([], dtype=object)
 
