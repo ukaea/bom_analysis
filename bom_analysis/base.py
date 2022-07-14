@@ -2,7 +2,6 @@ from builtins import getattr, hasattr
 import types
 from pathlib import Path
 import os
-import textwrap
 from getpass import getpass
 from typing import Union
 
@@ -558,7 +557,11 @@ class DFClass(BaseClass, PrintParamsTable):
         """
         Used for printing the dataframe.
         """
-        return self.vars
+        cols = self.data.columns.tolist()
+        header = ["index"]
+        for col_int in cols:
+            header.append(col_int)
+        return header
 
     @property
     def col_count(self):
@@ -638,12 +641,15 @@ class DFClass(BaseClass, PrintParamsTable):
             terminal fitted tabulate based dataframe.
         """
         if self.data is not None:
-            list_of_params = [data_dict for data_dict in self.data.to_dict().values()]
+            list_of_params = []
+            for key, data_dict in self.data.to_dict(orient="index").items():
+                data_dict["index"] = key
+                list_of_params.append(data_dict)
             formated_list_of_params = self.format_params(list_of_params)
             return f"\n{tabulate(formated_list_of_params, headers='keys', tablefmt='fancy_grid')}"
         else:
             return "Empty DataFrame"
-
+    
     def to_dict(self):
         """Exports the data for storage in a json file.
 
