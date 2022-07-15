@@ -1,4 +1,3 @@
-import os
 import pprint
 from typing import Union, Any
 
@@ -9,7 +8,7 @@ from tabulate import tabulate
 
 from bom_analysis import Q_, run_log
 from bom_analysis.base import BaseFramework
-from bom_analysis.utils import access_nested, encoder, decoder
+from bom_analysis.utils import access_nested, encoder, decoder, PrintParamsTable
 
 
 class MissingParamError(AttributeError):
@@ -416,7 +415,7 @@ class PintParam(FlexParam):
         return dump
 
 
-class ParameterFrame:
+class ParameterFrame(PrintParamsTable):
     """The Parameter class aims to be the primary method for storing parameters within the
     Engineering Objects. A version (either Pint integrated or not) is included with every
     Engineering Object using the attribute params. The default is with Pint integration
@@ -580,72 +579,6 @@ class ParameterFrame:
             a list in order of the headers for
             printing the parameter frame."""
         return self._data[self.order[-1]].fields
-
-    def format_params(self, list_of_params: list):
-        """Formats the dictionary representation of the parameters to allow
-        for nice string represntation.
-
-        If being used in a terminal, the size will be checked to split
-        the strings of the information in the parameter so that the
-        output does not extend over multiple lines (and can be read).
-        The in-built pint formater is used to convert the strings representing
-        a unit (if supplied) to symbolic i.e. meter to m.
-
-        Parameters
-        ----------
-        list_of_params : list
-            A list of dictionaries with the _data parameters.
-
-        Returns
-        -------
-        list
-            A formated list of dictionaries with the _data parameters.
-        """
-        formated_list_of_params = []
-        try:
-            terminal_size = os.get_terminal_size().columns
-            max_character = int(terminal_size / len(list_of_params[0]))
-        except OSError:
-            max_character = None
-        for param in list_of_params:
-            new_param = {}
-            if "unit" in param and param["unit"] is not None:
-                param["unit"] = format(Q_(param["unit"]).units, "~")
-            elif "unit" in param:
-                param["unit"] = "dimensionless"
-            for key in self.header:
-                split_string = self.new_line_in_string(param[key], max_character)
-                new_param[key] = split_string
-            formated_list_of_params.append(new_param)
-        return formated_list_of_params
-
-    def new_line_in_string(self, input: Any, max_character: int = None):
-        """Splits the input into multiple lines based on a supplied
-        max character interger.
-
-        Parameters
-        ----------
-        input : Any
-            The parameter item to be split.
-        max_character : int, optional
-            The maximum number of characters before adding the new
-            line, by default None.
-
-        Returns
-        -------
-        Any
-            The parameter item with the split accross new lines added.
-        """
-        if max_character is not None:
-            try:
-                lines = []
-                for i in range(0, len(input), max_character):
-                    lines.append(input[i : i + max_character])
-                return "\n".join(lines)
-            except TypeError:
-                return input
-        else:
-            return input
 
     def add_parameter(self, **kwargs):
         """Adds a parameter to the underlying _data, must be

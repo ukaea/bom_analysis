@@ -29,26 +29,36 @@ jobs:
         pip install sphinx
         pip install sphinx_rtd_theme     
         pip install .
+
+    - name: SonarCloud
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
         
     - name: Test with pytest
       run: |
         coverage run --branch --source=bom_analysis -m pytest -v tests || true
-        coverage xml -o coverage.xml
-        mkdir test-results
-        cp coverage.xml test-results/test-coverage.xml
-        pytest -v -o junit_family=xunit1 --junitxml=test-results/test-results.xml tests
+        coverage xml -o coverage-pytest.xml
+        mkdir .coverage-reports/
+        cp coverage-pytest.xml .coverage-reports/test-coverage-pytest.xml
+        pytest -v -o junit_family=xunit1 --junitxml=.coverage-reports/test-results.xml tests
+    - name: SonarCloud Scan
+      uses: SonarSource/sonarcloud-github-action@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
     - name: Upload pytest test results
       uses: actions/upload-artifact@v3
       with:
         name: pytest-results
-        path: ./test-results/test-results.xml
+        path: .coverage-reports/test-results.xml
       # Use always() to always run this step to publish test results when there are test failures
       if: ${{ always() }}
     - name: Upload coverage
       uses: actions/upload-artifact@v3
       with:
         name: test-coverage
-        path: ./test-results/test-coverage.xml
+        path: .coverage-reports/test-coverage-pytest.xml
       # Use always() to always run this step to publish test results when there are test failures
       if: ${{ always() }}  
     - name: Test documentation build
@@ -57,4 +67,3 @@ jobs:
         cd docs/
         make html
         cd ..
-

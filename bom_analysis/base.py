@@ -2,7 +2,6 @@ from builtins import getattr, hasattr
 import types
 from pathlib import Path
 import os
-import textwrap
 from getpass import getpass
 from typing import Union
 import pprint
@@ -20,6 +19,7 @@ from bom_analysis.utils import (
     decoder,
     MaterialSelector,
     change_handler,
+    PrintParamsTable,
 )
 
 
@@ -531,7 +531,7 @@ class BaseClass:
                 setattr(self, name, decoder(sub))
 
 
-class DFClass(BaseClass):
+class DFClass(BaseClass, PrintParamsTable):
     """The DFClass is included in BOM analysis to allow for
     data to be stored in a dataframe but with some additional
     functionality.
@@ -556,6 +556,17 @@ class DFClass(BaseClass):
             return np.array([])
         else:
             return np.array(self.data.index)
+
+    @property
+    def header(self):
+        """
+        Used for printing the dataframe.
+        """
+        cols = self.data.columns.tolist()
+        header = ["index"]
+        for col_int in cols:
+            header.append(col_int)
+        return header
 
     @property
     def col_count(self):
@@ -621,8 +632,8 @@ class DFClass(BaseClass):
         for key, val in data_dict.items():
             self.data.at[key, col] = val
 
-    def __repr__(self):
-        """Prints the information.
+    def __str__(self):
+        """Returns user readable representation of the data.
 
         To allow for printing i the console, the terminal size
         is checked and the dat wrapped to fit. Additionally,
@@ -633,36 +644,16 @@ class DFClass(BaseClass):
         str
             The string that will be output contianing a
             terminal fitted tabulate based dataframe.
-
-        Note
-        ----
-        When tabulate is updated we can use
-        terminal_size = os.get_terminal_size()
-        width = int(terminal_size.columns/(self._col_count+1))
-        widths = [width for i in range(0, self._col_count)]
-        tabulate(self.data, tablefmt="fancy_grid", maxcolwidths=widths)."""
-        terminal_size = os.get_terminal_size()
-        width = int((terminal_size.columns - 50) / (self.col_count))
-
-        def format(x):
-            if hasattr(x, "magnitude"):
-                x = Q_(np.format_float_scientific(x.magnitude, precision=4), x.units)
-
-            text_list = textwrap.wrap(str(x), width=width)
-            string = "".join([f"{text}\n" for text in text_list])
-            return string
-
-        display_data = self.data.copy(deep=True)
-        for i_col in range(0, display_data.shape[1]):
-            display_data.iloc[:, i_col] = display_data.iloc[:, i_col].apply(format)
-        string = ""
+        """
         if self.data is not None:
-            string += (
-                f'\n\n{tabulate(display_data.sort_index(), tablefmt="fancy_grid")}\n\n'
-            )
+            list_of_params = []
+            for key, data_dict in self.data.to_dict(orient="index").items():
+                data_dict["index"] = key
+                list_of_params.append(data_dict)
+            formated_list_of_params = self.format_params(list_of_params)
+            return f"\n{tabulate(formated_list_of_params, headers='keys', tablefmt='fancy_grid')}"
         else:
-            string += f"\n\nno data populated\n\n"
-        return string
+            return "Empty DataFrame"
 
     def to_dict(self):
         """Exports the data for storage in a json file.
