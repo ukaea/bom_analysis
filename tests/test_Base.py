@@ -182,6 +182,18 @@ class TestConfig(unittest.TestCase):
         con = Config.to_dict()
         assert con["b"] == "foo"
 
+    def test_to_dict_without_login(self):
+        """tests whether to_dict works for different cases"""
+        config = {"a": 1, "b": "foo", "c": "bar"}
+        Config.define_config(config_dict=config)
+        Config._login_details = {
+            "username": "secret",
+            "password": "secret",
+            "domain": "secret",
+        }
+        dump = Config.to_dict()
+        assert "_login_details" not in dump
+
     def test_assignment_to_property(self):
         Config.restrict_param = "hello"
         assert Config.restrict_param == "hello"

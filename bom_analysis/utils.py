@@ -12,7 +12,15 @@ import json
 import numpy as np
 import pandas as pd
 
-from bom_analysis import ureg, run_log, nice_format, info_handler, Q_
+from bom_analysis import (
+    ureg,
+    run_log,
+    nice_format,
+    info_handler,
+    base_handler,
+    console_handler,
+    Q_,
+)
 
 
 def __init__(self, inherited_classes):
@@ -137,12 +145,15 @@ def change_handler(new_path):
     ----------
     new_path : str
         The new path for the run log to be stored."""
-    run_log.removeHandler(info_handler)
+    run_log.handlers.clear()
     info_handler.flush()
     info_handler.close()
     new_info_handler = logging.FileHandler(Path(new_path), "w")
     new_info_handler.setLevel(logging.INFO)
     new_info_handler.setFormatter(nice_format)
+
+    run_log.addHandler(base_handler)
+    run_log.addHandler(console_handler)
     run_log.addHandler(new_info_handler)
 
 
