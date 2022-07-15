@@ -8,6 +8,23 @@ from bom_analysis import ureg, run_log, Q_
 from bom_analysis.base import BaseClass, BaseFramework
 from bom_analysis.utils import Translator
 
+COOLPROPUNITS = dict(
+    T="K",
+    P="Pa",
+    D="kg/m**3",
+    C="J/kg/K",
+    O="J/kg/K",
+    U="J/kg",
+    H="J/kg",
+    S="J/kg/K",
+    A="m/s",
+    G="J/kg",
+    V="Pa*s",
+    L="W/m/K",
+    conductivity="W/m/K",
+    viscosity="Pa*s",
+)
+
 
 class NoMaterialDataException(Exception):
     pass
@@ -527,10 +544,19 @@ class DFLibraryWrap(MaterialData):
 
 
 class CoolPropsWrap(MaterialData):
+    """A wrapper for CoolProps with pint units.
+
+    Attributes
+    ----------
+    to : str
+        The string argument that will be used
+        by the translator.
+    """
+
     to = "CoolProps"
 
     @staticmethod
-    def check(mat, **kwargs):
+    def check(mat: str, **kwargs) -> bool:
         """Checks CoolProps for a material
         name.
 
@@ -545,7 +571,7 @@ class CoolPropsWrap(MaterialData):
 
         Returns
         -------
-        boolean
+        bool
             A True/False on whether the material exists in the library.
 
         See Also
@@ -567,18 +593,43 @@ class CoolPropsWrap(MaterialData):
             return False
 
     @exception_handler
-    def extract_property(self, property_name):
-        """Coolprops wrapper."""
-        return cp.PropsSI(
-            Translator(property_name, self.to),
+    def extract_property(self, property_name: str) -> Q_:
+        """Extracts a property from CoolProp and returns
+        the quivalent Pint Quantity.
+
+        Uses the global parameter COOLPROPUNITS to define
+        the units (the test suite will fail if later versions
+        of coolprops change this). Only outputs properties
+        by that need pressure and temperature inputs and not
+        properties that need other inputs such as surface
+        tension. Will translate a property_name into the
+        CoolProp format if included in the translator.
+
+        Parameters
+        ----------
+        property_name : str
+            The string of the property to be used by CoolProp
+            or to be translated into the string used by CoolProp.
+
+        Returns
+        -------
+        Q_
+            Quantity for the property at the material temperature
+            and pressure.
+        """
+        coolprops_output = Translator(property_name, self.to)
+        value = cp.PropsSI(
+            coolprops_output,
             "P",
             self.pressure.to("Pa").magnitude,
             "T",
             self.temperature.to("K").magnitude,
             Translator(self.mat, self.to),
         )
+        unit = COOLPROPUNITS[coolprops_output]
+        return Q_(value, unit)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """Print of where the material data came from.
 
         Returns
