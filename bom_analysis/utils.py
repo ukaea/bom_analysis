@@ -278,7 +278,7 @@ class MaterialSelector:
         raise ValueError(msg)
 
     def intialised_database(self, material_str: str, database: dict):
-        """Initialises a datbase class and sets teh attributes from
+        """Initialises a datbase class and sets the attributes from
         the extra data suplied.
 
         Parameters
