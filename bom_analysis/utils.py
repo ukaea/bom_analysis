@@ -19,6 +19,7 @@ from bom_analysis import (
     info_handler,
     base_handler,
     console_handler,
+    Q_,
 )
 
 
