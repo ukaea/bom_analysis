@@ -1,6 +1,7 @@
 from functools import wraps
+from gettext import translation
 from pathlib import Path
-from typing import Union
+from typing import Callable, Optional, Union
 
 import CoolProp.CoolProp as cp
 import pandas as pd
@@ -10,7 +11,7 @@ from bom_analysis import ureg, run_log, Q_
 from bom_analysis.base import BaseClass, BaseFramework
 from bom_analysis.utils import Translator
 
-COOLPROPUNITS = dict(
+COOLPROPUNITS : dict = dict(
     T="K",
     P="Pa",
     D="kg/m**3",
@@ -36,7 +37,7 @@ class MaterialPropertyDoesNotExistError(Exception):
     pass
 
 
-def exception_handler(func: type):
+def exception_handler(func: Callable) -> Callable:
     """
     A custom descriptor that returns an error when a function
     fails.
@@ -46,8 +47,13 @@ def exception_handler(func: type):
 
     Parameters
     ----------
-    func : type
+    func : Callable
         The function wrapped by the descriptor.
+
+    Returns
+    -------
+    Callable
+        The wrapper for the function.
 
     Raises
     ------
@@ -92,10 +98,11 @@ class MaterialData(BaseClass):
     calls the extract_property for the instance with the benefit that
     if the property (or material) does not exist in the database of that
     instance it will check the other databases within the MaterialSelector."""
+    to = ""
 
     def __init__(
         self,
-        mat: str = None,
+        mat: Optional[str] = None,
         temperature: Quantity = Q_(293.0, "K"),
         pressure: Quantity = Q_(100000.0, "Pa"),
         irradiation: Quantity = Q_(0.0, "dpa"),
@@ -140,7 +147,7 @@ class MaterialData(BaseClass):
         return string
 
     @property
-    def mat(self) -> str:
+    def mat(self) -> Optional[str]:
         """The name of the material.
 
         Returns
@@ -157,7 +164,7 @@ class MaterialData(BaseClass):
 
         Parameters
         ----------
-        value : Quantity
+        value : str
             The material to be assigned.
         """
         self._mat = value
@@ -321,7 +328,7 @@ class MaterialData(BaseClass):
         self.mat = mat  # Material from library
 
     @staticmethod
-    def check(mat: str, *kwargs):
+    def check(mat: str, **kwargs) -> bool:
         """Checks a library for a material, not implemented
         within the parent class.
 
@@ -471,8 +478,8 @@ class DFLibraryWrap(MaterialData):
             data = pd.read_json(Path(kwargs["path"]))
         else:
             raise ValueError("dataframe database must be suplied a path")
-        mat = Translator(mat, to)
-        if mat in data.columns:
+        translation = Translator(mat, to)
+        if translation in data.columns:
             return True
         else:
             return False
@@ -494,7 +501,7 @@ class DFLibraryWrap(MaterialData):
         super().from_dict(data)
         self._mat_data = pd.read_json(data["path"])
 
-    def to_dict(self) -> dict:
+    def to_dict(self, exclusions=["_mat_data"]) -> dict:
         """
         Exports the data for storage in a json file.
 
@@ -505,7 +512,7 @@ class DFLibraryWrap(MaterialData):
         --------
         base.BaseClass.to_dict : Parent to_dict.
         """
-        return super().to_dict(exclusions=["_mat_data"])
+        return super().to_dict(exclusions=exclusions)
 
     @exception_handler
     def extract_property(self, property_name: str) -> Union[Quantity, float]:
@@ -594,8 +601,8 @@ class CoolPropsWrap(MaterialData):
             to = kwargs["translate_to"]
         else:
             to = "CoolProps"
-        mat = Translator(mat, to)
-        if mat in cp.get_global_param_string("FluidsList"):
+        translation = Translator(mat, to)
+        if translation in cp.get_global_param_string("FluidsList"):
             return True
         else:
             return False

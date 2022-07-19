@@ -5,14 +5,13 @@ import inspect
 import itertools
 import logging
 from pathlib import Path
-from typing import Any, Iterable, Union
+from typing import Any, Collection, Iterable, Optional, Tuple, Union
 
 import json
 import numpy as np
 import pandas as pd
 
 from bom_analysis import ureg, run_log, nice_format, info_handler
-
 
 def __init__(self, inherited_classes: abc.Iterable):
     """Used to add to class factory created classes
@@ -233,7 +232,7 @@ class MaterialSelector:
         """
         self.priority_order = np.array([], dtype=object)
 
-    def select_database(self, material_str: str):
+    def select_database(self, material_str: Optional[str]):
         """Selects a material database from a material name.
 
         Parameters
@@ -259,7 +258,7 @@ class MaterialSelector:
         run_log.error(msg)
         raise ValueError(msg)
 
-    def intialised_database(self, material_str: str, database: dict) -> Any:
+    def intialised_database(self, material_str: Optional[str], database: dict) -> Any:
         """Initialises a datbase class and sets teh attributes from
         the extra data suplied.
 
@@ -316,7 +315,7 @@ class MaterialSelector:
                     f"{database['material'].__module__}.{database['material'].__name__}"
                 ]
             dump.append({"class_str": class_strings, "data": database["data"]})
-        return dump
+        return {"priority_order":dump}
 
     def old_style_from_dict(self, data: dict):
         """Older versions of settings files contain
@@ -364,7 +363,8 @@ class MaterialSelector:
         if "order" in data:
             self.old_style_from_dict(data)
         else:
-            for database in data:
+            order = data["priority_order"]
+            for database in order:
                 material_class = class_from_string(database["class_str"])
                 database["data"]["class_str"] = database["class_str"]
                 self.add_database(
@@ -381,9 +381,9 @@ class Translator:
     so can be used without initialisation. After the underlying data has been
     populated, the input for translation can be supplied alongside the output format."""
 
-    _data = {}
+    _data : dict = {}
 
-    def __new__(cls, name: str, output_format: str) -> str:
+    def __new__(cls, name: Optional[str], output_format: Optional[str]) -> Any:
         """Translates a name into a chosen output.
 
         Parameters
@@ -474,13 +474,13 @@ class UpdateDict:
         attribute."""
         self.update_main(self.main, self.input)
 
-    def unique_keys(self, input_dict: dict) -> Iterable:
+    def unique_keys(self, input_tuple: tuple) -> Iterable:
         """Defines the unique keys in all the input dict.
 
         Parameters
         ----------
-        input_dict : dict
-            The input dictionary.
+        input_tuple : dict
+            Tuple of input dictionaries.
 
         Returns
         -------
@@ -488,29 +488,29 @@ class UpdateDict:
             A dictionary of the input keys, a dictionary
             for legacy reasons."""
         temp = {}
-        for val in input_dict:
+        for val in input_tuple:
             temp.update(val)
         return temp.keys()
 
-    def update_main(self, main: dict, input_dict: dict):
+    def update_main(self, main: dict, input_tuple: tuple):
         """Updates the main dictionary with the input
         dictionary.
 
         Parameters
         ----------
-        input_dict : dict
-            The input dictionary.
+        input_dict : tuple
+            A tuple of input dictionaries.
         main : dictionary
             The main dictionary which will be updated.
         """
-        unique = self.unique_keys(input_dict)
-        for key, data in itertools.product(unique, input_dict):
+        unique = self.unique_keys(input_tuple)
+        for key, data in itertools.product(unique, input_tuple):
             if key in main and key in data:
                 self.update_key(main, key, data)
             elif key in data:
                 main[key] = data[key]
 
-    def update_key(self, main: dict, key: Union[str, int], data: Any):
+    def update_key(self, main: dict, key: Union[str, int], data: dict):
         """Updates the data in the main dictionary
         with a key.
 
@@ -572,7 +572,7 @@ def load_and_merge(location_list: list) -> dict:
         A merged dictionary of all the json
         in the location list.
     """
-    merged = {}
+    merged : dict = {}
     for path in location_list:
         with open(Path(path), "r") as f:
             dictionary = json.load(f)
@@ -580,7 +580,7 @@ def load_and_merge(location_list: list) -> dict:
     return merged
 
 
-def access_nested(obj: Any, location: Iterable, pos: int = 0):
+def access_nested(obj: Any, location: Union[list, tuple], pos: int = 0):
     """Accesses data within a nested object
     by searching for attribute or item down
     a list/tuple/array.

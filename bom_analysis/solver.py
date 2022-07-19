@@ -1,9 +1,9 @@
 from collections import OrderedDict
 import copy
 import time
-from typing import Any
+from typing import Any, Union
 
-from bom_analysis import ureg, run_log, Q_
+from bom_analysis import run_log
 from bom_analysis.base import BaseClass
 from bom_analysis.bom import EngineeringObject
 from bom_analysis.utils import UpdateDict, load_and_merge, class_from_string
@@ -228,7 +228,7 @@ class Solver(BaseClass):
         else:
             module["args"] = ()
 
-    def replace_with_comp(self, item: Any, flat: dict) -> dict:
+    def replace_with_comp(self, item: Union[dict, list, tuple, EngineeringObject], flat: dict) -> Union[dict, list, tuple, EngineeringObject]:
         """Replaces a string with a component in
         the args/kwargs to allow dictionary/list to be supplied.
 
@@ -236,30 +236,32 @@ class Solver(BaseClass):
         ----------
         flat : dict
             Flattened components in BoM.
-        item : Any
+        item : Union[dict, list, tuple, EngineeringObject]
             An instance which might contain the reference of a component.
 
         Returns
         -------
-        type
+        Union[dict, list, tuple, EngineeringObject]
             An instance with the reference replaced with the component
             the type of which is the same as the input."""
         if isinstance(item, list):
-            new_list = []
+            new_list: list = []
             for element in item:
                 new_list.append(self.replace_with_comp(element, flat))
             return new_list
         elif isinstance(item, dict):
-            new_dict = {}
+            new_dict: dict = {}
             for key, element in item.items():
                 new_dict[key] = self.replace_with_comp(element, flat)
             return new_dict
         elif isinstance(item, tuple):
-            new_item = ()
+            new_tup: tuple = ()
             for element in item:
-                new_item += (self.replace_with_comp(element, flat),)
-            return new_item
+                new_tup += (self.replace_with_comp(element, flat),)
+            return new_tup
         else:
             if item in flat:
-                item = flat[item]
-            return item
+                new_item:EngineeringObject = flat[item]
+                return new_item
+            else:
+                return item

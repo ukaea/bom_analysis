@@ -1,7 +1,7 @@
 from collections.abc import Iterable
 import os
 import pprint
-from typing import Union, Any
+from typing import Callable, Generic, Union, Any, Optional, Dict
 
 from box import Box
 import numpy as np
@@ -53,24 +53,30 @@ class FlexParam:
         The source (reference and/or code) of the parameter.
     """
 
-    _required_keys = np.array(["var", "value"])
-    _additional_keys = np.array([])
+    _required_keys : np.ndarray  = np.array(["var", "value"])
+    _additional_keys : np.ndarray = np.array([])
 
-    def __init__(self, val: Union[dict, Box]):
+    def __init__(self, val: Box):
         """Initialisation of the flexible parameter.
 
         Parameters
         ----------
         val : dict
             A dictionary containing the parameter data.
+
+        Note
+        ----
+        The typing return should be Union[dict, Box] and not Box
+        but assymetric setters are not yet working. See mypy
+        issue 3004.
         """
-        self._data = Box({}, frozen_box=True)
+        self._data : Box = Box({}, frozen_box=True)
         self.data = val
 
     @property
     def data(self) -> Box:
         """Property for the primary data store that
-        contains the frozen box under teh private
+        contains the frozen box under the private
         _data variable.
 
         The property runs and update before returning
@@ -101,7 +107,7 @@ class FlexParam:
             contain the _required_keys as keys.
         """
         self.check_inputs(data)
-        processed = self.process_inputs(data)
+        processed : dict = self.process_inputs(data)
         self._data = Box(processed, frozen_box=True)
 
     def check_inputs(self, data: Union[dict, Box]):
@@ -127,7 +133,7 @@ class FlexParam:
             )
 
     @classmethod
-    def process_inputs(cls, value: Union[dict, Box]) -> Union[dict, Box]:
+    def process_inputs(cls, value: Union[dict, Box]) -> dict:
         """Processes the inputs to the data to
         extract any new keys and write them to the
         _additional keys class attribute.
@@ -142,11 +148,11 @@ class FlexParam:
 
         Returns
         -------
-        Union[dict, Box]
+        dict
             The processed input with full _required_keys and
             _additional_keys.
         """
-        processed = {}
+        processed : dict = {}
         unique_keys = np.unique(
             np.append(cls._additional_keys, np.array(list(value.keys())))
         )
@@ -169,7 +175,7 @@ class FlexParam:
         attribute.
 
         Checks fields and updates if they do not match."""
-        new_data_dict = {}
+        new_data_dict :dict = {}
         if not np.all(
             np.isin(self._additional_keys, np.array(list(self._data.keys())))
         ):
@@ -444,7 +450,7 @@ class ParameterFrame:
         The kwargs are left as an input for legacy use.
 
         """
-        self._data = Box()
+        self._data :Box = Box()
 
     def __setattr__(self, attr: str, value: Any):
         """Sets a value in the underlying _data.
@@ -664,7 +670,7 @@ class ParameterFrame:
             kwargs["value"] = None
         self._data[var] = FlexParam(dict(**kwargs))
 
-    def update_parameter(self, var: str = None, **kwargs):
+    def update_parameter(self, var: Optional[str] = None, **kwargs):
         """
         Update full Parameter information (except for var).
 
@@ -672,10 +678,10 @@ class ParameterFrame:
         ----------
         kwargs : key word arguments, optional
             The data which makes up a new parameter."""
-        param = self.get_param(var)
+        param : Union[PintParam, FlexParam]  = self.get_param(var)
         param.replace(**kwargs)
 
-    def get_param(self, attr: str, key: str = None) -> Any:
+    def get_param(self, attr: Optional[str], key: Optional[str] = None) -> Any:
         """Gets a chosen parameter from the parameterframe instead
         of the value.
 
@@ -684,10 +690,10 @@ class ParameterFrame:
 
         Parameters
         ----------
-        attr : str
+        attr : Optional[str]
             The attibute name to be checked to see if a wrapped named
             tuple exists in _data or as attribute.
-        key : str, optional
+        key : Optional[str]
             The field in the parameter which will be
             returned.
 
@@ -746,7 +752,7 @@ class ParameterFrame:
         --------
         utils.encoder : Encodes to json serialisable dict from the numpy format.
         """
-        dump = {"data": {}}
+        dump : Dict[str, Union[dict, list]]= {"data": {}}
         if "class_str" not in dump or dump["class_str"] is None:
             dump["class_str"] = self.class_str
 
@@ -820,7 +826,7 @@ class ParameterFrame:
             Parameter can be created ({var:mass, value:10, unit:10}).
         """
         data = encoder(data)
-        parameter_dicts = self.extract_dictionary_of_parameters(data)
+        parameter_dicts : dict = self.extract_dictionary_of_parameters(data)
         return self.convert_parameter_dictionary_to_list(parameter_dicts)
 
     def extract_dictionary_of_parameters(self, data: dict) -> dict:
@@ -843,7 +849,7 @@ class ParameterFrame:
             Dictionary of the parameters only.
         """
         if access_nested(data, ["_params", "data"]) is not None:
-            parameter_dicts = data["_params"]["data"]
+            parameter_dicts :dict = data["_params"]["data"]
         elif access_nested(data, ["params", "data"]) is not None:
             parameter_dicts = data["params"]["data"]
         elif access_nested(data, ["data"]) is not None:

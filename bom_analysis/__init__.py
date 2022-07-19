@@ -2,6 +2,7 @@ import logging
 from logging.handlers import RotatingFileHandler
 import os
 from pathlib import Path
+from typing import Type
 
 import pint
 
@@ -9,7 +10,7 @@ import pint
 # Disable Pint's old fallback behavior (must come before importing Pint)
 os.environ["PINT_ARRAY_PROTOCOL_FALLBACK"] = "0"
 ureg = pint.UnitRegistry()
-Q_ = ureg.Quantity
+Q_ : pint.Quantity = ureg.Quantity
 ureg.define("displacements_per_atom = 1 = dpa = DPA")
 
 # Create Logger
@@ -49,7 +50,7 @@ from .bom import Assembly, Component, HomogenisedAssembly
 from .parameters import MissingParamError
 
 
-def update_config(new_config: BaseConfig):
+def update_config(new_config: Type[BaseConfig]):
     """Updates the configuration within the Framework
     class.
 

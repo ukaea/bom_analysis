@@ -1,7 +1,8 @@
 from collections import Counter, abc
 import copy
+from types import new_class
 import weakref
-from typing import Union, Any
+from typing import Any, Callable, Dict, Optional, Type, TypeVar, Union
 
 import numpy as np
 import pandas as pd
@@ -13,6 +14,7 @@ from bom_analysis.materials import MaterialData
 from bom_analysis.parameters import ParameterFrame
 from bom_analysis.utils import UpdateDict, class_factory, class_from_string
 
+T = TypeVar('T', bound='EngineeringObject')
 
 class NonUniqueComponentReference(Exception):
     """Error for when there is a non-unique reference
@@ -28,7 +30,7 @@ class EngineeringObject(BaseClass):
     materials. It contains key variables and methods which allow the
     bill of materials to function."""
 
-    def __init__(self, ref: str = None, assignment: str = None):
+    def __init__(self, ref: Optional[str] = None, assignment: Optional[str] = None):
         """
         The engineering object forms the parent for
         all components within the bill of materials and is defined by
@@ -92,7 +94,7 @@ class EngineeringObject(BaseClass):
         return f"{self.__class__.__name__} " f"with reference {self.ref}"
 
     @property
-    def ref(self) -> str:
+    def ref(self) -> Optional[str]:
         """A reference which represents a unique variable for an engineering component
         such as a part number. The reference can be any string, the key is that it is
         unique to the part. Multiple assemblies within a system can have the same reference
@@ -112,7 +114,7 @@ class EngineeringObject(BaseClass):
         return self._ref
 
     @ref.setter
-    def ref(self, value: str):
+    def ref(self, value: Optional[str]):
         """Setter for _ref private variable.
 
         Parameters
@@ -173,7 +175,7 @@ class EngineeringObject(BaseClass):
         self._assignment = np.unique(new_assignment)
 
     @property
-    def params(self) -> ParameterFrame:
+    def params(self) -> Optional[ParameterFrame]:
         """The property which represents the parameters
         of the engineering object.
 
@@ -190,7 +192,7 @@ class EngineeringObject(BaseClass):
         return self._params
 
     @params.setter
-    def params(self, value: ParameterFrame):
+    def params(self, value: Optional[ParameterFrame]):
         """The setter for the parameter frame.
 
         Parameters
@@ -322,7 +324,7 @@ class EngineeringObject(BaseClass):
             if type(val) == dict and "class_str" in val:
                 self.add_class(name, val)
 
-    def check_duplicate(self, component_1: BaseClass, component_2: BaseClass):
+    def check_duplicate(self, component_1: Any, component_2: Any):
         """Check whether a two components adhere to the
         bill of materials rules on the names of _ref.
 
@@ -334,9 +336,9 @@ class EngineeringObject(BaseClass):
 
         Parameters
         ----------
-        component_1 : BaseClass
+        component_1 : EngineeringObject
             First Component for comparison.
-        component_2 : BaseClass
+        component_2 : EngineeringObject
             Second Component for comparison.
 
         Raises
@@ -349,7 +351,7 @@ class EngineeringObject(BaseClass):
             run_log.error(msg)
             raise NonUniqueComponentReference(msg)
 
-    def flatten(self, flat: Union[dict, None] = None) -> dict:
+    def flatten(self, flat: Optional[Dict[Optional[str], Any]] = None) -> dict:
         """Returns a flat dict of components.
 
         Parameters
@@ -425,7 +427,7 @@ class EngineeringObject(BaseClass):
             param_dict[arg] = getattr(self.params, arg, None)
         return {self.ref: param_dict}
 
-    def copy_part(self) -> type:
+    def copy_part(self) -> Any:
         """Creates a copy of the component.
 
         For the complex classess, using copy.deepcopy(x)
@@ -440,17 +442,14 @@ class EngineeringObject(BaseClass):
             Copy of the part."""
         skeleton = self.to_dict()
         new_dict = copy.deepcopy(skeleton)
-        new_class = self.create_class_from_data(self.ref, new_dict, self_copied=True)
-        return new_class
+        return self.create_class_from_data(self.ref, new_dict, self_copied=True)
 
     def create_class_from_data(
-        self, ref: str, skeleton: dict, self_copied: bool = False
-    ) -> type:
-        """To correctly create a class from data more some additional
-        changes must me made in addition to loading in the class
-        and then using from_dict. This is to allow the master registers
-        to be merged so that duplicate components are not created (and
-        fail due to not being unique).
+        self, ref: Optional[str], skeleton: dict, self_copied: bool = False
+    ) -> Any:
+        """Creating a class from data is relatively simple for
+        EngineeringObjects as they do not have master registers
+        or sub assemblies.
 
         Parameters
         ----------
@@ -470,14 +469,31 @@ class EngineeringObject(BaseClass):
         new_class
             An initialised copy of the object.
         """
+        new_class : Any = self.create_top_level(ref, skeleton)
+        new_class.from_dict(skeleton)
+        return new_class
+
+    def create_top_level(self, ref: Optional[str], skeleton: dict) -> Any:
+        """Creates a top level EngineeringObject from a skeleton.
+
+        Parameters
+        ----------
+        ref : str
+            The reference for the engineering object, must be unique.
+        skeleton : dict
+            A dictionary containing all the information about an
+            engineering object. The first level keys are the names
+            of the parts which make up the engineering object.
+
+        Returns
+        -------
+        Type[T]
+            A new EngineeringObject based on the Skeleton.
+        """
+
         new_data = skeleton[ref]
         new_class = class_factory(ref, new_data["class_str"], {"ref": ref})
         new_class.ref = ref
-        if new_class.assembly:
-            new_class.master_register = {new_class.ref: weakref.ref(new_class)}
-            if not self_copied:
-                new_class.master_register.update(self.master_register)
-        new_class.from_dict(skeleton)
         return new_class
 
     def add_defaults(self, defaults: dict):
@@ -552,9 +568,9 @@ class Component(EngineeringObject):
 
     def hierarchy(
         self,
-        tree: Union[treelib.Tree, None] = None,
-        parent_node: Union[treelib.Node, None] = None,
-    ) -> treelib.Tree:
+        tree: Optional[treelib.Tree] = None,
+        parent_node: Optional[treelib.Node] = None,
+    ) -> Optional[treelib.Tree]:
         """Used to create a hierarch of a BOM.
 
         This is a basic return due so that the
@@ -573,8 +589,11 @@ class Component(EngineeringObject):
         -------
         treelib.Tree
             A hierachy treelib instance."""
-        tree.create_node(tag=self.ref, parent=parent_node.identifier)
-        return tree
+        if tree is not None and parent_node is not None:
+            tree.create_node(tag=self.ref, parent=parent_node.identifier)
+            return tree
+        else:
+            return None
 
 
 class SubAssembly(dict):
@@ -626,8 +645,8 @@ class Assembly(EngineeringObject):
             to their instances.
         """
         super().__init__(ref=ref, assignment=assignment)
-        self._sub_assembly = SubAssembly()
-        self._part_count = Counter()
+        self._sub_assembly: SubAssembly = SubAssembly()
+        self._part_count: Counter = Counter()
         self.master_register = {ref: weakref.ref(self)}
 
     def __getitem__(self, item_name: str) -> Any:
@@ -813,6 +832,40 @@ class Assembly(EngineeringObject):
                 child_class = self.create_class_from_data(child, skeleton)
             self.add_component(child_class)
 
+    def create_class_from_data(
+        self, ref: Optional[str], skeleton: dict, self_copied: bool = False
+    ) -> Any:
+        """To correctly create a class from data more some additional
+        changes must me made in addition to loading in the class
+        and then using from_dict. This is to allow the master registers
+        to be merged so that duplicate components are not created (and
+        fail due to not being unique).
+
+        Parameters
+        ----------
+        ref : str
+            The reference for the engineering object, must be unique.
+        skeleton : dict
+            A dictionary containing all the information about an
+            engineering object. The first level keys are the names
+            of the parts which make up the engineering object.
+        self_copied : boolean
+            A boolean on whether the instance is being copied. If an instance
+            is being copied then merging the master registers means that a
+            true copy is not formed (as it uses the weak ref of the register).
+
+        Returns
+        -------
+        new_class
+            An initialised copy of the object.
+        """
+        new_class = self.create_top_level(ref, skeleton)
+        new_class.master_register = {new_class.ref: weakref.ref(new_class)}
+        if not self_copied:
+            new_class.master_register.update(self.master_register)
+        new_class.from_dict(skeleton)
+        return new_class
+
     def component_from_string(self, string: str) -> EngineeringObject:
         """Returns a component within the nested sub assembly
         based on a . delimited string.
@@ -838,7 +891,7 @@ class Assembly(EngineeringObject):
             component = getattr(component, ref)
         return component
 
-    def flatten(self, flat: Union[dict, None] = None):
+    def flatten(self, flat: Optional[Dict[Optional[str], Any]] = None) -> dict:
         """Returns a flat dict of components.
 
         Flattening the components is very useful as it
@@ -919,7 +972,7 @@ class Assembly(EngineeringObject):
             params.update(part.lookup_params(*args))
         return params
 
-    def add_component(self, component: EngineeringObject, ref: Union[str, None] = None):
+    def add_component(self, component: Any, ref: Union[str, None] = None):
         """Add components to the _sub_assembly, meant to allow
         for non-skeleton assembly creation.
 
@@ -1007,10 +1060,11 @@ class Assembly(EngineeringObject):
         components : np.ndarray
             An object to be added to the sub assembly.
         """
-        for component in components:
-            self.add_component(component)
+        if components:
+            for component in components:
+                self.add_component(component)
 
-    def add_to_register(self, component: EngineeringObject):
+    def add_to_register(self, component: Any):
         """Aims to add a component to a master register if the
         componnet is not already within the master register.
 
@@ -1050,8 +1104,8 @@ class Assembly(EngineeringObject):
 
     def hierarchy(
         self,
-        tree: Union[treelib.Tree, None] = None,
-        parent_node: Union[treelib.Node, None] = None,
+        tree: Optional[treelib.Tree] = None,
+        parent_node: Optional[treelib.Node] = None,
     ) -> treelib.Tree:
         """Creates a nice graph showing the hierachy.
 
@@ -1069,7 +1123,7 @@ class Assembly(EngineeringObject):
         if tree is None:
             tree = treelib.Tree()
             node = tree.create_node(tag=self.ref)
-        else:
+        elif parent_node:
             node = tree.create_node(tag=self.ref, parent=parent_node.identifier)
 
         for component in self._sub_assembly.values():

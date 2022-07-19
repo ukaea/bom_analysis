@@ -4,7 +4,7 @@ from pathlib import Path
 import os
 import textwrap
 from getpass import getpass
-from typing import Union, Any, Callable
+from typing import Union, Any, Callable, Optional, Dict
 
 import json
 import numpy as np
@@ -71,11 +71,12 @@ class MetaConfig(type):
     of values. If a calculation is performed that called a translation but the
     translator has not been defined within the configuration then a specific error
     will be raised. If a plot directory is called then but it has not been defined
-    then it willd default to the working directory.
+    then it will default to the working directory.
     """
+    _materials : MaterialSelector
 
     @property
-    def materials(cls):
+    def materials(cls) -> MaterialSelector:
         """The property for the materials data.
 
         Returns
@@ -88,7 +89,8 @@ class MetaConfig(type):
         ConfigurationNotFullyPopulated
             Error if the private variable populated with None.
         """
-        return cls._materials
+        selector : MaterialSelector = cls._materials
+        return selector
 
     @materials.setter
     def materials(cls, value: Union[dict, MaterialSelector]):
@@ -262,7 +264,7 @@ class MetaConfig(type):
         cls._default_param_type = value
 
     @property
-    def temp_dir(cls) -> str:
+    def temp_dir(cls) -> Union[str, Path]:
         """The temporary directory for outputs.
 
         Returns
@@ -292,7 +294,7 @@ class MetaConfig(type):
         change_handler(f"{value}/run.log")
 
     @property
-    def plot_dir(cls) -> str:
+    def plot_dir(cls) -> Union[str, Path]:
         """The plot directory for outputs.
 
         Returns
@@ -308,11 +310,11 @@ class MetaConfig(type):
             return cls._plot_dir
 
     @plot_dir.setter
-    def plot_dir(cls, value: str):
+    def plot_dir(cls, value: Union[str, Path]):
         cls._plot_dir = value
 
     @property
-    def data_dir(cls) -> str:
+    def data_dir(cls) -> Union[str, Path]:
         """The data directory for outputs.
 
         Returns
@@ -328,7 +330,7 @@ class MetaConfig(type):
             return cls._data_dir
 
     @data_dir.setter
-    def data_dir(cls, value):
+    def data_dir(cls, value : Union[str, Path]):
         cls._data_dir = value
 
 
@@ -347,7 +349,7 @@ class BaseConfigMethods:
     names as the Engineering Components.
     """
 
-    _login_details = {"username": None, "password": None, "domain": None}
+    _login_details : Dict[str,Optional[str]] = {"username": None, "password": None, "domain": None}
     _materials = MaterialSelector()
     _translations = None
     _default_param_type = "bom_analysis.parameters.PintFrame"
@@ -361,7 +363,7 @@ class BaseConfigMethods:
     _restrict_param = False
 
     @classmethod
-    def define_config(cls, config_dict: dict = {}, config_path: str = None):
+    def define_config(cls, config_dict: dict = {}, config_path: Optional[Union[str, Path]] = None):
         """defines the config file.
 
         The config can be loaded from a supplied dictioanry
@@ -576,13 +578,18 @@ class DFClass(BaseClass):
             return np.array(self.data.index)
 
     @property
-    def col_count(self) -> Union[None, int]:
+    def col_count(self) -> Union[None, Any]:
         """The column count in the wrapped dataframe.
 
         Returns
         -------
         int
             Interger if a dataframe exists.
+
+        Note
+        ----
+        As the DataFrame is checked and mypy finds it to return
+        Any, the output of the shape is also found to return any.
         """
         if isinstance(self.data, pd.DataFrame) is False:
             return None
@@ -660,7 +667,7 @@ class DFClass(BaseClass):
         widths = [width for i in range(0, self._col_count)]
         tabulate(self.data, tablefmt="fancy_grid", maxcolwidths=widths)."""
         terminal_size = os.get_terminal_size()
-        width = int((terminal_size.columns - 50) / (self.col_count))
+        width : int = int((terminal_size.columns - 50) / (self.col_count))
 
         def format(x):
             if hasattr(x, "magnitude"):
@@ -682,7 +689,7 @@ class DFClass(BaseClass):
             string += f"\n\nno data populated\n\n"
         return string
 
-    def to_dict(self) -> dict:
+    def to_dict(self, exclusions=[]) -> dict:
         """Exports the data for storage in a json file.
 
         The encoding to a json serialisable form has to be defined,

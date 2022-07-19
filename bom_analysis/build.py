@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Union
+from typing import Union, Dict, Optional, Type, Any
 
 from bom_analysis import run_log, BaseFramework
 from bom_analysis.bom import Assembly, EngineeringObject
@@ -16,7 +16,7 @@ class Framework(BaseFramework):
 
     The solver and the configuration are stored as class variables."""
 
-    _solver = Solver
+    _solver : Solver = Solver()
 
     def __init__(
         self, config_path: Union[str, Path, None] = None, config_dict: dict = {}
@@ -31,14 +31,14 @@ class Framework(BaseFramework):
             A string containing the config file location."""
         self.initialise_cross_class(config_path=config_path, config_dict=config_dict)
 
-        self.skeleton = {}
+        self.skeleton : Dict[str, Dict] = {}
         ps.ConfigParser(self.skeleton)
 
     @classmethod
     def initialise_cross_class(
         cls,
         login: bool = False,
-        config_path: Union[str, Path, None] = None,
+        config_path: Optional[Union[str, Path]] = None,
         config_dict: dict = {},
     ):
         """Initialises the classes that supply
@@ -77,7 +77,7 @@ class Framework(BaseFramework):
         cls,
         skeleton: dict,
         top: Union[str, None] = None,
-        settings: str = {},
+        settings: dict = {},
         config_path: Union[str, Path, None] = None,
         config_dict: dict = {},
     ) -> EngineeringObject:
@@ -190,7 +190,8 @@ class Framework(BaseFramework):
         --------
         framework.solver : A solver object.
         """
-        ordered_run = cls._solver()
-        if settings != {}:
+        ordered_run = cls._solver
+
+        if settings != {} and assembly is not None:
             ordered_run.build_from_settings(settings, assembly)
         return ordered_run

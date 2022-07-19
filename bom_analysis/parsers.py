@@ -1,6 +1,7 @@
 from collections.abc import Iterable
 import copy
 import pprint
+from typing import Dict, Tuple, Union
 
 from bom_analysis import run_log, BaseFramework
 from bom_analysis.utils import UpdateDict, load_and_merge
@@ -56,7 +57,7 @@ class SkeletonParser(BaseFramework):
         self,
         component_ref: str,
         component_type: str,
-        component_database: dict,
+        component_database: Dict[str, Dict],
         parameter_dictionary: dict,
     ) -> dict:
         """Creates a dictionary for a components or assembly.
@@ -106,8 +107,8 @@ class SkeletonParser(BaseFramework):
         self,
         component_ref: str,
         component_type: str,
-        component_database: dict,
-    ) -> dict:
+        component_database: Dict[str, Dict],
+    ) -> Dict[str, Union[dict, str]]:
         """Extracts a component from a component_database
         with the type used as the key in the dict.
 
@@ -163,7 +164,7 @@ class SkeletonParser(BaseFramework):
             UpdateDict(defined_in_component_database, defined_on_child)
             return defined_in_component_database
 
-    def spine(self, component_ref: str, component_type: str, component_database: dict):
+    def spine(self, component_ref: str, component_type: str, component_database: Dict[str, Dict]):
         """Creates the basic part of the skeleton by
         populating the children.
 
@@ -184,7 +185,7 @@ class SkeletonParser(BaseFramework):
     def children(
         self,
         skeleton: dict,
-        component_database: dict,
+        component_database: Dict[str, Dict],
         reference: str,
         child_input: dict,
     ):
@@ -260,12 +261,12 @@ class SkeletonParser(BaseFramework):
         self.all_params(component, copy.deepcopy(parameters))
         self.rm_inherits(component)
 
-    def inherit(self, component: dict, parents: dict):
+    def inherit(self, component: dict, parents: Dict[str,dict]):
         """Adds inherited information to the skeleton.
 
         This inherited information is important as there
         is it allows for some level of inheritance from
-        within the jsons loaded i.e. a Tesla specified as
+        within the jsons loaded i.e. a Brand of Car specified as
         an assembly in a supplied dictionary can inherit
         parameters, information and other data from Car
         if that is also supplied as a dictionary. It does
@@ -281,7 +282,7 @@ class SkeletonParser(BaseFramework):
             for the values given by the inherits key."""
         parents = copy.deepcopy(parents)
         if isinstance(component, dict) and "inherits" in component:
-            all_tup = ()
+            all_tup: Tuple = ()
             for string in component["inherits"]:
                 self.inherit(parents[string], parents)
                 all_tup += (parents[string],)
@@ -482,7 +483,7 @@ class ConfigParser(SkeletonParser):
         It was recommended not using lists unless necessary
         perhaps a concatenated string is better but
         could run into problems with string."""
-        output = ()
+        output: Tuple = ()
         for val in ordered_titles:
             path = []
             for arg in args:
@@ -792,7 +793,7 @@ class SettingsParser(ConfigParser):
 
         component["params_name"] = new_params
 
-    def select_library(self, material: str):
+    def select_library(self, material: dict):
         """Chooses materials library.
 
         Choses the material library for a given material string
