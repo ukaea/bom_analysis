@@ -228,7 +228,9 @@ class Solver(BaseClass):
         else:
             module["args"] = ()
 
-    def replace_with_comp(self, item: Union[dict, list, tuple, EngineeringObject], flat: dict) -> Union[dict, list, tuple, EngineeringObject]:
+    def replace_with_comp(
+        self, item: Union[dict, list, tuple, EngineeringObject], flat: dict
+    ) -> Union[dict, list, tuple, EngineeringObject]:
         """Replaces a string with a component in
         the args/kwargs to allow dictionary/list to be supplied.
 
@@ -261,7 +263,7 @@ class Solver(BaseClass):
             return new_tup
         else:
             if item in flat:
-                new_item:EngineeringObject = flat[item]
+                new_item: EngineeringObject = flat[item]
                 return new_item
             else:
                 return item

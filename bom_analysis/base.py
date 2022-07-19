@@ -73,7 +73,8 @@ class MetaConfig(type):
     will be raised. If a plot directory is called then but it has not been defined
     then it will default to the working directory.
     """
-    _materials : MaterialSelector
+
+    _materials: MaterialSelector
 
     @property
     def materials(cls) -> MaterialSelector:
@@ -89,7 +90,7 @@ class MetaConfig(type):
         ConfigurationNotFullyPopulated
             Error if the private variable populated with None.
         """
-        selector : MaterialSelector = cls._materials
+        selector: MaterialSelector = cls._materials
         return selector
 
     @materials.setter
@@ -330,7 +331,7 @@ class MetaConfig(type):
             return cls._data_dir
 
     @data_dir.setter
-    def data_dir(cls, value : Union[str, Path]):
+    def data_dir(cls, value: Union[str, Path]):
         cls._data_dir = value
 
 
@@ -349,7 +350,11 @@ class BaseConfigMethods:
     names as the Engineering Components.
     """
 
-    _login_details : Dict[str,Optional[str]] = {"username": None, "password": None, "domain": None}
+    _login_details: Dict[str, Optional[str]] = {
+        "username": None,
+        "password": None,
+        "domain": None,
+    }
     _materials = MaterialSelector()
     _translations = None
     _default_param_type = "bom_analysis.parameters.PintFrame"
@@ -363,7 +368,9 @@ class BaseConfigMethods:
     _restrict_param = False
 
     @classmethod
-    def define_config(cls, config_dict: dict = {}, config_path: Optional[Union[str, Path]] = None):
+    def define_config(
+        cls, config_dict: dict = {}, config_path: Optional[Union[str, Path]] = None
+    ):
         """defines the config file.
 
         The config can be loaded from a supplied dictioanry
@@ -667,7 +674,7 @@ class DFClass(BaseClass):
         widths = [width for i in range(0, self._col_count)]
         tabulate(self.data, tablefmt="fancy_grid", maxcolwidths=widths)."""
         terminal_size = os.get_terminal_size()
-        width : int = int((terminal_size.columns - 50) / (self.col_count))
+        width: int = int((terminal_size.columns - 50) / (self.col_count))
 
         def format(x):
             if hasattr(x, "magnitude"):

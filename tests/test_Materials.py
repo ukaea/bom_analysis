@@ -80,10 +80,12 @@ class TestMaterialSelector(unittest.TestCase):
         }
 
     def test_from_dict(self):
-        new = dict(priority_order=[
-            {"class_str": "builtins.dict", "data": {}},
-            {"class_str": "builtins.list", "data": {"hello": "world"}},
-        ])
+        new = dict(
+            priority_order=[
+                {"class_str": "builtins.dict", "data": {}},
+                {"class_str": "builtins.list", "data": {"hello": "world"}},
+            ]
+        )
         ms = MaterialSelector()
         ms.from_dict(new)
         test_dict = ms.priority_order[0]["material"]()

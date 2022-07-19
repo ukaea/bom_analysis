@@ -14,7 +14,8 @@ from bom_analysis.materials import MaterialData
 from bom_analysis.parameters import ParameterFrame
 from bom_analysis.utils import UpdateDict, class_factory, class_from_string
 
-T = TypeVar('T', bound='EngineeringObject')
+T = TypeVar("T", bound="EngineeringObject")
+
 
 class NonUniqueComponentReference(Exception):
     """Error for when there is a non-unique reference
@@ -469,7 +470,7 @@ class EngineeringObject(BaseClass):
         new_class
             An initialised copy of the object.
         """
-        new_class : Any = self.create_top_level(ref, skeleton)
+        new_class: Any = self.create_top_level(ref, skeleton)
         new_class.from_dict(skeleton)
         return new_class
 

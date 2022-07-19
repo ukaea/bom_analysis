@@ -10,7 +10,7 @@ import pint
 # Disable Pint's old fallback behavior (must come before importing Pint)
 os.environ["PINT_ARRAY_PROTOCOL_FALLBACK"] = "0"
 ureg = pint.UnitRegistry()
-Q_ : pint.Quantity = ureg.Quantity
+Q_: pint.Quantity = ureg.Quantity
 ureg.define("displacements_per_atom = 1 = dpa = DPA")
 
 # Create Logger

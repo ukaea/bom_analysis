@@ -164,7 +164,12 @@ class SkeletonParser(BaseFramework):
             UpdateDict(defined_in_component_database, defined_on_child)
             return defined_in_component_database
 
-    def spine(self, component_ref: str, component_type: str, component_database: Dict[str, Dict]):
+    def spine(
+        self,
+        component_ref: str,
+        component_type: str,
+        component_database: Dict[str, Dict],
+    ):
         """Creates the basic part of the skeleton by
         populating the children.
 
@@ -261,7 +266,7 @@ class SkeletonParser(BaseFramework):
         self.all_params(component, copy.deepcopy(parameters))
         self.rm_inherits(component)
 
-    def inherit(self, component: dict, parents: Dict[str,dict]):
+    def inherit(self, component: dict, parents: Dict[str, dict]):
         """Adds inherited information to the skeleton.
 
         This inherited information is important as there

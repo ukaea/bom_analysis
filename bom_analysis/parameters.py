@@ -53,8 +53,8 @@ class FlexParam:
         The source (reference and/or code) of the parameter.
     """
 
-    _required_keys : np.ndarray  = np.array(["var", "value"])
-    _additional_keys : np.ndarray = np.array([])
+    _required_keys: np.ndarray = np.array(["var", "value"])
+    _additional_keys: np.ndarray = np.array([])
 
     def __init__(self, val: Box):
         """Initialisation of the flexible parameter.
@@ -70,7 +70,7 @@ class FlexParam:
         but assymetric setters are not yet working. See mypy
         issue 3004.
         """
-        self._data : Box = Box({}, frozen_box=True)
+        self._data: Box = Box({}, frozen_box=True)
         self.data = val
 
     @property
@@ -107,7 +107,7 @@ class FlexParam:
             contain the _required_keys as keys.
         """
         self.check_inputs(data)
-        processed : dict = self.process_inputs(data)
+        processed: dict = self.process_inputs(data)
         self._data = Box(processed, frozen_box=True)
 
     def check_inputs(self, data: Union[dict, Box]):
@@ -152,7 +152,7 @@ class FlexParam:
             The processed input with full _required_keys and
             _additional_keys.
         """
-        processed : dict = {}
+        processed: dict = {}
         unique_keys = np.unique(
             np.append(cls._additional_keys, np.array(list(value.keys())))
         )
@@ -175,7 +175,7 @@ class FlexParam:
         attribute.
 
         Checks fields and updates if they do not match."""
-        new_data_dict :dict = {}
+        new_data_dict: dict = {}
         if not np.all(
             np.isin(self._additional_keys, np.array(list(self._data.keys())))
         ):
@@ -450,7 +450,7 @@ class ParameterFrame:
         The kwargs are left as an input for legacy use.
 
         """
-        self._data :Box = Box()
+        self._data: Box = Box()
 
     def __setattr__(self, attr: str, value: Any):
         """Sets a value in the underlying _data.
@@ -678,7 +678,7 @@ class ParameterFrame:
         ----------
         kwargs : key word arguments, optional
             The data which makes up a new parameter."""
-        param : Union[PintParam, FlexParam]  = self.get_param(var)
+        param: Union[PintParam, FlexParam] = self.get_param(var)
         param.replace(**kwargs)
 
     def get_param(self, attr: Optional[str], key: Optional[str] = None) -> Any:
@@ -752,7 +752,7 @@ class ParameterFrame:
         --------
         utils.encoder : Encodes to json serialisable dict from the numpy format.
         """
-        dump : Dict[str, Union[dict, list]]= {"data": {}}
+        dump: Dict[str, Union[dict, list]] = {"data": {}}
         if "class_str" not in dump or dump["class_str"] is None:
             dump["class_str"] = self.class_str
 
@@ -826,7 +826,7 @@ class ParameterFrame:
             Parameter can be created ({var:mass, value:10, unit:10}).
         """
         data = encoder(data)
-        parameter_dicts : dict = self.extract_dictionary_of_parameters(data)
+        parameter_dicts: dict = self.extract_dictionary_of_parameters(data)
         return self.convert_parameter_dictionary_to_list(parameter_dicts)
 
     def extract_dictionary_of_parameters(self, data: dict) -> dict:
@@ -849,7 +849,7 @@ class ParameterFrame:
             Dictionary of the parameters only.
         """
         if access_nested(data, ["_params", "data"]) is not None:
-            parameter_dicts :dict = data["_params"]["data"]
+            parameter_dicts: dict = data["_params"]["data"]
         elif access_nested(data, ["params", "data"]) is not None:
             parameter_dicts = data["params"]["data"]
         elif access_nested(data, ["data"]) is not None:

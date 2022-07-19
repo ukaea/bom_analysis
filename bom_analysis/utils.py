@@ -13,6 +13,7 @@ import pandas as pd
 
 from bom_analysis import ureg, run_log, nice_format, info_handler
 
+
 def __init__(self, inherited_classes: abc.Iterable):
     """Used to add to class factory created classes
     to perform initialisation when there is inhertiance.
@@ -315,7 +316,7 @@ class MaterialSelector:
                     f"{database['material'].__module__}.{database['material'].__name__}"
                 ]
             dump.append({"class_str": class_strings, "data": database["data"]})
-        return {"priority_order":dump}
+        return {"priority_order": dump}
 
     def old_style_from_dict(self, data: dict):
         """Older versions of settings files contain
@@ -381,7 +382,7 @@ class Translator:
     so can be used without initialisation. After the underlying data has been
     populated, the input for translation can be supplied alongside the output format."""
 
-    _data : dict = {}
+    _data: dict = {}
 
     def __new__(cls, name: Optional[str], output_format: Optional[str]) -> Any:
         """Translates a name into a chosen output.
@@ -572,7 +573,7 @@ def load_and_merge(location_list: list) -> dict:
         A merged dictionary of all the json
         in the location list.
     """
-    merged : dict = {}
+    merged: dict = {}
     for path in location_list:
         with open(Path(path), "r") as f:
             dictionary = json.load(f)

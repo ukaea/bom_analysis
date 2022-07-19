@@ -16,7 +16,7 @@ class Framework(BaseFramework):
 
     The solver and the configuration are stored as class variables."""
 
-    _solver : Solver = Solver()
+    _solver: Solver = Solver()
 
     def __init__(
         self, config_path: Union[str, Path, None] = None, config_dict: dict = {}
@@ -31,7 +31,7 @@ class Framework(BaseFramework):
             A string containing the config file location."""
         self.initialise_cross_class(config_path=config_path, config_dict=config_dict)
 
-        self.skeleton : Dict[str, Dict] = {}
+        self.skeleton: Dict[str, Dict] = {}
         ps.ConfigParser(self.skeleton)
 
     @classmethod

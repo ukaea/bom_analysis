@@ -11,7 +11,7 @@ from bom_analysis import ureg, run_log, Q_
 from bom_analysis.base import BaseClass, BaseFramework
 from bom_analysis.utils import Translator
 
-COOLPROPUNITS : dict = dict(
+COOLPROPUNITS: dict = dict(
     T="K",
     P="Pa",
     D="kg/m**3",
@@ -98,6 +98,7 @@ class MaterialData(BaseClass):
     calls the extract_property for the instance with the benefit that
     if the property (or material) does not exist in the database of that
     instance it will check the other databases within the MaterialSelector."""
+
     to = ""
 
     def __init__(
