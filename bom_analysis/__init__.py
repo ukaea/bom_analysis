@@ -2,15 +2,15 @@ import logging
 from logging.handlers import RotatingFileHandler
 import os
 from pathlib import Path
+from typing import Type
 
-import numpy as np
 import pint
 
 # Pint
 # Disable Pint's old fallback behavior (must come before importing Pint)
 os.environ["PINT_ARRAY_PROTOCOL_FALLBACK"] = "0"
 ureg = pint.UnitRegistry()
-Q_ = ureg.Quantity
+Q_: pint.Quantity = ureg.Quantity
 ureg.define("displacements_per_atom = 1 = dpa = DPA")
 
 # Create Logger
@@ -50,6 +50,19 @@ from .bom import Assembly, Component, HomogenisedAssembly
 from .parameters import MissingParamError
 
 
-def update_config(new_config: BaseConfig):
+def update_config(new_config: Type[BaseConfig]):
+    """Updates the configuration within the Framework
+    class.
+
+    Using the framework in this way allows a new configuration
+    to be supplied to the bom_analysis classes as they take the
+    Configuration from the Framework instead of the BaseConfig.
+
+
+    Parameters
+    ----------
+    new_config : BaseConfig
+        A configuration class that will be used by bom_analysis.
+    """
     new_config.define_config(config_dict=BaseFramework._configuration.to_dict())
     BaseFramework._configuration = new_config

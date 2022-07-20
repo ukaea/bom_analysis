@@ -1,12 +1,12 @@
 import builtins
-from collections import Counter
+from collections import Counter, abc
 import importlib
 import inspect
 import itertools
 import logging
-from pathlib import Path
 import os
-from typing import Any, Union
+from pathlib import Path
+from typing import Any, Iterable, Optional, Union
 
 import json
 import numpy as np
@@ -23,7 +23,7 @@ from bom_analysis import (
 )
 
 
-def __init__(self, inherited_classes):
+def __init__(self, inherited_classes: abc.Iterable):
     """Used to add to class factory created classes
     to perform initialisation when there is inhertiance.
 
@@ -35,7 +35,7 @@ def __init__(self, inherited_classes):
         inherit.__init__(self)
 
 
-def encoder(obj):
+def encoder(obj: Any) -> Any:
     """An encoder to ensure all outputs are serialisable.
 
     Could be turned into a json encoder but
@@ -43,13 +43,13 @@ def encoder(obj):
 
     Parameters
     ----------
-    obj : type
+    obj : Any
         An instance of an object which will be
         converted to a serialisable if exist in list.
 
     Returns
     -------
-    type
+    Any
         The serialisable version of the input instance, if
         the type is specified in the list.
 
@@ -84,7 +84,7 @@ def encoder(obj):
     return obj
 
 
-def decoder(obj):
+def decoder(obj: Any) -> Any:
     """Creates a consistance data type for strings, floats, ints and list.
 
     The aim is to use numpy types throughout the bom_analysis -
@@ -120,12 +120,7 @@ def decoder(obj):
     if isinstance(obj, int):
         return np.int64(obj)
     if isinstance(obj, list):
-        result = [decoder(item) for item in obj]
-        check = [hasattr(item, "magnitude") for item in result]
-        if True in check:
-            return np.array(result, dtype=object)
-        else:
-            return np.array(result)
+        return np.array([decoder(item) for item in obj], dtype=object)
     if isinstance(obj, dict) and "_counter" not in obj:
         return {decoder(key): decoder(val) for key, val in obj.items()}
     if isinstance(obj, dict) and "_counter" in obj:
@@ -133,7 +128,7 @@ def decoder(obj):
     return obj
 
 
-def change_handler(new_path):
+def change_handler(new_path: str):
     """Changes the logging handler.
 
     When running a parameter sweep, it is beneficial to
@@ -157,7 +152,7 @@ def change_handler(new_path):
     run_log.addHandler(new_info_handler)
 
 
-def class_factory(name, class_strings, class_data={}):
+def class_factory(name, class_strings: list, class_data: dict = {}) -> Any:
     """Method for dynamically creating classes.
 
     The classes are specified as a list of strings
@@ -173,7 +168,7 @@ def class_factory(name, class_strings, class_data={}):
 
     Returns
     -------
-    type
+    Any
         A new, initialised class created from the input
         class list and data."""
     inherited_classes = tuple(
@@ -189,7 +184,7 @@ def class_factory(name, class_strings, class_data={}):
     return new_class
 
 
-def class_from_string(string):
+def class_from_string(string: str) -> Any:
     """Creates a class from a string in order to assign custom
     classes to a sub assembly.
 
@@ -197,6 +192,11 @@ def class_from_string(string):
     ----------
     string : str
         A string representing a class location.
+
+    Returns
+    -------
+    Any
+        The uninitialised class corresoponding to the input string.
 
     Note
     ----
@@ -251,7 +251,7 @@ class MaterialSelector:
         """
         self.priority_order = np.array([], dtype=object)
 
-    def select_database(self, material_str: str):
+    def select_database(self, material_str: Optional[str]):
         """Selects a material database from a material name.
 
         Parameters
@@ -291,8 +291,8 @@ class MaterialSelector:
 
         Returns
         -------
-        MaterialData
-            An initialised class of material data.
+        Any
+            An initialised class, meant to be material data.
         """
         material = database["material"](mat=material_str)
         for key, val in database["data"].items():
@@ -314,7 +314,7 @@ class MaterialSelector:
         database = dict(material=database_class, data=additional_data)
         self.priority_order = np.append(self.priority_order, database)
 
-    def to_dict(self):
+    def to_dict(self) -> dict:
         """Converts the MaterialSelector to a dictionary.
 
         Adds a set of class_str so the the priority order can be
@@ -334,7 +334,7 @@ class MaterialSelector:
                     f"{database['material'].__module__}.{database['material'].__name__}"
                 ]
             dump.append({"class_str": class_strings, "data": database["data"]})
-        return dump
+        return {"priority_order": dump}
 
     def old_style_from_dict(self, data: dict):
         """Older versions of settings files contain
@@ -382,7 +382,8 @@ class MaterialSelector:
         if "order" in data:
             self.old_style_from_dict(data)
         else:
-            for database in data:
+            order = data["priority_order"]
+            for database in order:
                 material_class = class_from_string(database["class_str"])
                 database["data"]["class_str"] = database["class_str"]
                 self.add_database(
@@ -399,9 +400,9 @@ class Translator:
     so can be used without initialisation. After the underlying data has been
     populated, the input for translation can be supplied alongside the output format."""
 
-    _data = {}
+    _data: dict = {}
 
-    def __new__(cls, name, output_format):
+    def __new__(cls, name: Optional[str], output_format: Optional[str]) -> Any:
         """Translates a name into a chosen output.
 
         Parameters
@@ -429,7 +430,7 @@ class Translator:
         return output_name
 
     @classmethod
-    def define_translations(cls, locations):
+    def define_translations(cls, locations: list):
         """Defines the translations for the class.
 
         Parameters
@@ -439,7 +440,7 @@ class Translator:
         cls._data = load_and_merge(locations)
 
     @classmethod
-    def available_inputs(cls):
+    def available_inputs(cls) -> list:
         """Produces a list of all the input translations
         for the loaded translator.
 
@@ -576,7 +577,7 @@ class UpdateDict:
 
     This function allows for that control."""
 
-    def __init__(self, main, *args, **kwargs):
+    def __init__(self, main: dict, *args, **kwargs):
         """Initialises the update dictionary.
 
         Mutability is used to get this class to
@@ -588,7 +589,7 @@ class UpdateDict:
 
         Parameters
         ----------
-        main : dictionary
+        main : dict
             The main dictionary which will be updated.
         args : tuple
             The input dictionaries which main will be
@@ -611,13 +612,13 @@ class UpdateDict:
         attribute."""
         self.update_main(self.main, self.input)
 
-    def unique_keys(self, input_dict):
+    def unique_keys(self, input_tuple: tuple) -> Iterable:
         """Defines the unique keys in all the input dict.
 
         Parameters
         ----------
-        input_dict : dict
-            The input dictionary.
+        input_tuple : dict
+            Tuple of input dictionaries.
 
         Returns
         -------
@@ -625,29 +626,29 @@ class UpdateDict:
             A dictionary of the input keys, a dictionary
             for legacy reasons."""
         temp = {}
-        for val in input_dict:
+        for val in input_tuple:
             temp.update(val)
         return temp.keys()
 
-    def update_main(self, main, input_dict):
+    def update_main(self, main: dict, input_tuple: tuple):
         """Updates the main dictionary with the input
         dictionary.
 
         Parameters
         ----------
-        input_dict : dict
-            The input dictionary.
+        input_dict : tuple
+            A tuple of input dictionaries.
         main : dictionary
             The main dictionary which will be updated.
         """
-        unique = self.unique_keys(input_dict)
-        for key, data in itertools.product(unique, input_dict):
+        unique = self.unique_keys(input_tuple)
+        for key, data in itertools.product(unique, input_tuple):
             if key in main and key in data:
                 self.update_key(main, key, data)
             elif key in data:
                 main[key] = data[key]
 
-    def update_key(self, main, key, data):
+    def update_key(self, main: dict, key: Union[str, int], data: dict):
         """Updates the data in the main dictionary
         with a key.
 
@@ -655,7 +656,7 @@ class UpdateDict:
         ----------
         main : dictionary
             The main dictionary which will be updated.
-        key : str or int
+        key : Union[str, int]
             The key in the main dictioanry which will
             have the value updated with data.
         data : type
@@ -690,7 +691,7 @@ class UpdateDict:
             main[key] = data[key]
 
 
-def load_and_merge(location_list):
+def load_and_merge(location_list: list) -> dict:
     """Merges multiple json dicts into a single dictionary.
 
     This is used for when parsing jsons to build the
@@ -709,7 +710,7 @@ def load_and_merge(location_list):
         A merged dictionary of all the json
         in the location list.
     """
-    merged = {}
+    merged: dict = {}
     for path in location_list:
         with open(Path(path), "r") as f:
             dictionary = json.load(f)
@@ -717,16 +718,16 @@ def load_and_merge(location_list):
     return merged
 
 
-def access_nested(obj, location, pos=0):
+def access_nested(obj: Any, location: Union[list, tuple], pos: int = 0):
     """Accesses data within a nested object
     by searching for attribute or item down
     a list/tuple/array.
 
     Parameters
     ----------
-    obj : instance
+    obj : Any
         The object to be accessed.
-    location : iterable
+    location : Iterable
         The iterable location of the data.
     pos : int, optional
         The position of the nested dictionary to be

@@ -27,7 +27,7 @@ class TestMaterialSelector(unittest.TestCase):
         ms = MaterialSelector()
         ms.add_database(dict, {})
         ms.add_database(list, {"hello": "world"})
-        output = ms.to_dict()
+        output = ms.to_dict()["priority_order"]
         assert output[0]["class_str"] == ["builtins.dict"]
         assert output[1]["data"] == {"hello": "world"}
 
@@ -80,10 +80,12 @@ class TestMaterialSelector(unittest.TestCase):
         }
 
     def test_from_dict(self):
-        new = [
-            {"class_str": "builtins.dict", "data": {}},
-            {"class_str": "builtins.list", "data": {"hello": "world"}},
-        ]
+        new = dict(
+            priority_order=[
+                {"class_str": "builtins.dict", "data": {}},
+                {"class_str": "builtins.list", "data": {"hello": "world"}},
+            ]
+        )
         ms = MaterialSelector()
         ms.from_dict(new)
         test_dict = ms.priority_order[0]["material"]()

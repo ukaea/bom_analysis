@@ -10,7 +10,7 @@ from bom_analysis import Q_, ureg
 from bom_analysis.base import BaseConfig as Config
 from bom_analysis.build import Framework
 from bom_analysis.bom import Assembly, Component
-from bom_analysis.solver import Step
+from bom_analysis.solver import Step, Solver
 
 config_path = "./tests/test_config.json"
 
@@ -83,6 +83,9 @@ class TestClassBasedFramework(unittest.TestCase):
         self.car.params.speed = Q_(100, "kph")
         radio.params = MagicMock()
         engine.params = MagicMock()
+
+    def tearDown(self):
+        Framework._solver = Solver()
 
     def test_playing_with_radio(self):
         framework = Framework()
