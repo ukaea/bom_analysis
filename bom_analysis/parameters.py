@@ -1,7 +1,6 @@
 from collections.abc import Iterable
-import os
 import pprint
-from typing import Union, Any, Optional, Dict
+from typing import Any, Dict, Optional, Union
 
 from box import Box
 import numpy as np

@@ -1,5 +1,4 @@
 from functools import wraps
-from gettext import translation
 from pathlib import Path
 from typing import Callable, Optional, Union
 

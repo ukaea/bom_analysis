@@ -1,8 +1,7 @@
 from collections import Counter, abc
 import copy
-from types import new_class
 import weakref
-from typing import Any, Callable, Dict, Optional, Type, TypeVar, Union
+from typing import Any, Dict, Optional, Union
 
 import numpy as np
 import pandas as pd
@@ -13,8 +12,6 @@ from bom_analysis.base import BaseClass
 from bom_analysis.materials import MaterialData
 from bom_analysis.parameters import ParameterFrame
 from bom_analysis.utils import UpdateDict, class_factory, class_from_string
-
-T = TypeVar("T", bound="EngineeringObject")
 
 
 class NonUniqueComponentReference(Exception):
@@ -346,6 +343,14 @@ class EngineeringObject(BaseClass):
         ------
         NonUniqueComponentReference
             If the component has a different id and the same reference.
+
+        Note
+        ----
+        The Statically Typed Python format for this and other modules
+        has Any as an input to the method. Using BOM analysis this
+        should be an EngineeringObject (as per docstring) but requires
+        self to be input into this function which is only easily
+        implemented in >3.9.
         """
         if component_1.ref == component_2.ref and id(component_1) != id(component_2):
             msg = f"{component_1.ref} has already been used but instances are not the same"
@@ -488,7 +493,7 @@ class EngineeringObject(BaseClass):
 
         Returns
         -------
-        Type[T]
+        EngineeringObject
             A new EngineeringObject based on the Skeleton.
         """
 

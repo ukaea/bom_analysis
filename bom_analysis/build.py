@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Union, Dict, Optional, Type, Any
+from typing import Dict, Optional, Union
 
 from bom_analysis import run_log, BaseFramework
 from bom_analysis.bom import Assembly, EngineeringObject

@@ -4,7 +4,7 @@ from pathlib import Path
 import os
 from getpass import getpass
 import pprint
-from typing import Union, Any, Callable, Optional, Dict
+from typing import Any, Callable, Dict, Optional, Union
 
 import json
 import numpy as np

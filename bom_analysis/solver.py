@@ -1,7 +1,7 @@
 from collections import OrderedDict
 import copy
 import time
-from typing import Any, Union
+from typing import Union
 
 from bom_analysis import run_log
 from bom_analysis.base import BaseClass
