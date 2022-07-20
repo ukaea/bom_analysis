@@ -934,30 +934,30 @@ class Assembly(EngineeringObject):
 
     def lookup(self, *args) -> dict:
         """
-        Searches the sub_assembly for chosen data.
+                Searches the sub_assembly for chosen data.
 
-        Parameters
-        ----------
-        args : str
-            Parameter strings that will be extracted.
+                Parameters
+                ----------
+                args : str
+                    Parameter strings that will be extracted.
 
-<<<<<<< HEAD
-        Returns
-        -------
-        dict
-            Parameter dictionary with the keys as the component
-            ref.
+        <<<<<<< HEAD
+                Returns
+                -------
+                dict
+                    Parameter dictionary with the keys as the component
+                    ref.
 
-        Notes
-        -----
-=======
-        Note
-        ----
->>>>>>> main
-        This allows for part consistancy to be checked
-        i.e. that part references are unique to a component
-        (there can still be multiple components using the
-        same reference).
+                Notes
+                -----
+        =======
+                Note
+                ----
+        >>>>>>> main
+                This allows for part consistancy to be checked
+                i.e. that part references are unique to a component
+                (there can still be multiple components using the
+                same reference).
         """
         params = super().lookup(*args)
         for part in self._sub_assembly.values():
