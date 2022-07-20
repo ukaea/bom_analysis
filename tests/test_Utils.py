@@ -97,7 +97,7 @@ class TestFunctions(unittest.TestCase):
         assert b is None
 
 
-class TestPrintParamsTable:
+class TestPrintParamsTable(unittest.TestCase):
     def test_shorten_unit(self):
         ppt = PrintParamsTable()
         assert ppt.shorten_unit("hello") == "hello"
@@ -106,6 +106,10 @@ class TestPrintParamsTable:
         assert ppt.shorten_unit(None) == None
         assert ppt.shorten_unit(Q_("1000 meter*kilogram")) == "1000 kg * m"
 
+    def test_header_not_implemented(self):
+        ppt = PrintParamsTable()
+        with self.assertRaises(NotImplementedError):
+            ppt.header
 
 if __name__ == "__main__":
     unittest.main()

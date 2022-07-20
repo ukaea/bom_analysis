@@ -277,7 +277,7 @@ class MaterialSelector:
         run_log.error(msg)
         raise ValueError(msg)
 
-    def intialised_database(self, material_str: str, database: dict):
+    def intialised_database(self, material_str: Optional[str], database: dict):
         """Initialises a datbase class and sets the attributes from
         the extra data suplied.
 
@@ -452,6 +452,23 @@ class Translator:
 
 
 class PrintParamsTable:
+
+    @property
+    def header(self) -> np.ndarray:
+        """Property for the header of the table that will be printed.
+
+        Returns
+        -------
+        np.ndarray
+            The header of the table to be printed.
+
+        Raises
+        ------
+        NotImplementedError
+            Not implemented in parent class.
+        """
+        raise NotImplementedError()
+
     def format_params(self, list_of_params: list) -> list:
         """Formats the dictionary representation of the parameters to allow
         for nice string represntation.

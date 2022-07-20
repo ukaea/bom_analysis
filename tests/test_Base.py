@@ -231,6 +231,18 @@ class TestConfig(unittest.TestCase):
         except ConfigurationNotFullyPopulated:
             pass
 
+    def test_not_implemented_meta(self):
+        from bom_analysis.base import MetaConfig
+        class MyNewConfig(metaclass=MetaConfig):
+            pass
+
+        config = MyNewConfig
+        with self.assertRaises(NotImplementedError):
+            config.to_dict()
+
+        with self.assertRaises(NotImplementedError):
+            config.temp_dir = "./temp/"
+
 
 @pytest.mark.integrationtest
 class TestOldFormatLoad(unittest.TestCase):
