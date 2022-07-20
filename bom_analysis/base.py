@@ -292,7 +292,9 @@ class MetaConfig(type):
         value : Union[str, Path]
             Path to new temporary directory.
         """
-        start_message = f"Configuration Details\n\n{pprint.pformat(cls.to_dict(), indent=4)}"
+        start_message = (
+            f"Configuration Details\n\n{pprint.pformat(cls.to_dict(), indent=4)}"
+        )
         cls._temp_dir = value
         change_handler(f"{value}/run.log")
         run_log.info(start_message)
@@ -339,7 +341,7 @@ class MetaConfig(type):
 
     def to_dict(cls) -> dict:
         """Converts the configuration to a dictionary but
-        is not implemented in the MetaConfig as it is 
+        is not implemented in the MetaConfig as it is
         only meant as a metaclass for the actual configuration.
 
         Returns

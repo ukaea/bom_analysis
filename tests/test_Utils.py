@@ -111,5 +111,6 @@ class TestPrintParamsTable(unittest.TestCase):
         with self.assertRaises(NotImplementedError):
             ppt.header
 
+
 if __name__ == "__main__":
     unittest.main()

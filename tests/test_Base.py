@@ -233,6 +233,7 @@ class TestConfig(unittest.TestCase):
 
     def test_not_implemented_meta(self):
         from bom_analysis.base import MetaConfig
+
         class MyNewConfig(metaclass=MetaConfig):
             pass
 

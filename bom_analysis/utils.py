@@ -452,7 +452,6 @@ class Translator:
 
 
 class PrintParamsTable:
-
     @property
     def header(self) -> np.ndarray:
         """Property for the header of the table that will be printed.
