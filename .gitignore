@@ -11,6 +11,8 @@ bom_analysis_smerrim.egg-info/*
 ./testing/*.log
 ./examples/.ipynb_checkpoints/
 ./examples/.ipynb_checkpoints/*
+./examples/files/.ipynb_checkpoints/
+./examples/files/.ipynb_checkpoints/*
 
 # exception to the rule
 !temp/.gitkeep
