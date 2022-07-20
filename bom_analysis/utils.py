@@ -55,8 +55,9 @@ def encoder(obj: Any) -> Any:
 
     Note
     ----
-    See here for how to turn into a proper encoders
-    https://stackoverflow.com/questions/26646362/numpy-array-is-not-json-serializable."""
+    See
+    `here <https://stackoverflow.com/questions/26646362/numpy-array-is-not-json-serializable>`__
+    for how to turn into a proper encoders."""
 
     if hasattr(obj, "to_dict"):
         obj_dict = obj.to_dict()
@@ -392,13 +393,15 @@ class MaterialSelector:
 
 
 class Translator:
-    """Translating strings can be very important to a bill of materials
+    """
+    Translating strings can be very important to a bill of materials
     and a workflow due to mismatches in the naming is common across
     material libraries (both the name and the parameters).
 
     The translator can be defined from a dictionary and utilises classmethods
     so can be used without initialisation. After the underlying data has been
-    populated, the input for translation can be supplied alongside the output format."""
+    populated, the input for translation can be supplied alongside the output format.
+    """
 
     _data: dict = {}
 
@@ -411,6 +414,12 @@ class Translator:
             Name to be translated.
         output : str
             Output format for name to be translated to.
+
+        Attributes
+        ----------
+        _data : dict
+            The dictionary data that contains the translation in the format
+            of {"BOM Analysis String":{"Output Type":{"name":"Translation to Output"}}}.
 
         Returns
         -------

@@ -11,13 +11,14 @@ represents the system. These object can then have data assigned to them that can
 a low fidelity analysis may assign a single temperature to a component and a higher fidelity analysis may assign 
 a complex profile, either way access to this data (and the related component) is clear to a user.
 
-`A worked example of using the Hierarchy can be found here <https://git.ccfe.ac.uk/step/invesselcomponents/outboardblanket/bom_analysis/-/blob/development/examples/example_0%20-%20Defining%20a%20Bill%20of%20Materials.ipynb>`__
+`A worked example of using the Hierarchy can be found here <https://github.com/ukaea/bom_analysis/blob/main/examples/example_0%20-%20Defining%20a%20Bill%20of%20Materials.ipynb>`__
 
 ----------------------------
 Component - The Lowest Level
 ----------------------------
 
 .. automodule:: bom_analysis.Component
+                :noindex:
 
 Defining a component is simple with the reference (such as a part number) supplied as an optional input.
 
@@ -35,7 +36,9 @@ The ref key word is a unique reference (such as a part number) and is a key conc
 -----------------------------------------------
 Assembly - Made of of Components and Assemblies
 -----------------------------------------------
+
 .. automodule:: bom_analysis.Assembly
+                :noindex:
 
 .. code-block:: python
 
@@ -49,7 +52,9 @@ See the :obj:`bom_analysis.bom.Assembly` for docstrings.
 --------------------------------------------------
 Homogenised Assembly - An Assembly with a Material
 --------------------------------------------------
+
 .. automodule:: bom_analysis.HomogenisedAssembly
+                :noindex:
 
 See the :obj:`bom_analysis.bom.HomogenisedAssembly` for docstrings.
 
@@ -59,7 +64,7 @@ Reference - The Most Important Thing to Remember
 .. _reference concept:
 
 .. automodule:: bom_analysis.bom.EngineeringObject.ref
-
+                :noindex:
 
 See the :obj:`bom_analysis.bom.EngineeringObject.ref` for docstrings.
 

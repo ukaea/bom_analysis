@@ -56,14 +56,28 @@ def add_base_class(
 
     Note
     ----
-    Information on add a mehtod to an instance:
-    https://stackoverflow.com/questions/972/adding-a-method-to-an-existing-object-instance"""
+    For more information on add a method to an instance see
+    `link <https://stackoverflow.com/questions/972/adding-a-method-to-an-existing-object-instance>`_.
+    """
     existing_object.export_data = types.MethodType(export_method, existing_object)
     existing_object.import_data = types.MethodType(import_method, existing_object)
 
 
 class MetaConfig(type):
     """
+    Configuring different analyse is critical to a workflow functioning correctly.
+    Bill of Materials analysis has a the base Configuration which is inherits a number of
+    methods for the Config and a Meta class for properties and setters. An analysis workflow
+    can use the BaseConfig directly or inherit the BaseConfigMethods and the MetaConfig to
+    customise the configuration parameters.
+
+    The base config includes a number of variables which can be used by BOM Analysis and
+    are covered in the other sections such as the MaterialsSelector, the defaults for the
+    Material and the Parameters, and a number of different working directories.
+
+    A configuration can also be loaded and dumped to a dictionary using the same method
+    names as the Engineering Components.
+
     The Meta class which defines properies and setters
     that can be used on the configuration without initialising it and our shared
     like class properties.
@@ -358,18 +372,40 @@ class MetaConfig(type):
 
 
 class BaseConfigMethods:
-    """Configuring different analyse is critical to a workflow functioning correctly.
-    Bill of Materials analysis has a the base Configuration which is inherits a number of
-    methods for the Config and a Meta class for properties and setters. An analysis workflow
-    can use the BaseConfig directly or inherit the BaseConfigMethods and the MetaConfig to
-    customise the configuration parameters.
+    """
+    BaseConfigMethods contains methods that will be used by a
+    configuration class.
 
-    The base config includes a number of variables which can be used by BOM Analysis and
-    are covered in the other sections such as the MaterialsSelector, the defaults for the
-    Material and the Parameters, and a number of different working directories.
-
-    A configuration can also be loaded and dumped to a dictionary using the same method
-    names as the Engineering Components.
+    Attributes
+    ----------
+    _login_details : dict
+        Login details that could be supplied by the config.
+    _materials : MaterialSelector
+        The class for selecting a material library from a string.
+    _translations : list
+        The list of translation file locations.
+    _default_param_type : str
+        The class string for the default parameterframe type
+        that will be used by the bill of materials.
+    _default_material : str
+        The class string for the default material class that
+        will be used by the bill of materials.
+    _parameters : list
+        List of file locations that contain the parameters
+        that can be used to build a skeleton.
+    _parts : list
+        List of file locations that contain the parts that
+        can be used to build as skeleton.
+    _temp_dir : str
+        Location of the temporary directory.
+    _plot_dir : str
+        Location of the directory which plots will be output to.
+    _data_dir : str
+        Location of the directory which contains data used by the
+        analysis.
+    _restrict_param : boolean
+        True/False on whether parameters can be added to the parameter
+        frame on the fly.
     """
 
     _login_details: Dict[str, Optional[str]] = {
@@ -532,6 +568,7 @@ class BaseClass:
     of analysis ran on the bill of materials, therefore, recording the state of
     the inputs for that analysis (this can be particularly important for transfering
     data in between Model Based System Engieering workflows).
+
     """
 
     def to_dict(self, exclusions: list = []) -> dict:
@@ -580,7 +617,8 @@ class DFClass(BaseClass, PrintParamsTable):
     functionality.
 
     This functionality includes printing with tabulate, reading and
-    writing to a serialisable dictionary, and loading pint quantities."""
+    writing to a serialisable dictionary, and loading pint quantities.
+    """
 
     def __init__(self):
         """initialisations of dataframe storage class.
@@ -666,8 +704,9 @@ class DFClass(BaseClass, PrintParamsTable):
 
         Note
         ----
-        See below for additional information.
-        https://pandas.pydata.org/pandas-docs/stable/user_guide/merging.html
+        `See <https://pandas.pydata.org/pandas-docs/stable/user_guide/merging.html>`_
+        for additional information on pandas method used to merge the dataframe.
+
         """
         if isinstance(self.data, pd.DataFrame):
             self.data = pd.concat([self.data, assignee], axis=1, ignore_index=True)

@@ -11,6 +11,7 @@ The Skeleton
 -------------------
 
 .. automodule:: bom_analysis.base.BaseClass
+                :noindex:
 
 -----------------------------------------
 Importing and Exporting Bill of Materials
@@ -32,17 +33,18 @@ reference is at the top of the hierarchy.
 
 See the :obj:`bom_analysis.bom.Assembly.to_dict` for docstrings.
 
-`A worked example of using the Importing and Exporting can be found here <https://git.ccfe.ac.uk/step/invesselcomponents/outboardblanket/bom_analysis/-/blob/development/examples/example_1%20-%20Loading_a_Bill_of_Materials.ipynb>`__
+`A worked example of using the Importing and Exporting can be found here <https://github.com/ukaea/bom_analysis/blob/main/examples/example_1%20-%20Loading_a_Bill_of_Materials.ipynb>`__
 
 
 --------------------
 Parsing Skeleton
 --------------------
 .. automodule:: bom_analysis.parsers.SkeletonParser
+                :noindex:
 
 See the :obj:`bom_analysis.parsers.SkeletonParser` for docstrings.
 
-`A worked example of using the Parsing can be found here <https://git.ccfe.ac.uk/step/invesselcomponents/outboardblanket/bom_analysis/-/blob/development/examples/example_2%20-%20Creating%20a%20Skeleton%20from%20Scratch.ipynb>`__
+`A worked example of using the Parsing can be found here <https://github.com/ukaea/bom_analysis/blob/main/examples/extra_example_0%20-%20Creating_a_Skeleton_from_Dictionaries.ipynb>`__
 
 -------------------
 Plotting Hierarchy
@@ -92,5 +94,6 @@ A global configuration file is in Bill of Materials analysis which contains
 defaults for the definition of the BOM.
 
 .. automodule:: bom_analysis.base.BaseConfig
+                :noindex:
 
 The information about using a configuration can be found :ref:`here <configure analysis>`.

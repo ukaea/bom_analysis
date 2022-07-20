@@ -61,8 +61,9 @@ def exception_handler(func: Callable) -> Callable:
 
     Note
     ----
-    Information about creating an exception handler can be found here:
-    https://medium.com/swlh/handling-exceptions-in-python-a-cleaner-way-using-decorators-fae22aa0abec"""
+    Information about creating an exception handler can be found
+    `here <https://medium.com/swlh/handling-exceptions-in-python-a-cleaner-way-using-decorators-fae22aa0abec>`__.
+    """
 
     @wraps(func)
     def wrapper(*args):
@@ -76,15 +77,16 @@ def exception_handler(func: Callable) -> Callable:
 
 
 class MaterialData(BaseClass):
-    """A parent material data class MaterialData is provided in BOM Analysis
+    """
+    A parent material data class MaterialData is provided in BOM Analysis
     (alongside CoolProp and DataFrame children). The MaterialData class is added
     by default to Components and Homogenised Assemblies in the BOM.
 
     The materials have four key properties:
-     * mat - the name of the material
-     * temperature - the temperature of the material
-     * pressure - the pressure of the material
-     * irradiation - the Displacement per Atom of the material
+        * mat - the name of the material
+        * temperature - the temperature of the material
+        * pressure - the pressure of the material
+        * irradiation - the Displacement per Atom of the material
 
     These four properties can be supplied to a data source to
     extract material data at the input values using the extract_property
@@ -96,7 +98,8 @@ class MaterialData(BaseClass):
     Additional, the material classes have the data_warpper method which
     calls the extract_property for the instance with the benefit that
     if the property (or material) does not exist in the database of that
-    instance it will check the other databases within the MaterialSelector."""
+    instance it will check the other databases within the MaterialSelector.
+    """
 
     to = ""
 

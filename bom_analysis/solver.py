@@ -10,12 +10,14 @@ from bom_analysis.utils import UpdateDict, load_and_merge, class_from_string
 
 
 class Step:
-    """The solver implemented in BOM Analysis is made up
+    """
+    The solver implemented in BOM Analysis is made up
     of a series of steps ran in linear order. Each step
     requires the class (not initialised) to be initialised,
     the method within the class that will be run plus and
     arguments or key word arguments. The solve function
-    can then be run to execute the step."""
+    can then be run to execute the step.
+    """
 
     def __init__(self, class_object: type, method_str: str, *args, **kwargs):
         """a class that defines a step in the solver.
@@ -115,12 +117,14 @@ class Step:
 
 
 class Solver(BaseClass):
-    """The solver contains an ordered dictionary which should be
+    """
+    The solver contains an ordered dictionary which should be
     made up of the steps that the analysis will go through. It can be
     populated manually or build from a settings file.
 
     As with the engineering objects the solver can be written
-    to a dictionary using the same method names."""
+    to a dictionary using the same method names.
+    """
 
     def __init__(self):
         """Initialises and defines the ordered dict.

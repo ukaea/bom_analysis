@@ -436,13 +436,19 @@ class ParameterFrame(PrintParamsTable):
     can be added as mentioned. If an additional bit of information is included (such as devaiation)
     all parameters will be updated with a empty placeholder for that information.
 
-    The design for parameter handling was inspired by BLUEPRINT (`publication <10.1016/j.fusengdes.2018.12.036>`__)"""
+    The design for parameter handling was inspired by BLUEPRINT (`publication <10.1016/j.fusengdes.2018.12.036>`__)
+    """
 
     class_str = ["bom_analysis.parameters.ParameterFrame"]
 
     def __init__(self, **kwargs):
         """Initialises the class and populates the
         _data attibute with a Box.
+
+        Attributes
+        ----------
+        class_str : list
+            The class string path to the parameter frame.
 
         Note
         ----

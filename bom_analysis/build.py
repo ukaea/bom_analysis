@@ -8,13 +8,13 @@ from bom_analysis.solver import Solver
 
 
 class Framework(BaseFramework):
-    """The framework offers an automated way of populating configurations,
+    """
+    The framework offers an automated way of populating configurations,
     translators, settings, and parsing skeletons uting dictionaries.
     Following poplulation of the various different required information
     it can then getnerate the bill of materials and solve the analysis
     workflow.
-
-    The solver and the configuration are stored as class variables."""
+    """
 
     _solver: Solver = Solver()
 
@@ -22,6 +22,11 @@ class Framework(BaseFramework):
         self, config_path: Union[str, Path, None] = None, config_dict: dict = {}
     ):
         """initialisation for the framework.
+
+        Attributes
+        ----------
+        _solver : Solver
+            Solver class to be used by the Framework.
 
         Parameters
         ----------

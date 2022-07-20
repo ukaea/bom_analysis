@@ -150,7 +150,8 @@ class EngineeringObject(BaseClass):
         object may always want to be assigned the color "Yellow".
 
         Assignments are stored as numpy array but can be given a string
-        as which the setter will add to the assignment."""
+        as which the setter will add to the assignment.
+        """
         return self._assignment
 
     @assignment.setter
@@ -422,8 +423,8 @@ class EngineeringObject(BaseClass):
             A dictionary of the component and any lookup
             parameters.
 
-        Notes
-        -----
+        Note
+        ----
         This allows for part consistancy to be checked
         i.e. that part references are unique to a component
         (there can still be multiple components using the
@@ -526,11 +527,13 @@ class EngineeringObject(BaseClass):
 
 
 class Component(EngineeringObject):
-    """The component is the lowest level Engineering Object in the Bill of
+    """
+    The component is the lowest level Engineering Object in the Bill of
     Materials and, critically has a material assigned to it.
 
     A Component can generally be considered a physical object made up of a
-    single material, for example a bolt made of high strength steel."""
+    single material, for example a bolt made of high strength steel.
+    """
 
     def __init__(self, ref: str = None, material: str = None, assignment: str = None):
         """A component engineering object. Adds a default
@@ -612,14 +615,16 @@ class SubAssembly(dict):
 
 
 class Assembly(EngineeringObject):
-    """An assembly can be made up of multiple sub components which
+    """
+    An assembly can be made up of multiple sub components which
     assemble together to form the assembly. The assembly does not have
     a material assigned to it as it will contain the multiple materials
     of the components.
 
     An assembly can generally be considered to be made up of multiple
     other assemblies/components, for example a nut and bolt assembly
-    or an assembly of nut and bolt assemblies with a flange component."""
+    or an assembly of nut and bolt assemblies with a flange component.
+    """
 
     def __init__(self, ref: str = None, assignment: str = None):
         """The assembly is a child of the engineering object
@@ -919,8 +924,9 @@ class Assembly(EngineeringObject):
         Note
         ----
         Previous releases fuction used flat={}
-        but ran into this problem.
-        https://stackoverflow.com/questions/6794285/python-function-remembering-earlier-argument-kwargs"""
+        but ran into `this <https://stackoverflow.com/questions/6794285/python-function-remembering-earlier-argument-kwargs>`_
+        problem.
+        """
         flat = super().flatten(flat=flat)
         for comp in self._sub_assembly.values():
             comp.flatten(flat=flat)
@@ -935,6 +941,7 @@ class Assembly(EngineeringObject):
         args : str
             Parameter strings that will be extracted.
 
+<<<<<<< HEAD
         Returns
         -------
         dict
@@ -943,6 +950,10 @@ class Assembly(EngineeringObject):
 
         Notes
         -----
+=======
+        Note
+        ----
+>>>>>>> main
         This allows for part consistancy to be checked
         i.e. that part references are unique to a component
         (there can still be multiple components using the
@@ -1176,7 +1187,8 @@ class Assembly(EngineeringObject):
 
 
 class HomogenisedAssembly(Assembly):
-    """A homogenised assembly is a special type of assembly
+    """
+    A homogenised assembly is a special type of assembly
     which does not exist in the physical world but instead
     is analytical (particularly for neutronics analysis). A
     Homogenised assembly can have both sub components and
@@ -1184,7 +1196,8 @@ class HomogenisedAssembly(Assembly):
 
     An example of the analytical use of a Homogenised assembly
     would be a bolt and nut assembly represented as a single
-    body in structural FEA to simplifly the analysis."""
+    body in structural FEA to simplifly the analysis.
+    """
 
     def __init__(self, ref: str = None, assignment: str = None):
         """Intitialisation of the assembly and then adds
