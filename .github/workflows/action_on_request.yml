@@ -27,7 +27,8 @@ jobs:
         pip install pytest
         pip install coverage   
         pip install sphinx
-        pip install sphinx_rtd_theme     
+        pip install sphinx_rtd_theme
+        pip install mypy     
         pip install .
 
     - name: SonarCloud
@@ -61,6 +62,9 @@ jobs:
         path: .coverage-reports/test-coverage-pytest.xml
       # Use always() to always run this step to publish test results when there are test failures
       if: ${{ always() }}  
+    - name: Run mypy
+      run: |
+        mypy ./bom_analysis
     - name: Test documentation build
       run: |
         sphinx-apidoc -f -o docs/source/ bom_analysis/
