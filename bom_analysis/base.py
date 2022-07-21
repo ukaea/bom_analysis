@@ -646,7 +646,7 @@ class DFClass(BaseClass, PrintParamsTable):
             return np.array(self.data.index)
 
     @property
-    def header(self) -> np.ndarray:
+    def header(self) -> list:
         """
         Used for printing the dataframe.
         """

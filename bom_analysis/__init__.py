@@ -2,7 +2,7 @@ import logging
 from logging.handlers import RotatingFileHandler
 import os
 from pathlib import Path
-from typing import Type
+from typing import Any, Callable, Type
 
 import pint
 
@@ -10,7 +10,7 @@ import pint
 # Disable Pint's old fallback behavior (must come before importing Pint)
 os.environ["PINT_ARRAY_PROTOCOL_FALLBACK"] = "0"
 ureg = pint.UnitRegistry()
-Q_: pint.Quantity = ureg.Quantity
+Q_ : Type[pint.Quantity] = ureg.Quantity
 ureg.define("displacements_per_atom = 1 = dpa = DPA")
 
 # Create Logger

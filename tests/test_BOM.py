@@ -362,6 +362,11 @@ class TestBOMIntegration(unittest.TestCase):
         new_component = Component(ref="hello", assignment=np.array(["foo", "bar"]))
         self.assertCountEqual(new_component._assignment, ["foo", "bar"])
 
+        new_component = Component(ref="hello", assignment="world")
+        new_component.assignment = ["foo"]
+        new_component.assignment = np.array(["bar"])
+        self.assertCountEqual(new_component._assignment, ["world", "foo", "bar"])
+
 
 @pytest.mark.unittest
 class TestFramework(unittest.TestCase):

@@ -128,11 +128,6 @@ class MaterialData(BaseClass):
         """
         if "temp" in kwargs:
             temperature = kwargs["temp"]
-        self._mat = None
-        self._pressure = None
-        self._temperature = None
-        self._irradiation = None
-
         self.temperature = temperature
         self.pressure = pressure
         self.irradiation = irradiation
@@ -341,7 +336,7 @@ class MaterialData(BaseClass):
             Not implemented within the parent class."""
         raise NotImplementedError()
 
-    def extract_property(self, property_name: str):
+    def extract_property(self, property_name: str) -> Quantity:
         """Extracts a property from the MaterialData, not
         implemented in the parent class.
 
@@ -359,7 +354,7 @@ class MaterialData(BaseClass):
 
     def data_wrapper(
         self, property_name: str, i_database: int = 0
-    ) -> Union[Quantity, float]:
+    ) -> Quantity:
         """Wraps the material data from the MaterailData
         extract property with a try except.
 
@@ -419,7 +414,7 @@ class DFLibraryWrap(MaterialData):
 
     def __init__(
         self,
-        mat: Union[str, None] = None,
+        mat: Optional[str] = None,
         temperature: Quantity = Q_(293.0, "K"),
         pressure: Quantity = Q_(100000.0, "Pa"),
         **kwargs,
@@ -518,7 +513,7 @@ class DFLibraryWrap(MaterialData):
         return super().to_dict(exclusions=exclusions)
 
     @exception_handler
-    def extract_property(self, property_name: str) -> Union[Quantity, float]:
+    def extract_property(self, property_name: str) -> Quantity:
         """Primary method for extracting data from the
         materials database.
 
@@ -530,14 +525,14 @@ class DFLibraryWrap(MaterialData):
 
         Returns
         -------
-        Union[Quantity, float]
+        Quantity
             The output of the material data for the property name."""
         run_log.warning("no calculated material data dependancy")
 
         if self._mat_data.empty and self.path is not None:
             self._mat_data = pd.read_json(Path(self.path))
 
-        output = self._mat_data.at[
+        value = self._mat_data.at[
             Translator(property_name, self.to), Translator(self._mat, self.to)
         ]
 
@@ -545,8 +540,8 @@ class DFLibraryWrap(MaterialData):
             unit = self._mat_data.at[Translator(property_name, self.to), "units"]
         else:
             unit = None
-        if output is not None:
-            output = float(output) * ureg(unit)
+        #if output is not None:
+        output = Q_(float(value), unit)
         return output
 
     def __repr__(self) -> str:

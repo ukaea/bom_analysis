@@ -28,7 +28,7 @@ class EngineeringObject(BaseClass):
     materials. It contains key variables and methods which allow the
     bill of materials to function."""
 
-    def __init__(self, ref: Optional[str] = None, assignment: Optional[str] = None):
+    def __init__(self, ref: Optional[str] = None, assignment: Any = None):
         """
         The engineering object forms the parent for
         all components within the bill of materials and is defined by
@@ -42,7 +42,9 @@ class EngineeringObject(BaseClass):
         Parameters
         ----------
         ref : str, optional
-            the reference for the engineering object, must be unique.
+            The reference for the engineering object, must be unique.
+        assignment : Optional[Union[str, list, np.ndarray]]
+            The assignment of the EngineeringObject.
 
         Attributes
         ----------
@@ -58,11 +60,9 @@ class EngineeringObject(BaseClass):
         self._params = None
         self.ref = ref
         self.add_default_params()
-        try:
-            if assignment is not None:
-                self.assignment = assignment
-        except ValueError:
+        if assignment is not None:
             self.assignment = assignment
+
 
     def __repr__(self) -> str:
         """
@@ -155,7 +155,7 @@ class EngineeringObject(BaseClass):
         return self._assignment
 
     @assignment.setter
-    def assignment(self, value: str = None):
+    def assignment(self, value: Any):
         """An engineering object can be assigned values
         such as 'Blanket' or 'Layer_2' or 'Yellow' via this
         setter.
@@ -167,8 +167,13 @@ class EngineeringObject(BaseClass):
 
         Parameters
         ----------
-        value : str, optional
+        value : Union[str, list, np.ndarray]
             A string which will be added to the assignment, by default None.
+
+        Note
+        ----
+        The typing require input should be Union[str, list, np.ndarray] and not Any
+        but assymetric setters are not yet working. See mypy issue 3004.
         """
         new_assignment = np.append(self._assignment, value)
         self._assignment = np.unique(new_assignment)
@@ -934,30 +939,27 @@ class Assembly(EngineeringObject):
 
     def lookup(self, *args) -> dict:
         """
-                Searches the sub_assembly for chosen data.
+        Searches the sub_assembly for chosen data.
 
-                Parameters
-                ----------
-                args : str
-                    Parameter strings that will be extracted.
+        Parameters
+        ----------
+        args : str
+            Parameter strings that will be extracted.
 
-        <<<<<<< HEAD
-                Returns
-                -------
-                dict
-                    Parameter dictionary with the keys as the component
-                    ref.
 
-                Notes
-                -----
-        =======
-                Note
-                ----
-        >>>>>>> main
-                This allows for part consistancy to be checked
-                i.e. that part references are unique to a component
-                (there can still be multiple components using the
-                same reference).
+        Returns
+        -------
+        dict
+            Parameter dictionary with the keys as the component
+            ref.
+
+        Note
+        ----
+
+        This allows for part consistancy to be checked
+        i.e. that part references are unique to a component
+        (there can still be multiple components using the
+        same reference).
         """
         params = super().lookup(*args)
         for part in self._sub_assembly.values():

@@ -312,7 +312,7 @@ class MaterialSelector:
             Any additional data within will be added to the
             database_class.__dict__, by default {}.
         """
-        database = dict(material=database_class, data=additional_data)
+        database = np.array([dict(material=database_class, data=additional_data)], dtype=object)
         self.priority_order = np.append(self.priority_order, database)
 
     def to_dict(self) -> dict:
@@ -462,7 +462,7 @@ class Translator:
 
 class PrintParamsTable:
     @property
-    def header(self) -> np.ndarray:
+    def header(self) -> Iterable:
         """Property for the header of the table that will be printed.
 
         Returns
