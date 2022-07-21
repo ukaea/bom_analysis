@@ -352,9 +352,7 @@ class MaterialData(BaseClass):
         """
         raise NotImplementedError()
 
-    def data_wrapper(
-        self, property_name: str, i_database: int = 0
-    ) -> Quantity:
+    def data_wrapper(self, property_name: str, i_database: int = 0) -> Quantity:
         """Wraps the material data from the MaterailData
         extract property with a try except.
 
@@ -540,7 +538,7 @@ class DFLibraryWrap(MaterialData):
             unit = self._mat_data.at[Translator(property_name, self.to), "units"]
         else:
             unit = None
-        #if output is not None:
+        # if output is not None:
         output = Q_(float(value), unit)
         return output
 

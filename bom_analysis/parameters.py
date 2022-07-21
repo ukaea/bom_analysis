@@ -591,7 +591,7 @@ class ParameterFrame(PrintParamsTable):
         np.array
             a list in order of the headers for
             printing the parameter frame."""
-        header : np.ndarray = self._data[self.order[-1]].fields
+        header: np.ndarray = self._data[self.order[-1]].fields
         return header
 
     def add_parameter(self, **kwargs):

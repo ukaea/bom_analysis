@@ -63,7 +63,6 @@ class EngineeringObject(BaseClass):
         if assignment is not None:
             self.assignment = assignment
 
-
     def __repr__(self) -> str:
         """
         Magic method for creating a string to be printed.
