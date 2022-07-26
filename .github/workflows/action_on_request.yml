@@ -6,6 +6,9 @@ name: action on pull request
 on:
   pull_request:
     branches: [ "main", "development"]
+  push:
+    branches:
+      - main
 
 permissions:
   contents: read
