@@ -1,6 +1,6 @@
-import os
+from collections.abc import Iterable
 import pprint
-from typing import Union, Any
+from typing import Any, Dict, Optional, Union
 
 from box import Box
 import numpy as np
@@ -9,7 +9,7 @@ from tabulate import tabulate
 
 from bom_analysis import Q_, run_log
 from bom_analysis.base import BaseFramework
-from bom_analysis.utils import access_nested, encoder, decoder
+from bom_analysis.utils import access_nested, encoder, decoder, PrintParamsTable
 
 
 class MissingParamError(AttributeError):
@@ -52,24 +52,30 @@ class FlexParam:
         The source (reference and/or code) of the parameter.
     """
 
-    _required_keys = np.array(["var", "value"])
-    _additional_keys = np.array([])
+    _required_keys: np.ndarray = np.array(["var", "value"])
+    _additional_keys: np.ndarray = np.array([])
 
-    def __init__(self, val: Union[dict, Box]):
+    def __init__(self, val: Box):
         """Initialisation of the flexible parameter.
 
         Parameters
         ----------
         val : dict
             A dictionary containing the parameter data.
+
+        Note
+        ----
+        The typing return should be Union[dict, Box] and not Box
+        but assymetric setters are not yet working. See mypy
+        issue 3004.
         """
-        self._data = Box({}, frozen_box=True)
+        self._data: Box = Box({}, frozen_box=True)
         self.data = val
 
     @property
-    def data(self):
+    def data(self) -> Box:
         """Property for the primary data store that
-        contains the frozen box under teh private
+        contains the frozen box under the private
         _data variable.
 
         The property runs and update before returning
@@ -100,7 +106,7 @@ class FlexParam:
             contain the _required_keys as keys.
         """
         self.check_inputs(data)
-        processed = self.process_inputs(data)
+        processed: dict = self.process_inputs(data)
         self._data = Box(processed, frozen_box=True)
 
     def check_inputs(self, data: Union[dict, Box]):
@@ -126,7 +132,7 @@ class FlexParam:
             )
 
     @classmethod
-    def process_inputs(cls, value: Union[dict, Box]):
+    def process_inputs(cls, value: Union[dict, Box]) -> dict:
         """Processes the inputs to the data to
         extract any new keys and write them to the
         _additional keys class attribute.
@@ -141,11 +147,11 @@ class FlexParam:
 
         Returns
         -------
-        Union[dict, Box]
+        dict
             The processed input with full _required_keys and
             _additional_keys.
         """
-        processed = {}
+        processed: dict = {}
         unique_keys = np.unique(
             np.append(cls._additional_keys, np.array(list(value.keys())))
         )
@@ -168,7 +174,7 @@ class FlexParam:
         attribute.
 
         Checks fields and updates if they do not match."""
-        new_data_dict = {}
+        new_data_dict: dict = {}
         if not np.all(
             np.isin(self._additional_keys, np.array(list(self._data.keys())))
         ):
@@ -178,7 +184,22 @@ class FlexParam:
                     new_data_dict[key] = None
             self._data = Box(new_data_dict, frozen_box=True)
 
-    def __getattr__(self, attr_name):
+    def __getattr__(self, attr_name: str) -> Any:
+        """Gets parameter from frozen box if it exists.
+
+        Parameters
+        ----------
+        attr_name : str
+            The name of the attribute which will be returned.
+
+        Returns
+        -------
+        Any
+            The attribute with the attr_name within the frozen box.
+        """
+        return self.data[attr_name]
+
+    def __getitem__(self, attr_name: str) -> Any:
         """Gets parameter from frozen box if it exists.
 
         Parameters
@@ -193,22 +214,7 @@ class FlexParam:
         """
         return self.data[attr_name]
 
-    def __getitem__(self, attr_name):
-        """Gets parameter from frozen box if it exists.
-
-        Parameters
-        ----------
-        attr_name : str
-            The name of the attribute which will be returned.
-
-        Returns
-        -------
-        type
-            The attribute with the attr_name within the frozen box.
-        """
-        return self.data[attr_name]
-
-    def parameter(self):
+    def parameter(self) -> Box:
         """returns the frozon box.
 
         This function is included for backwards compatibility.
@@ -233,18 +239,18 @@ class FlexParam:
         self.data = data_dict
 
     @property
-    def fields(self):
+    def fields(self) -> np.ndarray:
         """Property that returns all the keys in the data store
         by appending the _required_keys and _additional_keys.
 
         Returns
         -------
-        np.array
+        np.ndarray
             The appended _required_keys and _additional_keys.
         """
         return np.append(self._required_keys, self._additional_keys)
 
-    def asdict(self):
+    def asdict(self) -> dict:
         """
         Converts the frozen box to a dictionary by using the
         boxes in-built method.
@@ -256,7 +262,7 @@ class FlexParam:
         """
         return self.data.to_dict()
 
-    def __str__(self):
+    def __str__(self) -> str:
         """
         Return a string representation of the Parameter.
 
@@ -391,7 +397,7 @@ class PintParam(FlexParam):
                 f"the unit dimensionality original={data['value'].dimensionality}, new={self.data.value.dimensionality}"
             )
 
-    def asdict(self):
+    def asdict(self) -> dict:
         """
         As the parent class, uses the in-built
         to_dict method of the box to return
@@ -416,9 +422,8 @@ class PintParam(FlexParam):
         return dump
 
 
-class ParameterFrame:
-    """
-    The Parameter class aims to be the primary method for storing parameters within the
+class ParameterFrame(PrintParamsTable):
+    """The Parameter class aims to be the primary method for storing parameters within the
     Engineering Objects. A version (either Pint integrated or not) is included with every
     Engineering Object using the attribute params. The default is with Pint integration
     is set within the Config.
@@ -450,7 +455,7 @@ class ParameterFrame:
         The kwargs are left as an input for legacy use.
 
         """
-        self._data = Box()
+        self._data: Box = Box()
 
     def __setattr__(self, attr: str, value: Any):
         """Sets a value in the underlying _data.
@@ -499,7 +504,7 @@ class ParameterFrame:
         else:
             super().__setattr__(attr, value)
 
-    def __getattr__(self, attr: str):
+    def __getattr__(self, attr: str) -> Any:
         """
         Returns the value for a parameter name.
 
@@ -514,7 +519,7 @@ class ParameterFrame:
 
         Returns
         -------
-        type
+        Any
             The value of the specified attribute.
 
         Raises
@@ -529,7 +534,7 @@ class ParameterFrame:
                 f"{attr} does not exist in parameters {list(self._data.keys())}"
             )
 
-    def __iter__(self):
+    def __iter__(self) -> Iterable:
         """Allows the assembly object to be iterated on to return the
         sub_assembly items.
 
@@ -540,7 +545,7 @@ class ParameterFrame:
         """
         return iter(self._data.values())
 
-    def __str__(self):
+    def __str__(self) -> str:
         """
         Returns user representation of the ParameterFrame for humans
         to read using tabulate.
@@ -564,7 +569,7 @@ class ParameterFrame:
         return f"\n{tabulate(formated_list_of_params, headers='keys', tablefmt='fancy_grid')}"
 
     @property
-    def order(self):
+    def order(self) -> np.ndarray:
         """The order which the params have been
         added to the parameterframe.
 
@@ -576,7 +581,7 @@ class ParameterFrame:
         return np.array(list(self._data.keys()))
 
     @property
-    def header(self):
+    def header(self) -> np.ndarray:
         """The order which the table output will be given
         based on the order in the _required_keys followed
         by the order in the _additional_keys.
@@ -586,73 +591,8 @@ class ParameterFrame:
         np.array
             a list in order of the headers for
             printing the parameter frame."""
-        return self._data[self.order[-1]].fields
-
-    def format_params(self, list_of_params: list):
-        """Formats the dictionary representation of the parameters to allow
-        for nice string represntation.
-
-        If being used in a terminal, the size will be checked to split
-        the strings of the information in the parameter so that the
-        output does not extend over multiple lines (and can be read).
-        The in-built pint formater is used to convert the strings representing
-        a unit (if supplied) to symbolic i.e. meter to m.
-
-        Parameters
-        ----------
-        list_of_params : list
-            A list of dictionaries with the _data parameters.
-
-        Returns
-        -------
-        list
-            A formated list of dictionaries with the _data parameters.
-        """
-        formated_list_of_params = []
-        try:
-            terminal_size = os.get_terminal_size().columns
-            max_character = int(terminal_size / len(list_of_params[0]))
-        except OSError:
-            max_character = None
-        for param in list_of_params:
-            new_param = {}
-            if "unit" in param and param["unit"] is not None:
-                param["unit"] = format(Q_(param["unit"]).units, "~")
-            elif "unit" in param:
-                param["unit"] = "dimensionless"
-            for key in self.header:
-                split_string = self.new_line_in_string(param[key], max_character)
-                new_param[key] = split_string
-            formated_list_of_params.append(new_param)
-        return formated_list_of_params
-
-    def new_line_in_string(self, input: Any, max_character: int = None):
-        """Splits the input into multiple lines based on a supplied
-        max character interger.
-
-        Parameters
-        ----------
-        input : Any
-            The parameter item to be split.
-        max_character : int, optional
-            The maximum number of characters before adding the new
-            line, by default None.
-
-        Returns
-        -------
-        Any
-            The parameter item with the split accross new lines added.
-        """
-        if max_character is not None:
-            try:
-                lines = []
-                for i in range(0, len(input), max_character):
-                    lines.append(input[i : i + max_character])
-                return "\n".join(lines)
-            except TypeError:
-                return input
-        else:
-            return input
+        header: np.ndarray = self._data[self.order[-1]].fields
+        return header
 
     def add_parameter(self, **kwargs):
         """Adds a parameter to the underlying _data, must be
@@ -668,7 +608,7 @@ class ParameterFrame:
             kwargs["value"] = None
         self._data[var] = FlexParam(dict(**kwargs))
 
-    def update_parameter(self, var: str = None, **kwargs):
+    def update_parameter(self, var: Optional[str] = None, **kwargs):
         """
         Update full Parameter information (except for var).
 
@@ -676,10 +616,10 @@ class ParameterFrame:
         ----------
         kwargs : key word arguments, optional
             The data which makes up a new parameter."""
-        param = self.get_param(var)
+        param: Union[PintParam, FlexParam] = self.get_param(var)
         param.replace(**kwargs)
 
-    def get_param(self, attr: str, key: str = None):
+    def get_param(self, attr: Optional[str], key: Optional[str] = None) -> Any:
         """Gets a chosen parameter from the parameterframe instead
         of the value.
 
@@ -688,10 +628,10 @@ class ParameterFrame:
 
         Parameters
         ----------
-        attr : str
+        attr : Optional[str]
             The attibute name to be checked to see if a wrapped named
             tuple exists in _data or as attribute.
-        key : str, optional
+        key : Optional[str]
             The field in the parameter which will be
             returned.
 
@@ -716,7 +656,7 @@ class ParameterFrame:
                 f"{attr} does not exist in parameters {list(self._data.keys())}"
             )
 
-    def check_param(self, attr: str):
+    def check_param(self, attr: str) -> bool:
         """Checks a parameter exists within the database.
 
         Parameters
@@ -727,14 +667,14 @@ class ParameterFrame:
 
         Returns
         -------
-        boolean
+        bool
             True/False on whether the parameter exists in _data."""
         if attr in self._data:
             return True
         else:
             return False
 
-    def to_dict(self):
+    def to_dict(self) -> dict:
         """Dumps the parameter frame to a json serilisable dictionary.
 
         The class string is included to allow for the BOM analysis to
@@ -750,7 +690,7 @@ class ParameterFrame:
         --------
         utils.encoder : Encodes to json serialisable dict from the numpy format.
         """
-        dump = {"data": {}}
+        dump: Dict[str, Union[dict, list]] = {"data": {}}
         if "class_str" not in dump or dump["class_str"] is None:
             dump["class_str"] = self.class_str
 
@@ -804,7 +744,7 @@ class ParameterFrame:
             else:
                 self.update_parameter(**param_dict)
 
-    def default_from_dict(self, data: dict):
+    def default_from_dict(self, data: dict) -> list:
         """Extracts the information from the data.
 
         This class allows differnet formats of dictionaries
@@ -824,12 +764,30 @@ class ParameterFrame:
             Parameter can be created ({var:mass, value:10, unit:10}).
         """
         data = encoder(data)
-        parameter_dicts = self.extract_dictionary_of_parameters(data)
+        parameter_dicts: dict = self.extract_dictionary_of_parameters(data)
         return self.convert_parameter_dictionary_to_list(parameter_dicts)
 
-    def extract_dictionary_of_parameters(self, data):
+    def extract_dictionary_of_parameters(self, data: dict) -> dict:
+        """Extracts a dictionary of the different parameters supplied
+        in the data dictionary.
+
+        Different (and legacy) skeletons can have the parameters in
+        different stages of a nested dictionary with different
+        keys. This function returns the parameter dictionary
+        for each of the various locations.
+
+        Parameters
+        ----------
+        data : dict
+            Nested dictionary containing the parameters.
+
+        Returns
+        -------
+        dict
+            Dictionary of the parameters only.
+        """
         if access_nested(data, ["_params", "data"]) is not None:
-            parameter_dicts = data["_params"]["data"]
+            parameter_dicts: dict = data["_params"]["data"]
         elif access_nested(data, ["params", "data"]) is not None:
             parameter_dicts = data["params"]["data"]
         elif access_nested(data, ["data"]) is not None:
@@ -838,7 +796,7 @@ class ParameterFrame:
             parameter_dicts = data
         return parameter_dicts
 
-    def convert_parameter_dictionary_to_list(self, parameter_dicts: dict):
+    def convert_parameter_dictionary_to_list(self, parameter_dicts: dict) -> list:
         """Converts the paramters contained within _data to
         a list of parameters.
 

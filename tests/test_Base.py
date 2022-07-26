@@ -5,6 +5,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
+from bom_analysis import Q_
 import bom_analysis.base as bs
 from bom_analysis.base import BaseConfig as Config
 from bom_analysis.bom import Assembly, Component
@@ -15,7 +16,9 @@ class TestBaseClass(unittest.TestCase):
     def setUp(self):
         self.base = bs.BaseClass()
 
-        self.base.data = {"a": np.array([np.float64(4.0), {"hello": "world"}])}
+        self.base.data = {
+            "a": np.array([np.float64(4.0), {"hello": "world"}], dtype=object)
+        }
 
         base2 = bs.BaseClass()
 
@@ -181,6 +184,18 @@ class TestConfig(unittest.TestCase):
         con = Config.to_dict()
         assert con["b"] == "foo"
 
+    def test_to_dict_without_login(self):
+        """tests whether to_dict works for different cases"""
+        config = {"a": 1, "b": "foo", "c": "bar"}
+        Config.define_config(config_dict=config)
+        Config._login_details = {
+            "username": "secret",
+            "password": "secret",
+            "domain": "secret",
+        }
+        dump = Config.to_dict()
+        assert "_login_details" not in dump
+
     def test_assignment_to_property(self):
         Config.restrict_param = "hello"
         assert Config.restrict_param == "hello"
@@ -215,6 +230,19 @@ class TestConfig(unittest.TestCase):
             test = Config.data_dir
         except ConfigurationNotFullyPopulated:
             pass
+
+    def test_not_implemented_meta(self):
+        from bom_analysis.base import MetaConfig
+
+        class MyNewConfig(metaclass=MetaConfig):
+            pass
+
+        config = MyNewConfig
+        with self.assertRaises(NotImplementedError):
+            config.to_dict()
+
+        with self.assertRaises(NotImplementedError):
+            config.temp_dir = "./temp/"
 
 
 @pytest.mark.integrationtest
@@ -437,6 +465,23 @@ class TestOldFormatLoad(unittest.TestCase):
         phone.from_dict(self.data_dictionary_new, ref="phone")
         phone.plot_hierarchy()
         print(phone.params)
+
+
+class TestBaseDfClass(unittest.TestCase):
+    def test_print_correctly(self):
+        df_wrap = bs.DFClass()
+        df_wrap.create_df(4, "foo", "bar")
+        print(df_wrap)
+
+    def test_print_empty(self):
+        df_wrap = bs.DFClass()
+        print(df_wrap)
+
+    def test_print_correctly_with_pint(self):
+        df_wrap = bs.DFClass()
+        df_wrap.create_df(4, "foo", "bar")
+        df_wrap.data.at["foo", 1] = Q_(1000, "meter*meter*kilogram*litre")
+        print(df_wrap)
 
 
 if __name__ == "__main__":

@@ -2,18 +2,28 @@
 Analysis
 ====================
 
-To aid with the using bill of materials for analysis a number of 
+To aid with the using bill of materials for analysis a number of
 key features are included that allows an analysis to be configured,
 ran, and logged.
 
 --------------------
 Logging
 --------------------
-A logger has been included within the BOM analysis which will write a log 
-file to the working directory with INFO, DEBUG, WARNING, and ERROR levels.
+A logger has been included within the BOM analysis which will write log
+files to the working directory with INFO, DEBUG, WARNING, and ERROR levels
+and time stamp them. This log file is called base.log as is intended to
+provide a complete list of the logs when BOM analysis is used in a parameter
+sweep. The base.log has a maximum file size before deleting information
+contained within. There is a INFO level and above log that is written
+to the temporary directory (defined by BaseConfig.temp_dir) which is meant
+to capture information about assumptions of an analysis within a run folder
+of the parameter sweep, this log is called run.log and is changed using
+the change_handler method in bom_analysis.utils. Additionally, there is
+a WARNING level console handler for display within the console.
 
-This allows for multiple analysis to write to the same log file and is 
-easy to import:
+Information can easily be added to the log file and will be handled by
+the appropriate handler to be written to the location based on the
+level assigned:
 
 .. code-block:: python
 
@@ -33,7 +43,7 @@ An example of setting up a custom Configuration is given:
 .. code-block:: python
 
     from bom_analysis.base import BaseConfigMethods, MetaConfig
-    
+
     class NewMetaConfig(MetaConfig):
         @property
         def default_element_type(cls):
@@ -56,7 +66,7 @@ See the :obj:`bom_analysis.base.BaseConfigMethods` for docstrings.
 Running Analysis
 --------------------
 In order to help with running analysis automatically,
-a series of classes are included. 
+a series of classes are included.
 
  * Solver - automatically runs analysis steps
  * Step - defines the analysis steps

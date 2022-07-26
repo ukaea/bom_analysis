@@ -1,5 +1,7 @@
+from collections.abc import Iterable
 import copy
 import pprint
+from typing import Dict, Tuple, Union
 
 from bom_analysis import run_log, BaseFramework
 from bom_analysis.utils import UpdateDict, load_and_merge
@@ -52,9 +54,9 @@ class SkeletonParser(BaseFramework):
         self,
         component_ref: str,
         component_type: str,
-        component_database: dict,
+        component_database: Dict[str, Dict],
         parameter_dictionary: dict,
-    ):
+    ) -> dict:
         """Creates a dictionary for a components or assembly.
 
         The component dictionary can be a simpler way of buildin a
@@ -83,7 +85,7 @@ class SkeletonParser(BaseFramework):
         self.add_bones(component_database, parameter_dictionary)
         return self.skeleton
 
-    def database(self, database_files: list):
+    def database(self, database_files: list) -> dict:
         """Method for loading and merging a list of database files.
 
         Parameters
@@ -102,8 +104,8 @@ class SkeletonParser(BaseFramework):
         self,
         component_ref: str,
         component_type: str,
-        component_database: dict,
-    ):
+        component_database: Dict[str, Dict],
+    ) -> Dict[str, Union[dict, str]]:
         """Extracts a component from a component_database
         with the type used as the key in the dict.
 
@@ -128,7 +130,7 @@ class SkeletonParser(BaseFramework):
 
     def merge_component_defined_with_skeleton(
         self, defined_in_component_database: dict, defined_on_child: dict
-    ):
+    ) -> dict:
         """Merges a dictionary of components defined on a child
         and within the parent["skeleton"].
 
@@ -159,7 +161,12 @@ class SkeletonParser(BaseFramework):
             UpdateDict(defined_in_component_database, defined_on_child)
             return defined_in_component_database
 
-    def spine(self, component_ref: str, component_type: str, component_database: dict):
+    def spine(
+        self,
+        component_ref: str,
+        component_type: str,
+        component_database: Dict[str, Dict],
+    ):
         """Creates the basic part of the skeleton by
         populating the children.
 
@@ -177,7 +184,13 @@ class SkeletonParser(BaseFramework):
             self.skeleton, component_database, component_ref, {"type": component_type}
         )
 
-    def children(self, skeleton, component_database, reference, child_input):
+    def children(
+        self,
+        skeleton: dict,
+        component_database: Dict[str, Dict],
+        reference: str,
+        child_input: dict,
+    ):
         """Imports the children into the skeleton.
 
         This function relies heavily on recursion
@@ -215,7 +228,7 @@ class SkeletonParser(BaseFramework):
             for ref, child in children.items():
                 self.children(skeleton, component_database, ref, child)
 
-    def add_bones(self, parents, parameters):
+    def add_bones(self, parents: dict, parameters: dict):
         """Adds the more detailed information (the bones) to the skeletons.
 
         Parameters
@@ -229,7 +242,7 @@ class SkeletonParser(BaseFramework):
         for name, component in self.skeleton.items():
             self.add_bone(component, parents, parameters)
 
-    def add_bone(self, component, parents, parameters):
+    def add_bone(self, component: dict, parents: dict, parameters: dict):
         """Add a bone based on the basic information.
 
         Parameters
@@ -250,12 +263,12 @@ class SkeletonParser(BaseFramework):
         self.all_params(component, copy.deepcopy(parameters))
         self.rm_inherits(component)
 
-    def inherit(self, component, parents):
+    def inherit(self, component: dict, parents: Dict[str, dict]):
         """Adds inherited information to the skeleton.
 
         This inherited information is important as there
         is it allows for some level of inheritance from
-        within the jsons loaded i.e. a Tesla specified as
+        within the jsons loaded i.e. a Brand of Car specified as
         an assembly in a supplied dictionary can inherit
         parameters, information and other data from Car
         if that is also supplied as a dictionary. It does
@@ -271,13 +284,13 @@ class SkeletonParser(BaseFramework):
             for the values given by the inherits key."""
         parents = copy.deepcopy(parents)
         if isinstance(component, dict) and "inherits" in component:
-            all_tup = ()
+            all_tup: Tuple = ()
             for string in component["inherits"]:
                 self.inherit(parents[string], parents)
                 all_tup += (parents[string],)
             UpdateDict(component, *all_tup)
 
-    def rm_inherits(self, item):
+    def rm_inherits(self, item: dict):
         """Having inherit left after the inheritance has
         taken place means running on an already populated skeleton is
         challenging, so it has to be replaced with inherited.
@@ -291,7 +304,7 @@ class SkeletonParser(BaseFramework):
             item["inherited"] = copy.deepcopy(item["inherits"])
             del item["inherits"]
 
-    def all_params(self, component, parameters):
+    def all_params(self, component: dict, parameters: dict):
         """Adds parameters to the component.
 
         As with inheritance, params can be added by
@@ -360,7 +373,7 @@ class ConfigParser(SkeletonParser):
 
     _config = {"parts": {"location": []}, "top": {}}
 
-    def __init__(self, skeleton, operate=True):
+    def __init__(self, skeleton: dict, operate: bool = True):
         """Initialises the config parser.
 
         Parameters
@@ -440,7 +453,7 @@ class ConfigParser(SkeletonParser):
         parents, parameters = self.load_data_files(data, *args)
         self.add_bones(parents, parameters)
 
-    def load_data_files(self, ordered_titles, *args):
+    def load_data_files(self, ordered_titles: Iterable, *args) -> tuple:
         """Loads the required data files.
 
         This is performed by checking the ordered titles against
@@ -472,7 +485,7 @@ class ConfigParser(SkeletonParser):
         It was recommended not using lists unless necessary
         perhaps a concatenated string is better but
         could run into problems with string."""
-        output = ()
+        output: Tuple = ()
         for val in ordered_titles:
             path = []
             for arg in args:
@@ -501,7 +514,7 @@ class SettingsParser(ConfigParser):
     skeleton based on it and a base skeleton.
     Also checks the input."""
 
-    def __init__(self, settings, skeleton, operate=True):
+    def __init__(self, settings: dict, skeleton: dict, operate: bool = True):
         """initialises the settings parser.
 
         Parameters
@@ -512,7 +525,7 @@ class SettingsParser(ConfigParser):
         skeleton : dict
             A dictionary of the components within the
             hierarchy.
-        operate : boolean
+        operate : bool
             Whether the skeleton should be modified from the supplied
             settings file.
         """
@@ -565,7 +578,7 @@ class SettingsParser(ConfigParser):
             self._config,
         )
 
-    def update_settings(self, settings):
+    def update_settings(self, settings: dict):
         """Updates the parser settings.
 
         Parameters
@@ -612,7 +625,7 @@ class SettingsParser(ConfigParser):
         self.add_bones(self.vertebrae, self.parameters)
         self.add_marrow()
 
-    def to_type_skeleton(self, skeleton):
+    def to_type_skeleton(self, skeleton: dict) -> dict:
         """Converts the skeleton to an input parts format
         with the keys swapped from the reference to the type.
 
@@ -650,7 +663,7 @@ class SettingsParser(ConfigParser):
                     base_vertebrae = self.vertebrae[type_of_part]
                     UpdateDict(base_vertebrae, val)
 
-    def rebuild_spine(self, all_comp):
+    def rebuild_spine(self, all_comp: dict):
         """Rebuilds the spine with only the required components.
 
         Parameters
@@ -686,7 +699,7 @@ class SettingsParser(ConfigParser):
             self.all_params(component, self.parameters)
             # self.load_defaults(name, component, defaults)
 
-    def load_defaults(self, ref, component, defaults):
+    def load_defaults(self, ref: str, component: dict, defaults: dict):
         """Loads the defaults if they exist within the component.
 
         Parameters
@@ -717,7 +730,7 @@ class SettingsParser(ConfigParser):
                     ):
                         UpdateDict(component["_params"]["data"][param], param_dict)
 
-    def load_module_requirements(self, all_modules):
+    def load_module_requirements(self, all_modules: dict):
         """Loads any data requirements a module has.
 
         This method is to allow the BOM Analysis Skeletons
@@ -752,7 +765,7 @@ class SettingsParser(ConfigParser):
                         else:
                             UpdateDict(self.skeleton[name], change)
 
-    def load_storage(self, component, storage):
+    def load_storage(self, component: dict, storage: dict):
         """Loads the storage on a component.
 
         This allows additional storage types to be loaded
@@ -782,7 +795,7 @@ class SettingsParser(ConfigParser):
 
         component["params_name"] = new_params
 
-    def select_library(self, material):
+    def select_library(self, material: dict):
         """Chooses materials library.
 
         Choses the material library for a given material string
@@ -804,7 +817,6 @@ class SettingsParser(ConfigParser):
         material_selector = BaseFramework._configuration.materials
         material_database = material_selector.select_database(material["name"])
         database_dict = material_database.to_dict()
-        # database_dict["class_str"] = database_dict["class_str"]
         UpdateDict(database_dict, material)
         material = database_dict
         return material

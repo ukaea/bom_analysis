@@ -1,12 +1,31 @@
 from functools import wraps
 from pathlib import Path
+from typing import Callable, Optional, Union
 
 import CoolProp.CoolProp as cp
 import pandas as pd
+from pint import Quantity
 
 from bom_analysis import ureg, run_log, Q_
 from bom_analysis.base import BaseClass, BaseFramework
 from bom_analysis.utils import Translator
+
+COOLPROPUNITS: dict = dict(
+    T="K",
+    P="Pa",
+    D="kg/m**3",
+    C="J/kg/K",
+    O="J/kg/K",
+    U="J/kg",
+    H="J/kg",
+    S="J/kg/K",
+    A="m/s",
+    G="J/kg",
+    V="Pa*s",
+    L="W/m/K",
+    conductivity="W/m/K",
+    viscosity="Pa*s",
+)
 
 
 class NoMaterialDataException(Exception):
@@ -17,13 +36,23 @@ class MaterialPropertyDoesNotExistError(Exception):
     pass
 
 
-def exception_handler(func):
+def exception_handler(func: Callable) -> Callable:
     """
     A custom descriptor that returns an error when a function
     fails.
 
     This raises a NoMaterialDataException when the the method
     which is wrapped fails.
+
+    Parameters
+    ----------
+    func : Callable
+        The function wrapped by the descriptor.
+
+    Returns
+    -------
+    Callable
+        The wrapper for the function.
 
     Raises
     ------
@@ -41,7 +70,6 @@ def exception_handler(func):
         try:
             result = func(*args)
         except BaseException as e:
-            run_log.error("material data not in library")
             raise NoMaterialDataException from e
         return result
 
@@ -73,12 +101,14 @@ class MaterialData(BaseClass):
     instance it will check the other databases within the MaterialSelector.
     """
 
+    to = ""
+
     def __init__(
         self,
-        mat: str = None,
-        temperature: Q_ = Q_(293.0, "K"),
-        pressure: Q_ = Q_(100000.0, "Pa"),
-        irradiation: Q_ = Q_(0.0, "dpa"),
+        mat: Optional[str] = None,
+        temperature: Quantity = Q_(293.0, "K"),
+        pressure: Quantity = Q_(100000.0, "Pa"),
+        irradiation: Quantity = Q_(0.0, "dpa"),
         **kwargs,
     ):
         """Initialises the materials data.
@@ -98,17 +128,12 @@ class MaterialData(BaseClass):
         """
         if "temp" in kwargs:
             temperature = kwargs["temp"]
-        self._mat = None
-        self._pressure = None
-        self._temperature = None
-        self._irradiation = None
-
         self.temperature = temperature
         self.pressure = pressure
         self.irradiation = irradiation
         self.mat = mat
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """Print of the material inputs.
 
         Returns
@@ -120,7 +145,7 @@ class MaterialData(BaseClass):
         return string
 
     @property
-    def mat(self):
+    def mat(self) -> Optional[str]:
         """The name of the material.
 
         Returns
@@ -137,13 +162,13 @@ class MaterialData(BaseClass):
 
         Parameters
         ----------
-        value : Quantity
+        value : str
             The material to be assigned.
         """
         self._mat = value
 
     @property
-    def pressure(self):
+    def pressure(self) -> Quantity:
         """The pressure of the material.
 
         Returns
@@ -154,7 +179,7 @@ class MaterialData(BaseClass):
         return self._pressure
 
     @pressure.setter
-    def pressure(self, value: Q_):
+    def pressure(self, value: Quantity):
         """The setter for the pressure of the
         component.
 
@@ -166,7 +191,7 @@ class MaterialData(BaseClass):
         self._pressure = value
 
     @property
-    def temperature(self):
+    def temperature(self) -> Quantity:
         """The temperature of the material.
 
         Returns
@@ -177,7 +202,7 @@ class MaterialData(BaseClass):
         return self._temperature
 
     @temperature.setter
-    def temperature(self, value: Q_):
+    def temperature(self, value: Quantity):
         """The setter for the temperature of the
         component.
 
@@ -189,7 +214,7 @@ class MaterialData(BaseClass):
         self._temperature = value
 
     @property
-    def irradiation(self):
+    def irradiation(self) -> Quantity:
         """The irradiation of the material.
 
         Returns
@@ -199,7 +224,7 @@ class MaterialData(BaseClass):
         return self._irradiation
 
     @irradiation.setter
-    def irradiation(self, value: Q_):
+    def irradiation(self, value: Quantity):
         """The setter for the irradiation of the
         component.
 
@@ -210,7 +235,7 @@ class MaterialData(BaseClass):
         """
         self._irradiation = value
 
-    def from_dict(self, data):
+    def from_dict(self, data: dict):
         """Imports from a json and populates the material.
 
         Parameters
@@ -226,7 +251,7 @@ class MaterialData(BaseClass):
             run_log.warning(f"no material name given for {self}")
 
     @property
-    def reftemp(self):
+    def reftemp(self) -> Quantity:
         """Reftemp is legacy to fit with
         some older external codes.
 
@@ -237,7 +262,7 @@ class MaterialData(BaseClass):
         return self._temperature
 
     @reftemp.setter
-    def reftemp(self, value: Q_):
+    def reftemp(self, value: Quantity):
         """Reftemp is legacy to fit with
         some older external codes.
 
@@ -251,7 +276,7 @@ class MaterialData(BaseClass):
     def add_defaults(self, data: dict):
         self.from_dict(data)
 
-    def SetRefTemp(self, Temp=293.0 * ureg("K")):
+    def SetRefTemp(self, Temp: Quantity = Q_(293.0, "K")):
         """Sets the component temperature.
 
         Parameters
@@ -267,7 +292,7 @@ class MaterialData(BaseClass):
         run_log.warning("using legacy methods in material assignment")
         self.temperature = Temp
 
-    def SetRefPressure(self, pressure=100000.0 * ureg("Pa")):
+    def SetRefPressure(self, pressure: Quantity = Q_(100000.0, "Pa")):
         """Sets the component pressure.
 
         Parameters
@@ -283,7 +308,7 @@ class MaterialData(BaseClass):
         run_log.warning("using legacy methods in material assignment")
         self.pressure = pressure
 
-    def SetLibMaterial(self, mat):
+    def SetLibMaterial(self, mat: str):
         """Sets the material name under the private
         material variable _mat.
 
@@ -296,12 +321,12 @@ class MaterialData(BaseClass):
         ----
         This naming and function was based on a now
         depricated material property in the external
-        library analysislib."""
+        library."""
         run_log.warning("using legacy methods in material assignment")
         self.mat = mat  # Material from library
 
     @staticmethod
-    def check(mat, *kwargs):
+    def check(mat: str, **kwargs) -> bool:
         """Checks a library for a material, not implemented
         within the parent class.
 
@@ -311,7 +336,7 @@ class MaterialData(BaseClass):
             Not implemented within the parent class."""
         raise NotImplementedError()
 
-    def extract_property(self, property_name):
+    def extract_property(self, property_name: str) -> Quantity:
         """Extracts a property from the MaterialData, not
         implemented in the parent class.
 
@@ -327,7 +352,7 @@ class MaterialData(BaseClass):
         """
         raise NotImplementedError()
 
-    def data_wrapper(self, property_name, i_database=0):
+    def data_wrapper(self, property_name: str, i_database: int = 0) -> Quantity:
         """Wraps the material data from the MaterailData
         extract property with a try except.
 
@@ -349,7 +374,7 @@ class MaterialData(BaseClass):
 
         Returns
         -------
-        Pint, float
+        Q_, float
             The extracted material property at the pressure and
             temperature of the material.
 
@@ -387,9 +412,9 @@ class DFLibraryWrap(MaterialData):
 
     def __init__(
         self,
-        mat=None,
-        temperature=Q_(293.0, "K"),
-        pressure=Q_(100000.0, "Pa"),
+        mat: Optional[str] = None,
+        temperature: Quantity = Q_(293.0, "K"),
+        pressure: Quantity = Q_(100000.0, "Pa"),
         **kwargs,
     ):
         """A dataframe material library which extracts a
@@ -399,9 +424,9 @@ class DFLibraryWrap(MaterialData):
         ----------
         mat : str, optional
             The material name, by default None.
-        temperature : Q_, optional
+        temperature : Quantity, optional
             The temperature of the material, by default Q_(293.0, "K").
-        pressure : Q_, optional
+        pressure : Quantity, optional
             The pressure of the material, by default Q_(100000.0, "Pa").
 
         Attributes
@@ -419,7 +444,7 @@ class DFLibraryWrap(MaterialData):
         self.to = ""
 
     @staticmethod
-    def check(mat, **kwargs):
+    def check(mat: str, **kwargs) -> bool:
         """Checks the underlying dataframe for a material
         name.
 
@@ -434,7 +459,7 @@ class DFLibraryWrap(MaterialData):
 
         Returns
         -------
-        boolean
+        bool
             A True/False on whether the material exists in the library.
 
         Note
@@ -449,13 +474,13 @@ class DFLibraryWrap(MaterialData):
             data = pd.read_json(Path(kwargs["path"]))
         else:
             raise ValueError("dataframe database must be suplied a path")
-        mat = Translator(mat, to)
-        if mat in data.columns:
+        translation = Translator(mat, to)
+        if translation in data.columns:
             return True
         else:
             return False
 
-    def from_dict(self, data):
+    def from_dict(self, data: dict):
         """Imports from a json and populates the material.
 
         Runs the parent class then uses the dataframe read_json
@@ -472,7 +497,7 @@ class DFLibraryWrap(MaterialData):
         super().from_dict(data)
         self._mat_data = pd.read_json(data["path"])
 
-    def to_dict(self):
+    def to_dict(self, exclusions=["_mat_data"]) -> dict:
         """
         Exports the data for storage in a json file.
 
@@ -483,10 +508,10 @@ class DFLibraryWrap(MaterialData):
         --------
         base.BaseClass.to_dict : Parent to_dict.
         """
-        return super().to_dict(exclusions=["_mat_data"])
+        return super().to_dict(exclusions=exclusions)
 
     @exception_handler
-    def extract_property(self, property_name):
+    def extract_property(self, property_name: str) -> Quantity:
         """Primary method for extracting data from the
         materials database.
 
@@ -498,14 +523,14 @@ class DFLibraryWrap(MaterialData):
 
         Returns
         -------
-        output : float
+        Quantity
             The output of the material data for the property name."""
         run_log.warning("no calculated material data dependancy")
 
         if self._mat_data.empty and self.path is not None:
             self._mat_data = pd.read_json(Path(self.path))
 
-        output = self._mat_data.at[
+        value = self._mat_data.at[
             Translator(property_name, self.to), Translator(self._mat, self.to)
         ]
 
@@ -513,11 +538,11 @@ class DFLibraryWrap(MaterialData):
             unit = self._mat_data.at[Translator(property_name, self.to), "units"]
         else:
             unit = None
-        if output is not None:
-            output = float(output) * ureg(unit)
+        # if output is not None:
+        output = Q_(float(value), unit)
         return output
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """Print of where the material data came from.
 
         Returns
@@ -530,10 +555,19 @@ class DFLibraryWrap(MaterialData):
 
 
 class CoolPropsWrap(MaterialData):
+    """A wrapper for CoolProps with pint units.
+
+    Attributes
+    ----------
+    to : str
+        The string argument that will be used
+        by the translator.
+    """
+
     to = "CoolProps"
 
     @staticmethod
-    def check(mat, **kwargs):
+    def check(mat: str, **kwargs) -> bool:
         """Checks CoolProps for a material
         name.
 
@@ -548,7 +582,7 @@ class CoolPropsWrap(MaterialData):
 
         Returns
         -------
-        boolean
+        bool
             A True/False on whether the material exists in the library.
 
         See Also
@@ -563,25 +597,50 @@ class CoolPropsWrap(MaterialData):
             to = kwargs["translate_to"]
         else:
             to = "CoolProps"
-        mat = Translator(mat, to)
-        if mat in cp.get_global_param_string("FluidsList"):
+        translation = Translator(mat, to)
+        if translation in cp.get_global_param_string("FluidsList"):
             return True
         else:
             return False
 
     @exception_handler
-    def extract_property(self, property_name):
-        """Coolprops wrapper."""
-        return cp.PropsSI(
-            Translator(property_name, self.to),
+    def extract_property(self, property_name: str) -> Quantity:
+        """Extracts a property from CoolProp and returns
+        the quivalent Pint Quantity.
+
+        Uses the global parameter COOLPROPUNITS to define
+        the units (the test suite will fail if later versions
+        of coolprops change this). Only outputs properties
+        by that need pressure and temperature inputs and not
+        properties that need other inputs such as surface
+        tension. Will translate a property_name into the
+        CoolProp format if included in the translator.
+
+        Parameters
+        ----------
+        property_name : str
+            The string of the property to be used by CoolProp
+            or to be translated into the string used by CoolProp.
+
+        Returns
+        -------
+        Q_
+            Quantity for the property at the material temperature
+            and pressure.
+        """
+        coolprops_output = Translator(property_name, self.to)
+        value = cp.PropsSI(
+            coolprops_output,
             "P",
             self.pressure.to("Pa").magnitude,
             "T",
             self.temperature.to("K").magnitude,
             Translator(self.mat, self.to),
         )
+        unit = COOLPROPUNITS[coolprops_output]
+        return Q_(value, unit)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """Print of where the material data came from.
 
         Returns

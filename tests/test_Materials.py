@@ -3,7 +3,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from bom_analysis import ureg
+from bom_analysis import ureg, Q_
 from bom_analysis.base import BaseFramework
 from bom_analysis.materials import (
     MaterialData,
@@ -27,7 +27,7 @@ class TestMaterialSelector(unittest.TestCase):
         ms = MaterialSelector()
         ms.add_database(dict, {})
         ms.add_database(list, {"hello": "world"})
-        output = ms.to_dict()
+        output = ms.to_dict()["priority_order"]
         assert output[0]["class_str"] == ["builtins.dict"]
         assert output[1]["data"] == {"hello": "world"}
 
@@ -80,10 +80,12 @@ class TestMaterialSelector(unittest.TestCase):
         }
 
     def test_from_dict(self):
-        new = [
-            {"class_str": "builtins.dict", "data": {}},
-            {"class_str": "builtins.list", "data": {"hello": "world"}},
-        ]
+        new = dict(
+            priority_order=[
+                {"class_str": "builtins.dict", "data": {}},
+                {"class_str": "builtins.list", "data": {"hello": "world"}},
+            ]
+        )
         ms = MaterialSelector()
         ms.from_dict(new)
         test_dict = ms.priority_order[0]["material"]()
@@ -121,7 +123,10 @@ class TestMaterialsWithSelector(unittest.TestCase):
         assert steel_database.extract_property("thermal_conductivity").m == 28.3
         assert helium_database.mat == "He"
         self.assertAlmostEqual(
-            helium_database.extract_property("conductivity"), 0.153, 3
+            helium_database.extract_property("conductivity").m, 0.153, 3
+        )
+        self.assertAlmostEqual(
+            helium_database.extract_property("viscosity").m, 1.960730243278851e-05, 3
         )
 
 
@@ -202,7 +207,7 @@ class TestMaterials(unittest.TestCase):
     def test_fluid_inheritance(self):
         """test the fluid have been inherited correctly"""
         assert self.fluid._mat == "H2O"
-        assert int(self.fluid.data_wrapper("density")) == 998
+        assert int(self.fluid.data_wrapper("density").m) == 998
 
     def test_to_json(self):
         """tests correctly writes to json format"""
@@ -299,8 +304,47 @@ class TestMaterialsRegression(unittest.TestCase):
 
         Config.materials = ms
         co2 = Config.materials.select_database("CarbonDioxide")
-        print(co2.data_wrapper("thermal_conductivity"))
-        print(co2.data_wrapper("density"))
+        self.assertAlmostEqual(
+            co2.data_wrapper("thermal_conductivity").to("K*W/m").m, 0.0166
+        )
+        self.assertAlmostEqual(co2.data_wrapper("density").to("kg/m**3").m, 1.81611, 5)
+
+
+testdata = [
+    ("He", "D", Q_(0.016429320327618305, "kg/m**3")),
+    ("He", "T", Q_(293, "K")),
+    ("He", "P", Q_(10000.0, "Pa")),
+    ("He", "C", Q_(5193.1637195563435, "J/kg/K")),
+    ("He", "O", Q_(3115.920621402665, "J/kg/K")),
+    ("He", "U", Q_(918103.1469226304, "J/kg")),
+    ("He", "H", Q_(1526771.0528730445, "J/kg")),
+    ("He", "S", Q_(32697.126252868744, "J/kg/K")),
+    ("He", "A", Q_(1007.2182633409453, "m/s")),
+    ("He", "G", Q_(-8053486.9392174985, "J/kg")),
+    ("He", "V", Q_(1.960730243278851e-05, "Pa*s")),
+    ("He", "L", Q_(0.15337937761347065, "W/m/K")),
+]
+
+
+@pytest.mark.integrationtest
+@pytest.mark.parametrize("mat,output,ans", testdata)
+def test_coolprops_units_unchanged(mat, output, ans):
+    """tests co2 in coolprops"""
+    material = CoolPropsWrap(
+        mat=mat, temp=Q_(293, "K").to("degC"), pressure=Q_(0.1, "bar")
+    )
+    res = material.extract_property(output)
+    assert res == ans
+
+
+class TestCoolPropsWrap(unittest.TestCase):
+    def test_check(self):
+        assert CoolPropsWrap.check("He")
+        assert CoolPropsWrap.check("CarbonDioxide")
+        assert CoolPropsWrap.check("Water")
+        assert CoolPropsWrap.check("MyNewMat") == False
+        Translator._data["MyNewMat"] = {"new_translate": {"name": "He"}}
+        assert CoolPropsWrap.check("MyNewMat", translate_to="new_translate")
 
 
 if __name__ == "__main__":

@@ -362,6 +362,11 @@ class TestBOMIntegration(unittest.TestCase):
         new_component = Component(ref="hello", assignment=np.array(["foo", "bar"]))
         self.assertCountEqual(new_component._assignment, ["foo", "bar"])
 
+        new_component = Component(ref="hello", assignment="world")
+        new_component.assignment = ["foo"]
+        new_component.assignment = np.array(["bar"])
+        self.assertCountEqual(new_component._assignment, ["world", "foo", "bar"])
+
 
 @pytest.mark.unittest
 class TestFramework(unittest.TestCase):
@@ -376,20 +381,22 @@ class TestFramework(unittest.TestCase):
         """tests that a component can be correctly populated"""
 
         skel = {
-            "widget": {"material": {"class_str": ["pandas.DataFrame"]}},
+            "widget": {
+                "material": {"class_str": ["bom_analysis.materials.MaterialData"]}
+            },
             "description": "a widget",
         }
         widget = Component()
         widget.from_dict(skel, ref="widget")
-        assert widget.material.class_str == ["pandas.DataFrame"]
-        assert widget.material.to_dict() == {}
+        assert widget.material.class_str == ["bom_analysis.materials.MaterialData"]
+        assert widget.material.pressure == Q_(1, "bar")
 
     def test_assemby(self):
         """tests an assembly"""
         skel = {
             "widget": {
                 "class_str": ["bom_analysis.bom.Component"],
-                "material": {"class_str": ["pandas.DataFrame"]},
+                "material": {"class_str": ["bom_analysis.materials.MaterialData"]},
                 "description": "a widget",
             },
             "big_widget": {
@@ -400,8 +407,11 @@ class TestFramework(unittest.TestCase):
         big_widget = Assembly()
         big_widget.from_dict(skel, ref="big_widget")
 
-        assert big_widget.widget.material.class_str[0] == "pandas.DataFrame"
-        assert big_widget.widget.material.to_dict() == {}
+        assert (
+            big_widget.widget.material.class_str[0]
+            == "bom_analysis.materials.MaterialData"
+        )
+        assert big_widget.widget.material.temperature == Q_(293, "K")
         assert big_widget.description == "an assembly widget"
 
     def test_change_network(self):

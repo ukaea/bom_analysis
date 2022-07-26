@@ -1,9 +1,11 @@
 from collections import OrderedDict
 import copy
 import time
+from typing import Union
 
-from bom_analysis import ureg, run_log, Q_
+from bom_analysis import run_log
 from bom_analysis.base import BaseClass
+from bom_analysis.bom import EngineeringObject
 from bom_analysis.utils import UpdateDict, load_and_merge, class_from_string
 
 
@@ -34,7 +36,7 @@ class Step:
         self.kwargs = kwargs
 
     @property
-    def name(self):
+    def name(self) -> str:
         """The name of the class defined within the step.
 
         Returns
@@ -62,7 +64,7 @@ class Step:
             )
         )
 
-    def to_dict(self):
+    def to_dict(self) -> dict:
         """Returns a deifnition of the step to a dictionary.
 
         Returns
@@ -77,7 +79,7 @@ class Step:
             kwargs=self.kwarg_to_str_dict(),
         )
 
-    def arg_to_str_list(self):
+    def arg_to_str_list(self) -> list:
         """Converts the input arguements to a
         list with any components being written as references
         instead of the object.
@@ -95,7 +97,7 @@ class Step:
                 arg_list.append(arg)
         return arg_list
 
-    def kwarg_to_str_dict(self):
+    def kwarg_to_str_dict(self) -> dict:
         """Converts the input keywords to a
         list with any components being written as references
         instead of the object.
@@ -132,14 +134,21 @@ class Solver(BaseClass):
         collections.OrderedDict : A dictionary with the order of the run."""
         self.run = OrderedDict()
 
-    def build_from_settings(self, settings, assembly):
+    def build_from_settings(self, settings: dict, assembly: EngineeringObject):
         """Builds the ordered dictionary by taking the required modules
         from the settings and defining json and building a class from string.
 
         If the module settings call for a particular reference, and that
         reference is in the flattened assembly the solver will be provided
         with that part of the assembly. The solver initialises the module
-        but does not run any functions outside the __init__."""
+        but does not run any functions outside the __init__.
+
+        Parameters
+        ----------
+        settings : dict
+            The settings for the build.
+        assembly : EngineeringObject
+            The assembly which the buid will take place for."""
         mod_settings = copy.deepcopy(settings["modules"])
         all_modules = load_and_merge(mod_settings["location"])
         flat = assembly.flatten()
@@ -174,7 +183,7 @@ class Solver(BaseClass):
         for step in self.run.values():
             step.solve()
 
-    def to_dict(self, exclusions=[]):
+    def to_dict(self, exclusions: list = []) -> dict:
         """Outputs the full dictionary of the
         solver Steps.
 
@@ -192,7 +201,7 @@ class Solver(BaseClass):
         order = {str(i_step): name for i_step, name in enumerate(self.run.keys())}
         return dict(order=order, details=step_details)
 
-    def update_kwargs(self, module, flat):
+    def update_kwargs(self, module: dict, flat: dict):
         """Updates any kwargs with the component if
         exists in flat.
 
@@ -207,7 +216,7 @@ class Solver(BaseClass):
         else:
             module["kwargs"] = {}
 
-    def update_args(self, module, flat):
+    def update_args(self, module: dict, flat: dict):
         """Updates any args with the component if
         exists in flat.
 
@@ -223,7 +232,9 @@ class Solver(BaseClass):
         else:
             module["args"] = ()
 
-    def replace_with_comp(self, item, flat):
+    def replace_with_comp(
+        self, item: Union[dict, list, tuple, EngineeringObject], flat: dict
+    ) -> Union[dict, list, tuple, EngineeringObject]:
         """Replaces a string with a component in
         the args/kwargs to allow dictionary/list to be supplied.
 
@@ -231,30 +242,32 @@ class Solver(BaseClass):
         ----------
         flat : dict
             Flattened components in BoM.
-        item : type
+        item : Union[dict, list, tuple, EngineeringObject]
             An instance which might contain the reference of a component.
 
         Returns
         -------
-        type
+        Union[dict, list, tuple, EngineeringObject]
             An instance with the reference replaced with the component
             the type of which is the same as the input."""
         if isinstance(item, list):
-            new_list = []
+            new_list: list = []
             for element in item:
                 new_list.append(self.replace_with_comp(element, flat))
             return new_list
         elif isinstance(item, dict):
-            new_dict = {}
+            new_dict: dict = {}
             for key, element in item.items():
                 new_dict[key] = self.replace_with_comp(element, flat)
             return new_dict
         elif isinstance(item, tuple):
-            new_item = ()
+            new_tup: tuple = ()
             for element in item:
-                new_item += (self.replace_with_comp(element, flat),)
-            return new_item
+                new_tup += (self.replace_with_comp(element, flat),)
+            return new_tup
         else:
             if item in flat:
-                item = flat[item]
-            return item
+                new_item: EngineeringObject = flat[item]
+                return new_item
+            else:
+                return item
