@@ -3,11 +3,13 @@ import setuptools
 setuptools.setup(
     name="bom_analysis",
     version="1.0.0",
-    description="Bill of Materials for Analysis",
+    description="A framework for performing analysis based on a Bill of Materials (BOM) structure",
+    long_description=open("README.md").read(),
+    long_description_content_type="text/markdown",
     author="UK Atomic Energy Authority",
     maintainer="Sam Merriman",
-    maintainer_email="samuel.merriman@ukaea.uk",
-    url="https://git.ccfe.ac.uk/step/invesselcomponents/outboardblanket/bom_analysis",
+    maintainer_email="samuel.merriman@hotmail.co.uk",
+    url="https://github.com/ukaea/bom_analysis",
     packages=["bom_analysis"],
     install_requires=[
         "numpy",
