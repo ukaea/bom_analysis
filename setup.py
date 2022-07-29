@@ -4,7 +4,7 @@ setuptools.setup(
     name="bom_analysis",
     version="1.0.0",
     description="A framework for performing analysis based on a Bill of Materials (BOM) structure",
-    long_description=open("README.txt").read(),
+    long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
     author="UK Atomic Energy Authority",
     maintainer="Sam Merriman",
