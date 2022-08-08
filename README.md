@@ -1,6 +1,7 @@
 [![Documentation Status](https://readthedocs.org/projects/bom-analysis/badge/?version=latest)](https://bom-analysis.readthedocs.io/en/latest/?badge=latest)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=ukaea_bom_analysis&metric=coverage)](https://sonarcloud.io/summary/new_code?id=ukaea_bom_analysis)
 [![DOI](https://zenodo.org/badge/508719944.svg)](https://zenodo.org/badge/latestdoi/508719944)
+[![Latest Release](https://img.shields.io/pypi/v/bom_analysis)](https://pypi.org/project/bom-analysis/)
 
 [![Quality gate](https://sonarcloud.io/api/project_badges/quality_gate?project=ukaea_bom_analysis)](https://sonarcloud.io/summary/new_code?id=ukaea_bom_analysis)
 
